@@ -103,13 +103,6 @@ class FunctionDocblockComment
     public $pure = false;
 
     /**
-     * Whether or not to specialize a given call (useful for taint analysis)
-     *
-     * @var bool
-     */
-    public $specialize_call = false;
-
-    /**
      * Represents the flow from function params to return type
      *
      * @var array<string>

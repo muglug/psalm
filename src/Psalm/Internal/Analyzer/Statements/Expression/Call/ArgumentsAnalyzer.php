@@ -853,7 +853,6 @@ class ArgumentsAnalyzer
                             $context,
                             $class_generic_params,
                             $template_result,
-                            $function_storage->specialize_call ?? true,
                             $in_call_map
                         );
                     }
@@ -1033,7 +1032,6 @@ class ArgumentsAnalyzer
                     $context,
                     $class_generic_params,
                     $template_result,
-                    $function_storage->specialize_call ?? true,
                     $in_call_map
                 ) === false) {
                     return false;

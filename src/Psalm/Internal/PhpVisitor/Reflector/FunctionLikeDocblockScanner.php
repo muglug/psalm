@@ -127,7 +127,6 @@ class FunctionLikeDocblockScanner
 
         if ($docblock_info->pure) {
             $storage->pure = true;
-            $storage->specialize_call = true;
             $storage->mutation_free = true;
             if ($storage instanceof MethodStorage) {
                 $storage->external_mutation_free = true;

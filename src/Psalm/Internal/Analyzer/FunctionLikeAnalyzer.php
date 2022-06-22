@@ -736,7 +736,6 @@ abstract class FunctionLikeAnalyzer extends SourceAnalyzer
         if ($codebase->taint_flow_graph
             && $this->function instanceof ClassMethod
             && $cased_method_id
-            && $storage->specialize_call
             && isset($context->vars_in_scope['$this'])
             && $context->vars_in_scope['$this']->parent_nodes
         ) {
@@ -1856,7 +1855,6 @@ abstract class FunctionLikeAnalyzer extends SourceAnalyzer
                 }
 
                 if ($codebase->taint_flow_graph
-                    && $storage->specialize_call
                     && $storage->location
                 ) {
                     $new_parent_node = DataFlowNode::getForAssignment('$this in ' . $method_id, $storage->location);

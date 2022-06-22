@@ -106,7 +106,6 @@ class ExitAnalyzer
                     false,
                     null,
                     true,
-                    true,
                     new CodeLocation($statements_analyzer, $stmt)
                 ) === false) {
                     return false;

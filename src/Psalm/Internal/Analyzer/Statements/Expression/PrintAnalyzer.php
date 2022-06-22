@@ -71,7 +71,6 @@ class PrintAnalyzer
                 false,
                 null,
                 true,
-                true,
                 new CodeLocation($statements_analyzer->getSource(), $stmt)
             ) === false) {
                 return false;

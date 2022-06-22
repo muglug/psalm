@@ -97,7 +97,6 @@ class ArgumentAnalyzer
         Context $context,
         array $class_generic_params,
         ?TemplateResult $template_result,
-        bool $specialize_taint,
         bool $in_call_map
     ): ?bool {
         $codebase = $statements_analyzer->getCodebase();
@@ -207,7 +206,6 @@ class ArgumentAnalyzer
             $context,
             $class_generic_params,
             $template_result,
-            $specialize_taint,
             $in_call_map
         ) === false) {
             return false;
@@ -237,7 +235,6 @@ class ArgumentAnalyzer
         Context $context,
         ?array $class_generic_params,
         ?TemplateResult $template_result,
-        bool $specialize_taint,
         bool $in_call_map
     ): ?bool {
         if (!$function_param->type) {
@@ -460,8 +457,7 @@ class ArgumentAnalyzer
                         $function_param,
                         $arg_value_type,
                         $arg->value,
-                        $context,
-                        $specialize_taint
+                        $context
                     );
                 }
 
@@ -646,7 +642,6 @@ class ArgumentAnalyzer
             $function_param,
             $arg->unpack,
             $unpacked_atomic_array,
-            $specialize_taint,
             $in_call_map,
             $function_call_location
         ) === false) {
@@ -674,7 +669,6 @@ class ArgumentAnalyzer
         FunctionLikeParameter $function_param,
         bool $unpack,
         ?Atomic $unpacked_atomic_array,
-        bool $specialize_taint,
         bool $in_call_map,
         CodeLocation $function_call_location
     ): ?bool {
@@ -712,8 +706,7 @@ class ArgumentAnalyzer
                     $function_param,
                     $input_type,
                     $input_expr,
-                    $context,
-                    $specialize_taint
+                    $context
                 );
             }
 
@@ -794,8 +787,7 @@ class ArgumentAnalyzer
                     $function_param,
                     $input_type,
                     $input_expr,
-                    $context,
-                    $specialize_taint
+                    $context
                 );
             }
 
@@ -885,8 +877,7 @@ class ArgumentAnalyzer
                 $function_param,
                 $input_type,
                 $input_expr,
-                $context,
-                $specialize_taint
+                $context
             );
 
             if ($function_param->assert_untainted) {
@@ -1466,8 +1457,7 @@ class ArgumentAnalyzer
         FunctionLikeParameter $function_param,
         Union $input_type,
         PhpParser\Node\Expr $expr,
-        Context $context,
-        bool $specialize_taint
+        Context $context
     ): void {
         $codebase = $statements_analyzer->getCodebase();
 
@@ -1509,57 +1499,46 @@ class ArgumentAnalyzer
             );
         }
 
-        if ($specialize_taint) {
-            $method_node = DataFlowNode::getForMethodArgument(
-                $cased_method_id,
-                $cased_method_id,
-                $argument_offset,
-                $statements_analyzer->data_flow_graph instanceof TaintFlowGraph
-                    ? $function_param->location
-                    : null,
-                $function_call_location
-            );
-        } else {
-            $method_node = DataFlowNode::getForMethodArgument(
-                $cased_method_id,
-                $cased_method_id,
-                $argument_offset,
-                $statements_analyzer->data_flow_graph instanceof TaintFlowGraph
-                    ? $function_param->location
-                    : null
-            );
+        $method_node = DataFlowNode::getForMethodArgument(
+            $cased_method_id,
+            $cased_method_id,
+            $argument_offset,
+            $statements_analyzer->data_flow_graph instanceof TaintFlowGraph
+                ? $function_param->location
+                : null,
+            $function_call_location
+        );
 
-            if ($statements_analyzer->data_flow_graph instanceof TaintFlowGraph
-                && $method_id
-                && $method_id->method_name !== '__construct'
-            ) {
-                $fq_classlike_name = $method_id->fq_class_name;
-                $method_name = $method_id->method_name;
-                $cased_method_name = explode('::', $cased_method_id)[1];
+        if ($statements_analyzer->data_flow_graph instanceof TaintFlowGraph
+            && $method_id
+            && $method_id->method_name !== '__construct'
+        ) {
+            $fq_classlike_name = $method_id->fq_class_name;
+            $method_name = $method_id->method_name;
+            $cased_method_name = explode('::', $cased_method_id)[1];
 
-                $class_storage = $codebase->classlike_storage_provider->get($fq_classlike_name);
+            $class_storage = $codebase->classlike_storage_provider->get($fq_classlike_name);
 
-                foreach ($class_storage->dependent_classlikes as $dependent_classlike_lc => $_) {
-                    $dependent_classlike_storage = $codebase->classlike_storage_provider->get(
-                        $dependent_classlike_lc
-                    );
-                    $new_sink = DataFlowNode::getForMethodArgument(
-                        $dependent_classlike_lc . '::' . $method_name,
-                        $dependent_classlike_storage->name . '::' . $cased_method_name,
-                        $argument_offset,
-                        $arg_location,
-                        null
-                    );
+            foreach ($class_storage->dependent_classlikes as $dependent_classlike_lc => $_) {
+                $dependent_classlike_storage = $codebase->classlike_storage_provider->get(
+                    $dependent_classlike_lc
+                );
+                $new_sink = DataFlowNode::getForMethodArgument(
+                    $dependent_classlike_lc . '::' . $method_name,
+                    $dependent_classlike_storage->name . '::' . $cased_method_name,
+                    $argument_offset,
+                    $arg_location,
+                    null
+                );
 
-                    $statements_analyzer->data_flow_graph->addNode($new_sink);
-                    $statements_analyzer->data_flow_graph->addPath(
-                        $method_node,
-                        $new_sink,
-                        'arg',
-                        $added_taints,
-                        $removed_taints
-                    );
-                }
+                $statements_analyzer->data_flow_graph->addNode($new_sink);
+                $statements_analyzer->data_flow_graph->addPath(
+                    $method_node,
+                    $new_sink,
+                    'arg',
+                    $added_taints,
+                    $removed_taints
+                );
             }
         }
 
