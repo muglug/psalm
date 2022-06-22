@@ -729,6 +729,27 @@ class TaintTest extends TestCase
                         }
                     }'
             ],
+            'SKIPPED-checkMemoizedInstanceMethodCallTaints' => [
+                'code' => '<?php
+                    /** @psalm-taint-specialize */
+                    class A {
+                        private string $last = "";
+
+                        public static function getInputOrLast(string $s): string {
+                            if (rand(0, 1)) {
+                                return $s;
+                            }
+
+                            $last = $this->last;
+                            $this->last = $s;
+                            return $last;
+                        }
+                    }
+
+                    (new A())->getInputOrLast($_GET["a"]);
+                    echo (new A())->getInputOrLast("foo");',
+                'error_message' => 'TaintedHtml',
+            ]
         ];
     }
 
@@ -2352,17 +2373,21 @@ class TaintTest extends TestCase
             'checkMemoizedStaticMethodCallTaints' => [
                 'code' => '<?php
                     class A {
-                        private static string $prev = "";
+                        private static string $last = "";
 
-                        public static function getPrevious(string $s): string {
-                            $prev = self::$prev;
-                            self::$prev = $s;
-                            return $prev;
+                        public static function getInputOrLast(string $s): string {
+                            if (rand(0, 1)) {
+                                return $s;
+                            }
+
+                            $last = self::$last;
+                            self::$last = $s;
+                            return $last;
                         }
                     }
 
-                    A::getPrevious($_GET["a"]);
-                    echo A::getPrevious("foo");',
+                    A::getInputOrLast($_GET["a"]);
+                    echo A::getInputOrLast("foo");',
                 'error_message' => 'TaintedHtml',
             ],
             'taintedNewCall' => [

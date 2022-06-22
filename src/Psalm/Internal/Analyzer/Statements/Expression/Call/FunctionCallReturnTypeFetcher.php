@@ -649,7 +649,7 @@ class FunctionCallReturnTypeFetcher
                 [...$removed_taints, ...$conditionally_removed_taints]
             );
 
-            $stmt_type->parent_nodes[$assignment_node->id] = $assignment_node;
+            $stmt_type->parent_nodes = [$assignment_node->id => $assignment_node];
         } else {
             $stmt_type->parent_nodes[$function_call_node->id] = $function_call_node;
         }

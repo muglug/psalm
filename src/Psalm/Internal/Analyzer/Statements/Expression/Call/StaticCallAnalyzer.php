@@ -347,7 +347,7 @@ class StaticCallAnalyzer extends CallAnalyzer
                 [...$conditionally_removed_taints, ...$removed_taints]
             );
 
-            $return_type_candidate->parent_nodes[$assignment_node->id] = $assignment_node;
+            $return_type_candidate->parent_nodes = [$assignment_node->id => $assignment_node];
         } else {
             $return_type_candidate->parent_nodes = [$method_source->id => $method_source];
         }
