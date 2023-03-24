@@ -767,7 +767,8 @@ abstract class Atomic implements TypeNode
      */
     public function replaceTemplateTypesWithArgTypes(
         TemplateResult $template_result,
-        ?Codebase $codebase
+        ?Codebase $codebase,
+        bool $swap_bounds
     ): self {
         // do nothing
         return $this;

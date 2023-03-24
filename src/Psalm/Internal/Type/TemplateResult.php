@@ -34,7 +34,7 @@ class TemplateResult
     public array $lower_bounds;
 
     /**
-     * @var array<string, array<string, TemplateBound>>
+     * @var array<string, array<string, non-empty-list<TemplateBound>>>
      */
     public array $upper_bounds = [];
 
@@ -42,11 +42,6 @@ class TemplateResult
      * If set to true then we shouldn't update the template bounds
      */
     public bool $readonly = false;
-
-    /**
-     * @var list<Union>
-     */
-    public array $upper_bounds_unintersectable_types = [];
 
     /**
      * @param  array<string, array<string, Union>> $template_types

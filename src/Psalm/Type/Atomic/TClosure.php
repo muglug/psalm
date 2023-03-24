@@ -60,10 +60,11 @@ final class TClosure extends TNamedObject
      */
     public function replaceTemplateTypesWithArgTypes(
         TemplateResult $template_result,
-        ?Codebase $codebase
+        ?Codebase $codebase,
+        bool $swap_bounds
     ): self {
-        $replaced = $this->replaceCallableTemplateTypesWithArgTypes($template_result, $codebase);
-        $intersection = $this->replaceIntersectionTemplateTypesWithArgTypes($template_result, $codebase);
+        $replaced = $this->replaceCallableTemplateTypesWithArgTypes($template_result, $codebase, $swap_bounds);
+        $intersection = $this->replaceIntersectionTemplateTypesWithArgTypes($template_result, $codebase, $swap_bounds);
         if (!$replaced && !$intersection) {
             return $this;
         }

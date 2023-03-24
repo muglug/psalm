@@ -85,7 +85,8 @@ final class TTemplatePropertiesOf extends Atomic
      */
     public function replaceTemplateTypesWithArgTypes(
         TemplateResult $template_result,
-        ?Codebase $codebase
+        ?Codebase $codebase,
+        bool $swap_bounds
     ): self {
         $param = new TTemplateParam(
             $this->as->param_name,
@@ -93,6 +94,7 @@ final class TTemplatePropertiesOf extends Atomic
                 new Union([$this->as]),
                 $template_result,
                 $codebase,
+                $swap_bounds,
             ),
             $this->as->defining_class,
         );

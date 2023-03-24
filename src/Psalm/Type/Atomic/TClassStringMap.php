@@ -188,12 +188,14 @@ final class TClassStringMap extends Atomic
      */
     public function replaceTemplateTypesWithArgTypes(
         TemplateResult $template_result,
-        ?Codebase $codebase
+        ?Codebase $codebase,
+        bool $swap_bounds
     ): self {
         $value_param = TemplateInferredTypeReplacer::replace(
             $this->value_param,
             $template_result,
             $codebase,
+            $swap_bounds,
         );
         if ($value_param === $this->value_param) {
             return $this;

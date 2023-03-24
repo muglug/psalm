@@ -151,9 +151,10 @@ final class TTemplateParam extends Atomic
      */
     public function replaceTemplateTypesWithArgTypes(
         TemplateResult $template_result,
-        ?Codebase $codebase
+        ?Codebase $codebase,
+        bool $swap_bounds
     ): self {
-        $intersection = $this->replaceIntersectionTemplateTypesWithArgTypes($template_result, $codebase);
+        $intersection = $this->replaceIntersectionTemplateTypesWithArgTypes($template_result, $codebase, $swap_bounds);
         if (!$intersection) {
             return $this;
         }

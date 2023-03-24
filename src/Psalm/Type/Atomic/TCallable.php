@@ -62,9 +62,12 @@ final class TCallable extends Atomic
     /**
      * @return static
      */
-    public function replaceTemplateTypesWithArgTypes(TemplateResult $template_result, ?Codebase $codebase): self
-    {
-        $replaced = $this->replaceCallableTemplateTypesWithArgTypes($template_result, $codebase);
+    public function replaceTemplateTypesWithArgTypes(
+        TemplateResult $template_result,
+        ?Codebase $codebase,
+        bool $swap_bounds
+    ): self {
+        $replaced = $this->replaceCallableTemplateTypesWithArgTypes($template_result, $codebase, $swap_bounds);
         if (!$replaced) {
             return $this;
         }

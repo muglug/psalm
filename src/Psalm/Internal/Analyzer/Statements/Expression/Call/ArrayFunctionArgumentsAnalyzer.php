@@ -872,6 +872,7 @@ class ArrayFunctionArgumentsAnalyzer
                 $closure_type = $closure_type->replaceTemplateTypesWithArgTypes(
                     $template_result,
                     $codebase,
+                    false,
                 );
             }
 

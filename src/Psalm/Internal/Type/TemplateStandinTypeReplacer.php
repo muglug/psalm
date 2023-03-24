@@ -911,46 +911,77 @@ class TemplateStandinTypeReplacer
                 }
                 $generic_param = $generic_param->freeze();
 
-                $upper_bound = $template_result->upper_bounds
-                    [$param_name_key]
-                    [$atomic_type->defining_class] ?? null;
-
-                if ($upper_bound) {
-                    if (!UnionTypeComparator::isContainedBy(
-                        $codebase,
-                        $upper_bound->type,
-                        $generic_param,
-                    ) || !UnionTypeComparator::isContainedBy(
-                        $codebase,
-                        $generic_param,
-                        $upper_bound->type,
-                    )) {
-                        $intersection_type = Type::intersectUnionTypes(
-                            $upper_bound->type,
-                            $generic_param,
-                            $codebase,
-                        );
-                    } else {
-                        $intersection_type = $generic_param;
-                    }
-
-                    if ($intersection_type) {
-                        $upper_bound->type = $intersection_type;
-                    } else {
-                        $template_result->upper_bounds_unintersectable_types[] = $upper_bound->type;
-                        $template_result->upper_bounds_unintersectable_types[] = $generic_param;
-
-                        $upper_bound->type = Type::getMixed();
-                    }
-                } else {
-                    $template_result->upper_bounds[$param_name_key][$atomic_type->defining_class] = new TemplateBound(
-                        $generic_param,
-                    );
-                }
+                self::addUpperBound(
+                    $codebase,
+                    $template_result,
+                    $generic_param,
+                    $param_name_key,
+                    $atomic_type->defining_class,
+                );
             }
         }
 
         return [$atomic_type];
+    }
+
+    public static function addUpperBound(
+        Codebase $codebase,
+        TemplateResult $template_result,
+        Union $generic_param,
+        string $param_name,
+        string $defining_class
+    ): void {
+        $upper_bounds = $template_result->upper_bounds[$param_name][$defining_class] ?? [];
+
+        if ($upper_bounds) {
+            $new_upper_bound_type = $generic_param;
+            foreach ($upper_bounds as $upper_bound) {
+                if (UnionTypeComparator::isContainedBy(
+                    $codebase,
+                    $upper_bound->type,
+                    $generic_param,
+                )) {
+                    $new_upper_bound_type = null;
+                    break;
+                }
+
+                if (UnionTypeComparator::isContainedBy(
+                    $codebase,
+                    $generic_param,
+                    $upper_bound->type,
+                )) {
+                    $upper_bound->type = $new_upper_bound_type;
+                    $new_upper_bound_type = null;
+                    break;
+                }
+            }
+
+            if ($new_upper_bound_type) {
+                foreach ($upper_bounds as $upper_bound) {
+                    $intersection_type = Type::intersectUnionTypes(
+                        $upper_bound->type,
+                        $generic_param,
+                        $codebase,
+                    );
+
+                    if ($intersection_type) {
+                        $upper_bound->type = $intersection_type;
+                        $new_upper_bound_type = null;
+                    }
+                }
+
+                if ($new_upper_bound_type) {
+                    $template_result->upper_bounds[$param_name][$defining_class][]
+                        = new TemplateBound($new_upper_bound_type);
+                }
+            }
+        } else {
+            $template_result->upper_bounds[$param_name][$defining_class] = [
+                new TemplateBound(
+                    $generic_param,
+                ),
+            ];
+        }
     }
 
     /**

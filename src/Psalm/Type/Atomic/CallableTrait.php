@@ -286,7 +286,8 @@ trait CallableTrait
      */
     protected function replaceCallableTemplateTypesWithArgTypes(
         TemplateResult $template_result,
-        ?Codebase $codebase
+        ?Codebase $codebase,
+        bool $swap_bounds
     ): ?array {
         $replaced = false;
 
@@ -294,11 +295,13 @@ trait CallableTrait
         if ($params) {
             foreach ($params as $k => $param) {
                 if ($param->type) {
-                    $new_param = $param->setType(TemplateInferredTypeReplacer::replace(
+                    $new_param_type = TemplateInferredTypeReplacer::replace(
                         $param->type,
                         $template_result,
                         $codebase,
-                    ));
+                        $swap_bounds,
+                    );
+                    $new_param = $param->setType($new_param_type);
                     $replaced = $replaced || $new_param !== $param;
                     $params[$k] = $new_param;
                 }
@@ -311,6 +314,7 @@ trait CallableTrait
                 $return_type,
                 $template_result,
                 $codebase,
+                $swap_bounds,
             );
             $replaced = $replaced || $return_type !== $this->return_type;
         }

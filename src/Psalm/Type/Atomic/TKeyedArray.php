@@ -568,7 +568,8 @@ class TKeyedArray extends Atomic
      */
     public function replaceTemplateTypesWithArgTypes(
         TemplateResult $template_result,
-        ?Codebase $codebase
+        ?Codebase $codebase,
+        bool $swap_bounds
     ): self {
         $properties = $this->properties;
         foreach ($properties as $offset => $property) {
@@ -576,6 +577,7 @@ class TKeyedArray extends Atomic
                 $property,
                 $template_result,
                 $codebase,
+                $swap_bounds,
             );
         }
         $fallback_params = $this->fallback_params;
@@ -584,6 +586,7 @@ class TKeyedArray extends Atomic
                 $property,
                 $template_result,
                 $codebase,
+                $swap_bounds,
             );
         }
         if ($properties !== $this->properties || $fallback_params !== $this->fallback_params) {

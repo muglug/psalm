@@ -854,6 +854,7 @@ class AtomicMethodCallAnalyzer extends CallAnalyzer
                 $lhs_type_part = $mixin->replaceTemplateTypesWithArgTypes(
                     new TemplateResult([], $mixin_class_template_params ?: []),
                     $codebase,
+                    false,
                 );
 
                 $lhs_type_expanded = TypeExpander::expandUnion(

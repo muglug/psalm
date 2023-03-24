@@ -383,13 +383,10 @@ class ArgumentAnalyzer
                             [$template_type->param_name]
                             [$template_type->defining_class],
                     )) {
-                        $template_result->lower_bounds[$template_type->param_name][$template_type->defining_class] = [
-                            new TemplateBound(
-                                $template_result->upper_bounds
-                                    [$template_type->param_name]
-                                    [$template_type->defining_class]->type,
-                            ),
-                        ];
+                        $template_result->lower_bounds[$template_type->param_name][$template_type->defining_class]
+                            = $template_result->upper_bounds
+                                [$template_type->param_name]
+                                [$template_type->defining_class];
                     } else {
                         $template_result->lower_bounds[$template_type->param_name][$template_type->defining_class] = [
                             new TemplateBound(

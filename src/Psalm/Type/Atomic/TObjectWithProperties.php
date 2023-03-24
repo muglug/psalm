@@ -280,7 +280,8 @@ final class TObjectWithProperties extends TObject
      */
     public function replaceTemplateTypesWithArgTypes(
         TemplateResult $template_result,
-        ?Codebase $codebase
+        ?Codebase $codebase,
+        bool $swap_bounds
     ): self {
         $properties = $this->properties;
         foreach ($properties as $offset => $property) {
@@ -288,11 +289,13 @@ final class TObjectWithProperties extends TObject
                 $property,
                 $template_result,
                 $codebase,
+                $swap_bounds,
             );
         }
         $intersection = $this->replaceIntersectionTemplateTypesWithArgTypes(
             $template_result,
             $codebase,
+            $swap_bounds,
         );
         if ($properties === $this->properties && !$intersection) {
             return $this;

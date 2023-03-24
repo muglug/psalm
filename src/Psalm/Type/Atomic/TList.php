@@ -191,12 +191,14 @@ class TList extends Atomic
      */
     public function replaceTemplateTypesWithArgTypes(
         TemplateResult $template_result,
-        ?Codebase $codebase
+        ?Codebase $codebase,
+        bool $swap_bounds
     ): self {
         return $this->setTypeParam(TemplateInferredTypeReplacer::replace(
             $this->type_param,
             $template_result,
             $codebase,
+            $swap_bounds,
         ));
     }
 

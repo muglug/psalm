@@ -240,7 +240,8 @@ trait GenericTrait
      */
     protected function replaceTypeParamsTemplateTypesWithArgTypes(
         TemplateResult $template_result,
-        ?Codebase $codebase
+        ?Codebase $codebase,
+        bool $swap_bounds
     ): ?array {
         $type_params = $this->type_params;
         foreach ($type_params as $offset => $type_param) {
@@ -248,6 +249,7 @@ trait GenericTrait
                 $type_param,
                 $template_result,
                 $codebase,
+                $swap_bounds,
             );
 
             if ($this instanceof TArray && $offset === 0 && $type_param->isMixed()) {

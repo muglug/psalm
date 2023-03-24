@@ -48,19 +48,22 @@ class TemplateInferredTypeReplacer
     public static function replace(
         Union $union,
         TemplateResult $template_result,
-        ?Codebase $codebase
+        ?Codebase $codebase,
+        bool $swap_bounds = false
     ): Union {
         $new_types = [];
 
         $is_mixed = false;
 
-        $inferred_lower_bounds = $template_result->lower_bounds ?: [];
+        $inferred_lower_bounds = $swap_bounds
+            ? $template_result->upper_bounds
+            : $template_result->lower_bounds;
 
         $types = [];
 
         foreach ($union->getAtomicTypes() as $key => $atomic_type) {
             $should_set = true;
-            $atomic_type = $atomic_type->replaceTemplateTypesWithArgTypes($template_result, $codebase);
+            $atomic_type = $atomic_type->replaceTemplateTypesWithArgTypes($template_result, $codebase, $swap_bounds);
 
             if ($atomic_type instanceof TTemplateParam) {
                 $template_type = self::replaceTemplateParam(

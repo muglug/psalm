@@ -184,15 +184,20 @@ final class TGenericObject extends TNamedObject
     /**
      * @return static
      */
-    public function replaceTemplateTypesWithArgTypes(TemplateResult $template_result, ?Codebase $codebase): self
-    {
+    public function replaceTemplateTypesWithArgTypes(
+        TemplateResult $template_result,
+        ?Codebase $codebase,
+        bool $swap_bounds
+    ): self {
         $type_params = $this->replaceTypeParamsTemplateTypesWithArgTypes(
             $template_result,
             $codebase,
+            $swap_bounds,
         );
         $intersection = $this->replaceIntersectionTemplateTypesWithArgTypes(
             $template_result,
             $codebase,
+            $swap_bounds,
         );
         if (!$type_params && !$intersection) {
             return $this;

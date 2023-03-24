@@ -149,12 +149,14 @@ final class TConditional extends Atomic
      */
     public function replaceTemplateTypesWithArgTypes(
         TemplateResult $template_result,
-        ?Codebase $codebase
+        ?Codebase $codebase,
+        bool $swap_bounds
     ): self {
         $conditional = TemplateInferredTypeReplacer::replace(
             $this->conditional_type,
             $template_result,
             $codebase,
+            $swap_bounds,
         );
         if ($conditional === $this->conditional_type) {
             return $this;

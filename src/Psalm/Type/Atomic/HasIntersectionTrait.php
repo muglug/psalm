@@ -91,7 +91,8 @@ trait HasIntersectionTrait
      */
     protected function replaceIntersectionTemplateTypesWithArgTypes(
         TemplateResult $template_result,
-        ?Codebase $codebase
+        ?Codebase $codebase,
+        bool $swap_bounds
     ): ?array {
         if (!$this->extra_types) {
             return null;
@@ -116,7 +117,7 @@ trait HasIntersectionTrait
                     }
                 }
             } else {
-                $extra_type = $extra_type->replaceTemplateTypesWithArgTypes($template_result, $codebase);
+                $extra_type = $extra_type->replaceTemplateTypesWithArgTypes($template_result, $codebase, $swap_bounds);
                 $new_types[$extra_type->getKey()] = $extra_type;
             }
         }

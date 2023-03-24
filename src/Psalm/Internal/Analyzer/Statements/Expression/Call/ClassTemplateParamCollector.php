@@ -242,6 +242,7 @@ class ClassTemplateParamCollector
                     $type_extends_atomic = $type_extends_atomic->replaceTemplateTypesWithArgTypes(
                         $template_result,
                         $codebase,
+                        false,
                     );
                 }
                 $output_type_extends = Type::combineUnionTypes(
