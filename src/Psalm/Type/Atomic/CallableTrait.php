@@ -299,7 +299,7 @@ trait CallableTrait
                         $param->type,
                         $template_result,
                         $codebase,
-                        $swap_bounds,
+                        !$swap_bounds,
                     );
                     $new_param = $param->setType($new_param_type);
                     $replaced = $replaced || $new_param !== $param;

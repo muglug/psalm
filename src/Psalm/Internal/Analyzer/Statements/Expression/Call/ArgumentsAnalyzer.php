@@ -265,7 +265,7 @@ class ArgumentsAnalyzer
             if (null !== $inferred_arg_type && null !== $template_result && null !== $param && null !== $param->type) {
                 $codebase = $statements_analyzer->getCodebase();
 
-                TemplateStandinTypeReplacer::fillTemplateResult(
+                TemplateStandinTypeReplacer::replace(
                     $param->type,
                     $template_result,
                     $codebase,
@@ -314,7 +314,7 @@ class ArgumentsAnalyzer
 
         $existing_type = $statements_analyzer->node_data->getType($arg->value);
 
-        TemplateStandinTypeReplacer::fillTemplateResult(
+        TemplateStandinTypeReplacer::replace(
             new Union([
                 new TArray([
                     Type::getArrayKey(),
@@ -482,6 +482,7 @@ class ArgumentsAnalyzer
         }
 
         $replaced_container_hof_atomic = new Union([$container_hof_atomic]);
+        $inferred_template_result->upper_bounds = $inferred_template_result->lower_bounds;
 
         // Replaces all input args in container function.
         //
@@ -510,7 +511,7 @@ class ArgumentsAnalyzer
                 $actual_func_param->type->getTemplateTypes() &&
                 isset($container_hof_atomic->params[$offset])
             ) {
-                TemplateStandinTypeReplacer::fillTemplateResult(
+                TemplateStandinTypeReplacer::replace(
                     $actual_func_param->type,
                     $high_order_template_result,
                     $codebase,
@@ -1607,7 +1608,7 @@ class ArgumentsAnalyzer
                 $calling_class_storage->final ?? false,
             );
 
-            TemplateStandinTypeReplacer::fillTemplateResult(
+            TemplateStandinTypeReplacer::replace(
                 $fleshed_out_param_type,
                 $template_result,
                 $codebase,
@@ -1787,7 +1788,7 @@ class ArgumentsAnalyzer
                         $default_type = new Union([$default_type_atomic]);
                     }
 
-                    TemplateStandinTypeReplacer::fillTemplateResult(
+                    TemplateStandinTypeReplacer::replace(
                         $param->type,
                         $template_result,
                         $codebase,

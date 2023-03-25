@@ -599,6 +599,9 @@ class MethodCallReturnTypeFetcher
                                 ),
                             ],
                         ];
+                    } elseif (isset($template_result->upper_bounds[$template_type->param_name])) {
+                        $template_result->lower_bounds[$template_type->param_name]
+                            = $template_result->upper_bounds[$template_type->param_name];
                     } else {
                         $template_result->lower_bounds[$template_type->param_name] = [
                             ($template_type->defining_class) => [

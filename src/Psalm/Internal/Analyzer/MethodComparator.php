@@ -1088,6 +1088,7 @@ class MethodComparator
             }
 
             $template_result = new TemplateResult([], $template_types);
+            $template_result->upper_bounds = $template_result->lower_bounds;
 
             $templated_type = TemplateInferredTypeReplacer::replace(
                 $templated_type,

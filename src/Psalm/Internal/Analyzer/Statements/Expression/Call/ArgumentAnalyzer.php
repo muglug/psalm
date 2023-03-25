@@ -378,22 +378,26 @@ class ArgumentAnalyzer
                         [$template_type->param_name]
                         [$template_type->defining_class],
                 )) {
-                    if (isset(
-                        $template_result->upper_bounds
-                            [$template_type->param_name]
-                            [$template_type->defining_class],
-                    )) {
-                        $template_result->lower_bounds[$template_type->param_name][$template_type->defining_class]
-                            = $template_result->upper_bounds
-                                [$template_type->param_name]
-                                [$template_type->defining_class];
-                    } else {
-                        $template_result->lower_bounds[$template_type->param_name][$template_type->defining_class] = [
-                            new TemplateBound(
-                                $template_type->as,
-                            ),
-                        ];
-                    }
+                    $upper_bound_type = TypeExpander::expandUnion(
+                        $codebase,
+                        $template_type->as,
+                        null,
+                        null,
+                        null,
+                        false,
+                        false,
+                        false,
+                        false,
+                        true
+                    );
+
+                    TemplateStandinTypeReplacer::addUpperBound(
+                        $codebase,
+                        $template_result,
+                        $upper_bound_type,
+                        $template_type->param_name,
+                        $template_type->defining_class,
+                    );
                 }
             }
 

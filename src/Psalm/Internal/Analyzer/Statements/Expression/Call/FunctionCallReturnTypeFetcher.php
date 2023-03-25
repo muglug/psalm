@@ -137,6 +137,9 @@ class FunctionCallReturnTypeFetcher
                                         ),
                                     ],
                                 ];
+                            } elseif (isset($template_result->upper_bounds[$template_name])) {
+                                $template_result->lower_bounds[$template_name]
+                                    = $template_result->upper_bounds[$template_name];
                             } else {
                                 $template_result->lower_bounds[$template_name] = [
                                     'fn-' . $function_id => [

@@ -1923,7 +1923,7 @@ abstract class FunctionLikeAnalyzer extends SourceAnalyzer
                 if ($this->storage instanceof MethodStorage && $this->storage->if_this_is_type) {
                     $template_result = new TemplateResult($this->getTemplateTypeMap() ?? [], []);
 
-                    TemplateStandinTypeReplacer::fillTemplateResult(
+                    TemplateStandinTypeReplacer::replace(
                         new Union([$this_object_type]),
                         $template_result,
                         $codebase,
