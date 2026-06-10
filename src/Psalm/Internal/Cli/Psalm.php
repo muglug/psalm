@@ -16,6 +16,7 @@ use Psalm\Internal\CliUtils;
 use Psalm\Internal\Codebase\ReferenceMapGenerator;
 use Psalm\Internal\Composer;
 use Psalm\Internal\ErrorHandler;
+use Psalm\Internal\Fixme\FixmeAdder;
 use Psalm\Internal\Fork\PsalmRestarter;
 use Psalm\Internal\IncludeCollector;
 use Psalm\Internal\Preloader;
@@ -150,6 +151,7 @@ final class Psalm
         'report-show-info:',
         'root:',
         'set-baseline::',
+        'add-fixmes',
         'show-info:',
         'show-snippet::',
         'stats',
@@ -302,6 +304,9 @@ final class Psalm
             }
         }
 
+        /**
+         * @psalm-fixme InvalidScalarArgument
+         */
         $paths_to_check = CliUtils::getPathsToCheck($options['f'] ?? null);
 
         if ($config->resolve_from_config_file) {
@@ -402,6 +407,13 @@ final class Psalm
             $project_analyzer->checkPaths($paths_to_check);
         }
 
+        if (isset($options['add-fixmes'])) {
+            $added = FixmeAdder::add($project_analyzer);
+            fwrite(STDERR, $added . ' @psalm-fixme annotation(s) added' . PHP_EOL);
+            exit(0);
+        }
+
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($find_references_to) {
             $project_analyzer->findReferencesTo($find_references_to);
         }
@@ -417,6 +429,7 @@ final class Psalm
         }
 
         if (!isset($options['i'])) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             IssueBuffer::finish(
                 $project_analyzer,
                 !$paths_to_check,
@@ -655,6 +668,7 @@ final class Psalm
         } elseif (isset($options['no-progress'])) {
             $progress = new VoidProgress();
         } else {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             $show_errors = !$config->error_baseline || isset($options['ignore-baseline']);
             if (isset($options['long-progress'])) {
                 $progress = new LongProgress($show_errors, $show_info, $in_ci);
@@ -749,6 +763,7 @@ final class Psalm
     {
         $baselineFile = $config->error_baseline;
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (empty($baselineFile)) {
             fwrite(STDERR, 'Cannot update baseline, because no baseline file is configured.' . PHP_EOL);
             exit(1);
@@ -883,6 +898,7 @@ final class Psalm
     {
         $cache_directory = $config->getGlobalCacheDirectory();
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($cache_directory) {
             Config::removeCacheDirectory($cache_directory);
             echo 'Global cache directory deleted' . PHP_EOL;
@@ -1068,7 +1084,6 @@ final class Psalm
         if (isset($options['review'])) {
             require_once __DIR__ . '/Review.php';
             array_shift($argv);
-            /** @psalm-suppress PossiblyNullArgument */
             Review::run(array_values($argv));
             exit;
         }
@@ -1196,6 +1211,7 @@ final class Psalm
             $issue_baseline = self::updateBaseline($options, $config);
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (!$issue_baseline && $baseline_file_path && !isset($options['ignore-baseline'])) {
             try {
                 $issue_baseline = ErrorBaseline::read(
@@ -1321,6 +1337,7 @@ final class Psalm
 
     private static function configureShepherd(Config $config, array $options, array &$plugins): void
     {
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         $is_shepherd_enabled = isset($options['shepherd']) || getenv('PSALM_SHEPHERD');
         if (! $is_shepherd_enabled) {
             return;
