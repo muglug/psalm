@@ -76,6 +76,9 @@ final class TTemplatePropertiesOf extends Atomic
         TemplateResult $template_result,
         ?Codebase $codebase,
     ): self {
+        /**
+         * @psalm-fixme ImpureMethodCall
+         */
         $param = new TTemplateParam(
             $this->as->param_name,
             TemplateInferredTypeReplacer::replace(

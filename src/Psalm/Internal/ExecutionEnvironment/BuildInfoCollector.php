@@ -232,6 +232,7 @@ final class BuildInfoCollector
             if ($repo_slug) {
                 $slug_parts = explode('/', $repo_slug);
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($this->readEnv['CI_PR_NUMBER']) {
                     $this->readEnv['CI_PR_REPO_OWNER'] = $slug_parts[1];
                     $this->readEnv['CI_PR_REPO_NAME'] = $slug_parts[2];

@@ -119,6 +119,7 @@ abstract class Type
 
         $namespace = $aliases->namespace;
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         return ($namespace ? $namespace . '\\' : '') . $class;
     }
 
@@ -145,6 +146,7 @@ abstract class Type
             return $aliased_classes[strtolower($value)];
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($namespace && stripos($value, $namespace . '\\') === 0) {
             $candidate = (string) preg_replace(
                 '/^' . preg_quote($namespace . '\\') . '/i',
@@ -157,10 +159,11 @@ abstract class Type
             if (!isset($aliased_classes[strtolower($candidate_parts[0])])) {
                 return $candidate;
             }
-        } elseif (!$namespace && !str_contains($value, '\\')) {
+        } /** @psalm-fixme RiskyTruthyFalsyComparison */ elseif (!$namespace && !str_contains($value, '\\')) {
             return $value;
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (strpos($value, '\\')) {
             $parts = explode('\\', $value);
 

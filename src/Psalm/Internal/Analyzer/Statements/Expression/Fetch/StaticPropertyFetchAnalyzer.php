@@ -78,6 +78,7 @@ final class StaticPropertyFetchAnalyzer
         } else {
             $aliases = $statements_analyzer->getAliases();
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($context->calling_method_id
                 && !$stmt->class instanceof PhpParser\Node\Name\FullyQualified
             ) {
@@ -111,6 +112,7 @@ final class StaticPropertyFetchAnalyzer
             }
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($fq_class_name
             && $codebase->methods_to_move
             && $context->calling_method_id
@@ -158,8 +160,10 @@ final class StaticPropertyFetchAnalyzer
             }
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (!$prop_name) {
             if ($fq_class_name) {
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 $codebase->analyzer->addMixedMemberName(
                     strtolower($fq_class_name) . '::$',
                     $context->calling_method_id ?: $statements_analyzer->getFileName(),
@@ -176,6 +180,7 @@ final class StaticPropertyFetchAnalyzer
             return true;
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         $var_id = ExpressionIdentifier::getVarId(
             $stmt,
             $context->self ?: $statements_analyzer->getFQCLN(),
@@ -211,6 +216,7 @@ final class StaticPropertyFetchAnalyzer
             $statements_analyzer->getSource()->inferred_impure = true;
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($var_id && $context->hasVariable($var_id)) {
             $stmt_type = $context->vars_in_scope[$var_id];
 
@@ -353,6 +359,9 @@ final class StaticPropertyFetchAnalyzer
                 foreach ($codebase->property_transforms as $original_pattern => $transformation) {
                     if ($declaring_property_id === $original_pattern) {
                         [$old_declaring_fq_class_name] = explode('::$', $declaring_property_id);
+                        /**
+                         * @psalm-fixme PossiblyUndefinedIntArrayOffset
+                         */
                         [$new_fq_class_name, $new_property_name] = explode('::$', $transformation);
 
                         $file_manipulations = [];
@@ -384,6 +393,7 @@ final class StaticPropertyFetchAnalyzer
             return true;
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($var_id) {
             if ($property->type) {
                 $context->vars_in_scope[$var_id] = TypeExpander::expandUnion(
@@ -465,6 +475,7 @@ final class StaticPropertyFetchAnalyzer
                     ? $class_atomic_type->value
                     : null);
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($string_type) {
                 $new_stmt_name = new VirtualFullyQualified(
                     $string_type,

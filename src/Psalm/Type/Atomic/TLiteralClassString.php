@@ -92,6 +92,7 @@ final class TLiteralClassString extends TLiteralString
             return 'self::class';
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($namespace && stripos($this->value, $namespace . '\\') === 0) {
             return preg_replace(
                 '/^' . preg_quote($namespace . '\\') . '/i',
@@ -100,6 +101,7 @@ final class TLiteralClassString extends TLiteralString
             ) . '::class';
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (!$namespace && !str_contains($this->value, '\\')) {
             return $this->value . '::class';
         }

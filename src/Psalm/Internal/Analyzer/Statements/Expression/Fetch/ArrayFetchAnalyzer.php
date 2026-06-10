@@ -218,6 +218,9 @@ final class ArrayFetchAnalyzer
                     );
                 }
 
+                /**
+                 * @psalm-fixme ReferenceConstraintViolation
+                 */
                 $stmt_type = $statements_analyzer->node_data->getType($stmt);
                 $statements_analyzer->node_data->setType(
                     $stmt,
@@ -278,6 +281,7 @@ final class ArrayFetchAnalyzer
                     $const_array_key_type = $array_type->getGenericKeyType();
                 }
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($dim_var_id
                     && !$const_array_key_type->hasMixed()
                     && !$stmt_dim_type->hasMixed()
@@ -312,6 +316,9 @@ final class ArrayFetchAnalyzer
             }
         }
 
+        /**
+         * @psalm-fixme ReferenceConstraintViolation
+         */
         if ($keyed_array_var_id !== null
             && $context->hasVariable($keyed_array_var_id)
             && (!($stmt_type = $statements_analyzer->node_data->getType($stmt)) || $stmt_type->isVanillaMixed())
@@ -319,6 +326,9 @@ final class ArrayFetchAnalyzer
             $statements_analyzer->node_data->setType($stmt, $context->vars_in_scope[$keyed_array_var_id]);
         }
 
+        /**
+         * @psalm-fixme ReferenceConstraintViolation
+         */
         if (!($stmt_type = $statements_analyzer->node_data->getType($stmt))) {
             $stmt_type = Type::getMixed();
         } else {
@@ -344,6 +354,7 @@ final class ArrayFetchAnalyzer
             $stmt_type = $stmt_type->setPossiblyUndefined(false);
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($context->inside_isset && $dim_var_id && $new_offset_type && !$new_offset_type->isUnionEmpty()) {
             $context->vars_in_scope[$dim_var_id] = $new_offset_type;
         }
@@ -363,6 +374,7 @@ final class ArrayFetchAnalyzer
             $statements_analyzer->node_data->setType($stmt->dim, $used_key_type);
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($keyed_array_var_id && !$context->inside_isset && $can_store_result) {
             $context->vars_in_scope[$keyed_array_var_id] = $stmt_type;
             $context->vars_possibly_in_scope[$keyed_array_var_id] = true;
@@ -398,6 +410,7 @@ final class ArrayFetchAnalyzer
 
             $var_location = new CodeLocation($statements_analyzer->getSource(), $var);
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             $new_parent_node = DataFlowNode::getForAssignment(
                 $keyed_array_var_id ?: 'arrayvalue-fetch',
                 $var_location,
@@ -568,6 +581,9 @@ final class ArrayFetchAnalyzer
 
         if ($offset_type->isNullable()) {
             if (!$offset_type->ignore_nullable_issues) {
+                /**
+                 * @psalm-fixme ImplicitToStringCast
+                 */
                 IssueBuffer::maybeAdd(
                     new PossiblyNullArrayOffset(
                         'Cannot access value on variable ' . $extended_var_id
@@ -643,6 +659,9 @@ final class ArrayFetchAnalyzer
                     if ($replacement_type) {
                         $array_access_type = Type::combineUnionTypes($array_access_type, $replacement_type);
                     } else {
+                        /**
+                         * @psalm-fixme ImplicitToStringCast
+                         */
                         IssueBuffer::maybeAdd(
                             new PossiblyNullArrayAssignment(
                                 'Cannot access array value on possibly null variable ' . $extended_var_id .
@@ -656,6 +675,9 @@ final class ArrayFetchAnalyzer
                     }
                 } else {
                     if (!$context->inside_isset && !MethodCallAnalyzer::hasNullsafe($stmt->var)) {
+                        /**
+                         * @psalm-fixme ImplicitToStringCast
+                         */
                         IssueBuffer::maybeAdd(
                             new PossiblyNullArrayAccess(
                                 'Cannot access array value on possibly null variable ' . $extended_var_id .
@@ -936,6 +958,7 @@ final class ArrayFetchAnalyzer
             $found_match = false;
 
             foreach ($offset_type->getAtomicTypes() as $offset_type_part) {
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($extended_var_id
                     && $offset_type_part instanceof TLiteralInt
                     && isset(
@@ -1800,6 +1823,9 @@ final class ArrayFetchAnalyzer
                 return;
             }
         }
+        /**
+         * @psalm-fixme ImplicitToStringCast
+         */
         if (IssueBuffer::accepts(
             new LiteralKeyUnshapedArray(
                 'Literal offset ' . implode('|', $literal_offsets) . ' was used on unshaped array '.$array_type,

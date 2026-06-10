@@ -30,6 +30,7 @@ final class FunctionAnalyzer extends FunctionLikeAnalyzer
 
         $namespace = $source->getNamespace();
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         $function_id = ($namespace ? strtolower($namespace) . '\\' : '') . strtolower($function->name->name);
 
         if (!isset($file_storage->functions[$function_id])) {
@@ -51,7 +52,10 @@ final class FunctionAnalyzer extends FunctionLikeAnalyzer
     {
         $namespace = $this->source->getNamespace();
 
-        /** @var non-empty-lowercase-string */
+        /**
+         * @var non-empty-lowercase-string
+         * @psalm-fixme RiskyTruthyFalsyComparison
+         */
         return ($namespace ? strtolower($namespace) . '\\' : '') . strtolower($this->function->name->name);
     }
 
@@ -84,6 +88,7 @@ final class FunctionAnalyzer extends FunctionLikeAnalyzer
         ) {
             $function_name = strtolower($stmt->name->name);
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($ns = $statements_analyzer->getNamespace()) {
                 $fq_function_name = strtolower($ns) . '\\' . $function_name;
             } else {

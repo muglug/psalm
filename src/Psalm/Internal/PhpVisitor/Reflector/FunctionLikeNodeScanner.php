@@ -133,6 +133,7 @@ final class FunctionLikeNodeScanner
         if ($stmt instanceof PhpParser\Node\Stmt\ClassMethod) {
             $storage->cased_name = $stmt->name->name;
         } elseif ($stmt instanceof PhpParser\Node\Stmt\Function_) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             $storage->cased_name =
                 ($this->aliases->namespace ? $this->aliases->namespace . '\\' : '') . $stmt->name->name;
         }
@@ -221,7 +222,11 @@ final class FunctionLikeNodeScanner
         if ($stmt instanceof PhpParser\Node\Stmt\Function_
             || $stmt instanceof PhpParser\Node\Stmt\ClassMethod
         ) {
-            /** @psalm-suppress RedundantCondition See https://github.com/vimeo/psalm/issues/10296 */
+            /**
+             * @psalm-suppress RedundantCondition See https://github.com/vimeo/psalm/issues/10296
+             * @psalm-fixme PossiblyUndefinedIntArrayOffset
+             * @psalm-fixme RiskyTruthyFalsyComparison
+             */
             if ($stmt instanceof PhpParser\Node\Stmt\ClassMethod
                 && $storage instanceof MethodStorage
                 && $classlike_storage
@@ -246,7 +251,7 @@ final class FunctionLikeNodeScanner
 
                     $classlike_storage->properties[$property_name]->getter_method = strtolower($stmt->name->name);
                 }
-            } elseif (str_starts_with($stmt->name->name, 'assert')
+            } /** @psalm-fixme RiskyTruthyFalsyComparison */ elseif (str_starts_with($stmt->name->name, 'assert')
                 && $stmt->stmts
             ) {
                 $var_assertions = [];
@@ -321,6 +326,7 @@ final class FunctionLikeNodeScanner
                 $storage->assertions = $var_assertions;
             }
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($stmt instanceof PhpParser\Node\Stmt\ClassMethod
                 && $stmt->stmts
                 && $storage instanceof MethodStorage
@@ -336,6 +342,7 @@ final class FunctionLikeNodeScanner
             }
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (!$this->file_scanner->will_analyze
             && ($stmt instanceof PhpParser\Node\Stmt\Function_
                 || $stmt instanceof PhpParser\Node\Stmt\ClassMethod
@@ -440,6 +447,7 @@ final class FunctionLikeNodeScanner
             }
 
             if ($docblock_info) {
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($docblock_info->since_php_major_version && !$this->aliases->namespace) {
                     $analysis_major_php_version = $this->codebase->getMajorAnalysisPhpVersion();
                     $analysis_minor_php_version = $this->codebase->getMinorAnalysisPhpVersion();
@@ -485,6 +493,7 @@ final class FunctionLikeNodeScanner
         }
 
         // register the functionlike once the @since check has been completed
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($stmt instanceof PhpParser\Node\Stmt\Function_
             && $function_id
             && $storage instanceof FunctionStorage
@@ -499,7 +508,7 @@ final class FunctionLikeNodeScanner
 
             $this->file_storage->functions[$function_id] = $storage;
             $this->file_storage->declaring_function_ids[$function_id] = strtolower($this->file_path);
-        } elseif ($stmt instanceof PhpParser\Node\Stmt\ClassMethod
+        } /** @psalm-fixme RiskyTruthyFalsyComparison */ elseif ($stmt instanceof PhpParser\Node\Stmt\ClassMethod
             && $classlike_storage
             && $storage instanceof MethodStorage
             && $method_name_lc
@@ -528,7 +537,7 @@ final class FunctionLikeNodeScanner
                 // a bit of a hack, but makes sure that `new static` works for these classes
                 $classlike_storage->preserve_constructor_signature = true;
             }
-        } elseif (($stmt instanceof PhpParser\Node\Expr\Closure
+        } /** @psalm-fixme RiskyTruthyFalsyComparison */ elseif (($stmt instanceof PhpParser\Node\Expr\Closure
                 || $stmt instanceof PhpParser\Node\Expr\ArrowFunction)
             && $function_id
             && $storage instanceof FunctionStorage
@@ -572,6 +581,7 @@ final class FunctionLikeNodeScanner
                 $var_comment_readonly = false;
                 $var_comment_allow_private_mutation = false;
                 if ($doc_comment) {
+                    /** @psalm-fixme RiskyTruthyFalsyComparison */
                     $template_types = ($this->existing_function_template_types ?: [])
                         + ($classlike_storage->template_types ?: [])
                     ;
@@ -690,6 +700,7 @@ final class FunctionLikeNodeScanner
                     $storage->deprecated = true;
                 }
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($attribute->fq_class_name === 'Psalm\\Internal' && !$storage->internal && $fq_classlike_name) {
                     $storage->internal = [NamespaceAnalyzer::getNameSpaceRoot($fq_classlike_name)];
                 }
@@ -716,6 +727,7 @@ final class FunctionLikeNodeScanner
         MethodStorage $storage,
         ClassLikeStorage $classlike_storage,
     ): void {
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (!$stmt->stmts) {
             return;
         }
@@ -910,6 +922,7 @@ final class FunctionLikeNodeScanner
             $storage->final_from_docblock = $this->classlike_storage && $this->classlike_storage->final_from_docblock;
             $storage->visibility = ClassLikeAnalyzer::VISIBILITY_PUBLIC;
         } elseif ($stmt instanceof PhpParser\Node\Stmt\Function_) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             $cased_function_id =
                 ($this->aliases->namespace ? $this->aliases->namespace . '\\' : '') . $stmt->name->name;
             $function_id = strtolower($cased_function_id);
@@ -1030,6 +1043,7 @@ final class FunctionLikeNodeScanner
                     } catch (IncorrectDocblockException|DocblockParseException) {
                     }
                     if ($docblock_info) {
+                        /** @psalm-fixme RiskyTruthyFalsyComparison */
                         if ($docblock_info->since_php_major_version && !$this->aliases->namespace) {
                             $analysis_major_php_version = $this->codebase->getMajorAnalysisPhpVersion();
                             $analysis_minor_php_version = $this->codebase->getMinorAnalysisPhpVersion();

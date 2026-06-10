@@ -52,6 +52,9 @@ final class PluginListTest extends TestCase
             ['class' => 'c\d\e', 'config' => null],
         ]);
 
+        /**
+         * @psalm-fixme InvalidArgument
+         */
         $plugin_list = new PluginList($this->config_file, $this->composer_lock);
 
         $this->assertSame([
@@ -74,6 +77,9 @@ final class PluginListTest extends TestCase
             'another-vendor/another-package' => 'c\d\e',
         ]);
 
+        /**
+         * @psalm-fixme InvalidArgument
+         */
         $plugin_list = new PluginList($this->config_file, $this->composer_lock);
 
         $this->assertSame([
@@ -94,6 +100,9 @@ final class PluginListTest extends TestCase
             'vendor/package' => 'a\b\c',
         ]);
 
+        /**
+         * @psalm-fixme InvalidArgument
+         */
         $plugin_list = new PluginList($this->config_file, $this->composer_lock);
 
         $this->assertSame([
@@ -106,6 +115,9 @@ final class PluginListTest extends TestCase
      */
     public function canFindPluginClassByClassName(): void
     {
+        /**
+         * @psalm-fixme InvalidArgument
+         */
         $plugin_list = new PluginList($this->config_file, $this->composer_lock);
         $this->assertSame('a\b\c', $plugin_list->resolvePluginClass('a\b\c'));
     }
@@ -119,6 +131,9 @@ final class PluginListTest extends TestCase
             'vendor/package' => 'a\b\c',
         ]);
 
+        /**
+         * @psalm-fixme InvalidArgument
+         */
         $plugin_list = new PluginList($this->config_file, $this->composer_lock);
         $this->assertSame('a\b\c', $plugin_list->resolvePluginClass('vendor/package'));
     }
@@ -132,6 +147,9 @@ final class PluginListTest extends TestCase
             'vendor/package' => 'a\b\c',
             'another-vendor/another-package' => 'c\d\e',
         ]);
+        /**
+         * @psalm-fixme InvalidArgument
+         */
         $plugin_list = new PluginList(null, $this->composer_lock);
 
         $this->assertSame([
@@ -149,6 +167,9 @@ final class PluginListTest extends TestCase
             ['class' => 'a\b\c', 'config' => null],
         ]);
 
+        /**
+         * @psalm-fixme InvalidArgument
+         */
         $plugin_list = new PluginList($this->config_file, $this->composer_lock);
 
         $this->assertTrue($plugin_list->isEnabled('a\b\c'));
@@ -159,6 +180,9 @@ final class PluginListTest extends TestCase
      */
     public function errorsOutWhenTryingToResolveUnknownPlugin(): void
     {
+        /**
+         * @psalm-fixme InvalidArgument
+         */
         $plugin_list = new PluginList($this->config_file, $this->composer_lock);
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessageMatches('/unknown plugin/i');
@@ -170,6 +194,9 @@ final class PluginListTest extends TestCase
      */
     public function pluginsAreEnabledInConfigFile(): void
     {
+        /**
+         * @psalm-fixme InvalidArgument
+         */
         $plugin_list = new PluginList($this->config_file, $this->composer_lock);
 
         $this->config_file->expects()->addPlugin('a\b\c');
@@ -182,6 +209,9 @@ final class PluginListTest extends TestCase
      */
     public function pluginsAreDisabledInConfigFile(): void
     {
+        /**
+         * @psalm-fixme InvalidArgument
+         */
         $plugin_list = new PluginList($this->config_file, $this->composer_lock);
 
         $this->config_file->expects()->removePlugin('a\b\c');

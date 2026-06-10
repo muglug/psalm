@@ -75,6 +75,7 @@ final class TaintFlowGraph extends DataFlowGraph
     {
         $this->nodes[$node->id] = $node;
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($node->unspecialized_id && $node->specialization_key) {
             $this->specialized_calls[$node->specialization_key][$node->unspecialized_id] = true;
             $this->specializations[$node->unspecialized_id][$node->specialization_key] = true;
@@ -185,6 +186,9 @@ final class TaintFlowGraph extends DataFlowGraph
     public function getIssueTrace(DataFlowNode $source): array
     {
         $out = [];
+        /**
+         * @psalm-fixme UnnecessaryVarAnnotation
+         */
         do {
             /** @var DataFlowNode $source */
             $previous_source = $source->previous;
@@ -192,6 +196,7 @@ final class TaintFlowGraph extends DataFlowGraph
                 break;
             }
             $path_types = $source->path_types;
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             array_unshift($out, [
                 'location' => $source->code_location,
                 'label' => $source->label,
@@ -260,7 +265,9 @@ final class TaintFlowGraph extends DataFlowGraph
 
         foreach ($this->forward_edges[$generated_source->id] as $to_id => $path) {
             $path_type = $path->type;
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             $added_taints = $path->unescaped_taints ?: [];
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             $removed_taints = $path->escaped_taints ?: [];
 
             if (!isset($this->nodes[$to_id])) {
@@ -465,6 +472,7 @@ final class TaintFlowGraph extends DataFlowGraph
             return [$source];
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($source->specialization_key && isset($this->specialized_calls[$source->specialization_key])) {
             $generated_source = clone $source;
 

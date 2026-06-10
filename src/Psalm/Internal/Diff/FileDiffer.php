@@ -52,6 +52,9 @@ final class FileDiffer
 
                 $y = $x - $k;
 
+                /**
+                 * @psalm-fixme InvalidArrayOffset
+                 */
                 while ($x < $n && $y < $m && $a[$x] === $b[$y]) {
                     ++$x;
                     ++$y;

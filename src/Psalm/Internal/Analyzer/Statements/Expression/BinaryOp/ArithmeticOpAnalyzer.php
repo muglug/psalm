@@ -101,6 +101,9 @@ final class ArithmeticOpAnalyzer
 
             if ($left_type->isNullable() && !$left_type->ignore_nullable_issues) {
                 if ($statements_source) {
+                    /**
+                     * @psalm-fixme ImplicitToStringCast
+                     */
                     IssueBuffer::maybeAdd(
                         new PossiblyNullOperand(
                             'Left operand cannot be nullable, got ' . $left_type,
@@ -128,6 +131,9 @@ final class ArithmeticOpAnalyzer
 
             if ($right_type->isNullable() && !$right_type->ignore_nullable_issues) {
                 if ($statements_source) {
+                    /**
+                     * @psalm-fixme ImplicitToStringCast
+                     */
                     IssueBuffer::maybeAdd(
                         new PossiblyNullOperand(
                             'Right operand cannot be nullable, got ' . $right_type,
@@ -154,6 +160,9 @@ final class ArithmeticOpAnalyzer
 
             if ($left_type->isFalsable() && !$left_type->ignore_falsable_issues) {
                 if ($statements_source) {
+                    /**
+                     * @psalm-fixme ImplicitToStringCast
+                     */
                     IssueBuffer::maybeAdd(
                         new PossiblyFalseOperand(
                             'Left operand cannot be falsable, got ' . $left_type,
@@ -180,6 +189,9 @@ final class ArithmeticOpAnalyzer
 
             if ($right_type->isFalsable() && !$right_type->ignore_falsable_issues) {
                 if ($statements_source) {
+                    /**
+                     * @psalm-fixme ImplicitToStringCast
+                     */
                     IssueBuffer::maybeAdd(
                         new PossiblyFalseOperand(
                             'Right operand cannot be falsable, got ' . $right_type,
@@ -224,6 +236,9 @@ final class ArithmeticOpAnalyzer
             }
 
             if ($invalid_left_messages && $statements_source) {
+                /**
+                 * @psalm-fixme PossiblyUndefinedIntArrayOffset
+                 */
                 $first_left_message = $invalid_left_messages[0];
 
                 if ($has_valid_left_operand) {
@@ -246,6 +261,9 @@ final class ArithmeticOpAnalyzer
             }
 
             if ($invalid_right_messages && $statements_source) {
+                /**
+                 * @psalm-fixme PossiblyUndefinedIntArrayOffset
+                 */
                 $first_right_message = $invalid_right_messages[0];
 
                 if ($has_valid_right_operand) {
@@ -518,8 +536,14 @@ final class ArithmeticOpAnalyzer
                 if (!$left_type_part instanceof TArray
                     && !$left_type_part instanceof TKeyedArray
                 ) {
+                    /**
+                     * @psalm-fixme ImplicitToStringCast
+                     */
                     $invalid_left_messages[] = 'Cannot add an array to a non-array ' . $left_type_part;
                 } else {
+                    /**
+                     * @psalm-fixme ImplicitToStringCast
+                     */
                     $invalid_right_messages[] = 'Cannot add an array to a non-array ' . $right_type_part;
                 }
 
@@ -932,15 +956,24 @@ final class ArithmeticOpAnalyzer
             }
 
             if (!$left_type_part->isNumericType()) {
+                /**
+                 * @psalm-fixme ImplicitToStringCast
+                 */
                 $invalid_left_messages[] = 'Cannot perform a numeric operation with a non-numeric type '
                     . $left_type_part;
                 $has_valid_right_operand = true;
             } else {
+                /**
+                 * @psalm-fixme ImplicitToStringCast
+                 */
                 $invalid_right_messages[] = 'Cannot perform a numeric operation with a non-numeric type '
                     . $right_type_part;
                 $has_valid_left_operand = true;
             }
         } else {
+            /**
+             * @psalm-fixme ImplicitToStringCast
+             */
             $invalid_left_messages[] =
                 'Cannot perform a numeric operation with non-numeric types ' . $left_type_part
                     . ' and ' . $right_type_part;
@@ -956,34 +989,67 @@ final class ArithmeticOpAnalyzer
         bool $allow_float_result,
     ): ?Union {
         if ($operation instanceof PhpParser\Node\Expr\BinaryOp\Plus) {
+            /**
+             * @psalm-fixme InvalidOperand
+             */
             $result = $operand1 + $operand2;
         } elseif ($operation instanceof PhpParser\Node\Expr\BinaryOp\Minus) {
+            /**
+             * @psalm-fixme InvalidOperand
+             */
             $result = $operand1 - $operand2;
         } elseif ($operation instanceof PhpParser\Node\Expr\BinaryOp\Mod) {
             if ($operand2 === 0) {
                 return Type::getNever();
             }
 
+            /**
+             * @psalm-fixme InvalidOperand
+             */
             $result = $operand1 % $operand2;
         } elseif ($operation instanceof PhpParser\Node\Expr\BinaryOp\Mul) {
+            /**
+             * @psalm-fixme InvalidOperand
+             */
             $result = $operand1 * $operand2;
         } elseif ($operation instanceof PhpParser\Node\Expr\BinaryOp\Pow) {
+            /**
+             * @psalm-fixme InvalidOperand
+             */
             $result = $operand1 ** $operand2;
         } elseif ($operation instanceof PhpParser\Node\Expr\BinaryOp\BitwiseOr) {
+            /**
+             * @psalm-fixme InvalidOperand
+             */
             $result = $operand1 | $operand2;
         } elseif ($operation instanceof PhpParser\Node\Expr\BinaryOp\BitwiseAnd) {
+            /**
+             * @psalm-fixme InvalidOperand
+             */
             $result = $operand1 & $operand2;
         } elseif ($operation instanceof PhpParser\Node\Expr\BinaryOp\BitwiseXor) {
+            /**
+             * @psalm-fixme InvalidOperand
+             */
             $result = $operand1 ^ $operand2;
         } elseif ($operation instanceof PhpParser\Node\Expr\BinaryOp\ShiftLeft) {
+            /**
+             * @psalm-fixme InvalidOperand
+             */
             $result = $operand1 << $operand2;
         } elseif ($operation instanceof PhpParser\Node\Expr\BinaryOp\ShiftRight) {
+            /**
+             * @psalm-fixme InvalidOperand
+             */
             $result = $operand1 >> $operand2;
         } elseif ($operation instanceof PhpParser\Node\Expr\BinaryOp\Div) {
             if ($operand2 === 0 || $operand2 === 0.0) {
                 return Type::getNever();
             }
 
+            /**
+             * @psalm-fixme InvalidOperand
+             */
             $result = $operand1 / $operand2;
         } else {
             return null;

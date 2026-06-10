@@ -763,6 +763,9 @@ final class Codebase
             $declaring_method_id = $this->methods->getDeclaringMethodId($method_id);
 
             if (!$declaring_method_id) {
+                /**
+                 * @psalm-fixme ImplicitToStringCast
+                 */
                 throw new UnexpectedValueException('Declaring method for ' . $method_id . ' cannot be found');
             }
 
@@ -887,6 +890,7 @@ final class Codebase
 
     public function getFunctionStorageForSymbol(string $file_path, string $symbol): ?FunctionLikeStorage
     {
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (strpos($symbol, '::')) {
             $symbol = substr($symbol, 0, -2);
             /** @psalm-suppress ArgumentTypeCoercion */
@@ -933,8 +937,10 @@ final class Codebase
         }
 
         //Class
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (strpos($reference->symbol, '::')) {
             //Class Method
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if (strpos($reference->symbol, '()')) {
                 $symbol = substr($reference->symbol, 0, -2);
 
@@ -1028,6 +1034,7 @@ final class Codebase
         }
 
         //Procedural Function
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (strpos($reference->symbol, '()')) {
             $function_id = strtolower(substr($reference->symbol, 0, -2));
             $file_storage = $this->file_storage_provider->get(
@@ -1083,6 +1090,7 @@ final class Codebase
             //continue on as normal
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (strpos($reference->symbol, '\\')) {
             $const_name_parts = explode('\\', $reference->symbol);
             $const_name = array_pop($const_name_parts);
@@ -1095,6 +1103,9 @@ final class Codebase
             //Namespace Constant
             if (isset($namespace_constants[$const_name])) {
                 $type = $namespace_constants[$const_name];
+                /**
+                 * @psalm-fixme ImplicitToStringCast
+                 */
                 return new PHPMarkdownContent(
                     $reference->symbol . ' ' . $type,
                     $reference->symbol,
@@ -1106,6 +1117,9 @@ final class Codebase
             );
             // ?
             if (isset($file_storage->constants[$reference->symbol])) {
+                /**
+                 * @psalm-fixme ImplicitToStringCast
+                 */
                 return new PHPMarkdownContent(
                     'const ' .
                         $reference->symbol .
@@ -1122,6 +1136,9 @@ final class Codebase
 
             //Global Constant
             if ($type) {
+                /**
+                 * @psalm-fixme ImplicitToStringCast
+                 */
                 return new PHPMarkdownContent(
                     'const ' . $reference->symbol . ' ' . $type,
                     $reference->symbol,
@@ -1154,7 +1171,9 @@ final class Codebase
         }
 
         try {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if (strpos($reference->symbol, '::')) {
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if (strpos($reference->symbol, '()')) {
                     $symbol = substr($reference->symbol, 0, -2);
 
@@ -1202,6 +1221,7 @@ final class Codebase
                 return $class_constants[$const_name]->location;
             }
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if (strpos($reference->symbol, '()')) {
                 $file_storage = $this->file_storage_provider->get(
                     $reference->file_path,
@@ -1383,6 +1403,7 @@ final class Codebase
             $signature_documentation = $method_storage->description;
         } else {
             try {
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($file_path) {
                     $function_storage = $this->functions->getStorage(
                         null,
@@ -1415,6 +1436,9 @@ final class Codebase
         $parameters = [];
 
         foreach ($params as $i => $param) {
+            /**
+             * @psalm-fixme ImplicitToStringCast
+             */
             $parameter_label = ($param->type ?: 'mixed') . ' $' . $param->name;
             $parameters[] = new ParameterInformation(
                 [
@@ -1769,6 +1793,7 @@ final class Codebase
 
         $res = [];
         foreach ($items as $item) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($item->insertText && str_starts_with($item->insertText, $literal_part)) {
                 $res[] = $item;
             }
@@ -1834,6 +1859,7 @@ final class Codebase
         foreach ($matching_classlike_names as $fq_class_name) {
             $extra_edits = [];
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             $insertion_text = Type::getStringFromFQCLN(
                 $fq_class_name,
                 $aliases && $aliases->namespace ? $aliases->namespace : null,
@@ -1841,6 +1867,7 @@ final class Codebase
                 null,
             );
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($aliases
                 && !$fq_suggestion
                 && $aliases->namespace
@@ -1851,6 +1878,7 @@ final class Codebase
 
                 $class_name = (string) preg_replace('/^.*\\\/', '', $fq_class_name, 1);
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($aliases->uses_end) {
                     $position = self::getPositionFromOffset($aliases->uses_end, $file_contents);
                     $extra_edits[] = new TextEdit(
@@ -1899,6 +1927,7 @@ final class Codebase
         $namespace_map = [];
         if ($aliases) {
             $namespace_map += $aliases->uses_flipped;
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($aliases->namespace) {
                 $namespace_map[$aliases->namespace] = '';
             }
@@ -1912,6 +1941,7 @@ final class Codebase
         foreach ($functions as $function_lowercase => $function) {
             // Transform FQFN relative to all uses namespaces
             $function_name = $function->cased_name;
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if (!$function_name) {
                 continue;
             }

@@ -276,6 +276,9 @@ final class ErrorBaseline
         $baselineDoc->appendChild($filesNode);
         $baselineDoc->formatOutput = true;
 
+        /**
+         * @psalm-fixme PossiblyUndefinedIntArrayOffset
+         */
         $xml = preg_replace_callback(
             '/<files (psalm-version="[^"]+") php-version="(.+)"(\/?>)\n/',
             /**

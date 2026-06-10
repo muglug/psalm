@@ -475,6 +475,9 @@ final class InternalCallMapHandlerTest extends TestCase
                     return new ReflectionMethod($functionName);
                 }
 
+                /**
+                 * @psalm-fixme MixedReturnStatement
+                 */
                 return ReflectionMethod::createFromMethodName($functionName);
             }
 
@@ -582,6 +585,7 @@ final class InternalCallMapHandlerTest extends TestCase
 
         $expectedType = $param->getType();
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (isset($expectedType) && !empty($normalizedEntry['type'])) {
             $this->assertTypeValidity($expectedType, $normalizedEntry['type'], "Param '{$name}'");
         }

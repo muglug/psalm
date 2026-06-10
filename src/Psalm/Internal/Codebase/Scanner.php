@@ -499,6 +499,7 @@ final class Scanner
                 || $this->codebase->all_functions_global
             ) {
                 foreach ($file_storage->functions as $function_storage) {
+                    /** @psalm-fixme RiskyTruthyFalsyComparison */
                     if ($function_storage->cased_name
                         && !$this->codebase->functions->hasStubbedFunction($function_storage->cased_name)
                     ) {
@@ -570,6 +571,7 @@ final class Scanner
 
         $composer_file_path = $this->config->getComposerFilePathForClassLike($fq_class_name);
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($composer_file_path && file_exists($composer_file_path)) {
             $this->progress->debug('Using composer to locate file for ' . $fq_class_name . "\n");
 

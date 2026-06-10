@@ -145,6 +145,9 @@ class TKeyedArray extends Atomic
      */
     public function isGenericList(): bool
     {
+        /**
+         * @psalm-fixme PossiblyUndefinedIntArrayOffset
+         */
         return $this->is_list
             && count($this->properties) === 1
             && $this->fallback_params
@@ -229,6 +232,9 @@ class TKeyedArray extends Atomic
         $suffixed_properties = [];
 
         if ($this->is_list) {
+            /**
+             * @psalm-fixme PossiblyUndefinedIntArrayOffset
+             */
             if (count($this->properties) === 1
                 && $this->fallback_params
                 && $this->properties[0]->equals($this->fallback_params[1], true, true, false)
@@ -324,15 +330,24 @@ class TKeyedArray extends Atomic
             }
         }
 
+        /**
+         * @psalm-fixme ImpureMethodCall
+         */
         $key_type = TypeCombiner::combine($key_types);
 
-        /** @psalm-suppress InaccessibleProperty We just created this type */
+        /**
+         * @psalm-suppress InaccessibleProperty We just created this type
+         * @psalm-fixme ImpurePropertyAssignment
+         */
         $key_type->possibly_undefined = $possibly_undefined;
 
         if ($this->fallback_params === null) {
             return $key_type;
         }
 
+        /**
+         * @psalm-fixme ImpureMethodCall
+         */
         return Type::combineUnionTypes($this->fallback_params[0], $key_type);
     }
 
@@ -341,9 +356,15 @@ class TKeyedArray extends Atomic
         $value_type = null;
 
         foreach ($this->properties as $property) {
+            /**
+             * @psalm-fixme ImpureMethodCall
+             */
             $value_type = Type::combineUnionTypes($property, $value_type);
         }
 
+        /**
+         * @psalm-fixme ImpureMethodCall
+         */
         return Type::combineUnionTypes(
             $this->fallback_params[1] ?? null,
             $value_type,
@@ -377,6 +398,9 @@ class TKeyedArray extends Atomic
                 $key_types[] = Type::getAtomicStringFromLiteral($key);
             }
 
+            /**
+             * @psalm-fixme ImpureMethodCall
+             */
             $value_type = Type::combineUnionTypes($property, $value_type);
 
             if (!$property->possibly_undefined) {
@@ -386,6 +410,9 @@ class TKeyedArray extends Atomic
 
         if ($this->is_list) {
             if ($this->fallback_params !== null) {
+                /**
+                 * @psalm-fixme ImpureMethodCall
+                 */
                 $value_type = Type::combineUnionTypes($this->fallback_params[1], $value_type);
             }
 
@@ -404,10 +431,19 @@ class TKeyedArray extends Atomic
         }
 
         assert($key_types !== []);
+        /**
+         * @psalm-fixme ImpureMethodCall
+         */
         $key_type = TypeCombiner::combine($key_types);
 
         if ($this->fallback_params !== null) {
+            /**
+             * @psalm-fixme ImpureMethodCall
+             */
             $key_type = Type::combineUnionTypes($this->fallback_params[0], $key_type);
+            /**
+             * @psalm-fixme ImpureMethodCall
+             */
             $value_type = Type::combineUnionTypes($this->fallback_params[1], $value_type);
         }
 
@@ -551,6 +587,9 @@ class TKeyedArray extends Atomic
                 $input_type_param = $input_type->properties[$offset];
             }
 
+            /**
+             * @psalm-fixme ImpureMethodCall
+             */
             $properties[$offset] = TemplateStandinTypeReplacer::replace(
                 $property,
                 $template_result,
@@ -578,6 +617,9 @@ class TKeyedArray extends Atomic
                 $input_type_param = $input_type->fallback_params[$offset];
             }
 
+            /**
+             * @psalm-fixme ImpureMethodCall
+             */
             $fallback_params[$offset] = TemplateStandinTypeReplacer::replace(
                 $property,
                 $template_result,
@@ -615,6 +657,9 @@ class TKeyedArray extends Atomic
     ): self {
         $properties = $this->properties;
         foreach ($properties as $offset => $property) {
+            /**
+             * @psalm-fixme ImpureMethodCall
+             */
             $properties[$offset] = TemplateInferredTypeReplacer::replace(
                 $property,
                 $template_result,
@@ -623,6 +668,9 @@ class TKeyedArray extends Atomic
         }
         $fallback_params = $this->fallback_params;
         foreach ($fallback_params ?? [] as $offset => $property) {
+            /**
+             * @psalm-fixme ImpureMethodCall
+             */
             $fallback_params[$offset] = TemplateInferredTypeReplacer::replace(
                 $property,
                 $template_result,

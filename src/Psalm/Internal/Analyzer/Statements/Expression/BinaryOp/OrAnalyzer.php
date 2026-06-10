@@ -75,6 +75,7 @@ final class OrAnalyzer
             $if_scope = new IfScope();
 
             try {
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 $if_conditional_scope = IfConditionalAnalyzer::analyze(
                     $statements_analyzer,
                     $stmt->left,
@@ -340,6 +341,7 @@ final class OrAnalyzer
         } elseif ($stmt->left instanceof PhpParser\Node\Expr\Assign) {
             $var_id = ExpressionIdentifier::getVarId($stmt->left->var, $context->self);
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($var_id && isset($left_context->vars_in_scope[$var_id])) {
                 $left_inferred_reconciled = AssertionReconciler::reconcile(
                     new Truthy(),

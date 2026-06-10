@@ -367,6 +367,7 @@ final class Algebra
                         $truths[$var] = [[$possible_type]];
                     }
 
+                    /** @psalm-fixme RiskyTruthyFalsyComparison */
                     if ($creating_conditional_id && $creating_conditional_id === $clause->creating_conditional_id) {
                         if (!isset($active_truths[$var])) {
                             $active_truths[$var] = [];
@@ -388,6 +389,7 @@ final class Algebra
 
                     $truths[$var] = [array_values($things_that_can_be_said)];
 
+                    /** @psalm-fixme RiskyTruthyFalsyComparison */
                     if ($creating_conditional_id && $creating_conditional_id === $clause->creating_conditional_id) {
                         $active_truths[$var] = [array_values($things_that_can_be_said)];
                     }

@@ -194,6 +194,7 @@ final class TIterable extends Atomic
             $add_lower_bound,
             $depth,
         );
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (!$types && !$intersection) {
             return $this;
         }

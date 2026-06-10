@@ -62,6 +62,9 @@ final class ThrowAnalyzer
                 $throw_type_candidate = new Union([$throw_type_part]);
 
                 if (!UnionTypeComparator::isContainedBy($codebase, $throw_type_candidate, $exception_type)) {
+                    /**
+                     * @psalm-fixme ImplicitToStringCast
+                     */
                     if (IssueBuffer::accepts(
                         new InvalidThrow(
                             'Cannot throw ' . $throw_type_part

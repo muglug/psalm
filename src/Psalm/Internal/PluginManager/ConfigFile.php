@@ -31,10 +31,12 @@ final class ConfigFile
         private readonly string $current_dir,
         ?string $explicit_path,
     ) {
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($explicit_path) {
             $this->path = $explicit_path;
         } else {
             $path = Config::locateConfigFile($current_dir);
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if (!$path) {
                 throw new RuntimeException('Cannot find Psalm config');
             }
@@ -135,6 +137,7 @@ final class ConfigFile
         if (($tag_start = strpos($new_file_contents, '<psalm')) !== false) {
             $tag_end = strpos($new_file_contents, '>', $tag_start + 1);
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($tag_end !== false
                 && ($new_file_contents[$tag_end - 1] !== '/')
                 && $this->psalm_tag_end_pos

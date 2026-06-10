@@ -209,6 +209,9 @@ final class InterfaceAnalyzer extends ClassLikeAnalyzer
                 $member_stmts[] = $stmt;
 
                 foreach ($stmt->consts as $const) {
+                    /**
+                     * @psalm-fixme ImplicitToStringCast
+                     */
                     $const_id = strtolower($this->fq_class_name) . '::' . $const->name;
 
                     foreach ($codebase->class_constants_to_rename as $original_const_id => $new_const_name) {

@@ -2,6 +2,9 @@
 
 declare(strict_types=1);
 
+/**
+ * @psalm-fixme NonInvariantDocblockPropertyType
+ */
 namespace Psalm\Internal\Analyzer;
 
 use InvalidArgumentException;
@@ -24,6 +27,7 @@ use function substr;
 
 /**
  * @internal
+ * @psalm-fixme NonInvariantDocblockPropertyType
  */
 final class NamespaceAnalyzer extends SourceAnalyzer
 {

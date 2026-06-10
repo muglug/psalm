@@ -15,6 +15,7 @@ use function property_exists;
 /**
  * @psalm-suppress PossiblyUnusedProperty
  * @psalm-immutable
+ * @psalm-fixme MutableDependency
  */
 final class ClassConstantStorage
 {

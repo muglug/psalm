@@ -309,6 +309,7 @@ final class VariableFetchAnalyzer
 
                         $branch_point = $statements_analyzer->getBranchPoint($var_name);
 
+                        /** @psalm-fixme RiskyTruthyFalsyComparison */
                         if ($branch_point) {
                             $statements_analyzer->addVariableInitialization($var_name, $branch_point);
                         }
@@ -332,6 +333,7 @@ final class VariableFetchAnalyzer
                     ) {
                         $branch_point = $statements_analyzer->getBranchPoint($var_name);
 
+                        /** @psalm-fixme RiskyTruthyFalsyComparison */
                         if ($branch_point) {
                             $statements_analyzer->addVariableInitialization($var_name, $branch_point);
                         }

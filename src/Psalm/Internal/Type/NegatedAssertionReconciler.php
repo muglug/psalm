@@ -267,6 +267,7 @@ final class NegatedAssertionReconciler extends Reconciler
         ) {
             $assertion_type = new Union([$assertion->type]);
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($key
                 && $code_location
                 && !UnionTypeComparator::canExpressionTypesBeIdentical(
@@ -292,6 +293,7 @@ final class NegatedAssertionReconciler extends Reconciler
             if ($key !== '$this'
                 || !($statements_analyzer->getSource()->getSource() instanceof TraitAnalyzer)
             ) {
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($key && $code_location && !$is_equality) {
                     self::triggerIssueForImpossible(
                         $existing_var_type,
@@ -453,6 +455,7 @@ final class NegatedAssertionReconciler extends Reconciler
 
         $existing_var_type = $existing_var_type->freeze();
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($key && $code_location) {
             if ($did_match_literal_type
                 && ($redundant || count($existing_var_atomic_types) === 1)

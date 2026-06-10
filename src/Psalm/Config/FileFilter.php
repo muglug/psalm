@@ -157,6 +157,7 @@ class FileFilter
                     }
 
                     foreach ($globs as $glob_index => $glob_directory_path) {
+                        /** @psalm-fixme RiskyTruthyFalsyComparison */
                         if (!$glob_directory_path) {
                             if ($allow_missing_files) {
                                 continue;
@@ -183,6 +184,7 @@ class FileFilter
 
                 $directory_path = realpath($prospective_directory_path);
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if (!$directory_path) {
                     if ($allow_missing_files) {
                         continue;
@@ -274,6 +276,7 @@ class FileFilter
                     }
 
                     foreach ($globs as $glob_index => $glob_file_path) {
+                        /** @psalm-fixme RiskyTruthyFalsyComparison */
                         if (!$glob_file_path) {
                             if ($allow_missing_files) {
                                 continue;
@@ -391,6 +394,7 @@ class FileFilter
         $config = [];
         $config['allowMissingFiles'] = ((string) $e['allowMissingFiles']) === 'true';
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($e->directory) {
             $config['directory'] = [];
             foreach ($e->directory as $directory) {
@@ -403,6 +407,7 @@ class FileFilter
             }
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($e->file) {
             $config['file'] = [];
             foreach ($e->file as $file) {
@@ -410,6 +415,7 @@ class FileFilter
             }
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($e->referencedClass) {
             $config['referencedClass'] = [];
             foreach ($e->referencedClass as $referenced_class) {
@@ -417,6 +423,7 @@ class FileFilter
             }
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($e->referencedMethod) {
             $config['referencedMethod'] = [];
             foreach ($e->referencedMethod as $referenced_method) {
@@ -424,6 +431,7 @@ class FileFilter
             }
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($e->referencedFunction) {
             $config['referencedFunction'] = [];
             foreach ($e->referencedFunction as $referenced_function) {
@@ -431,6 +439,7 @@ class FileFilter
             }
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($e->referencedProperty) {
             $config['referencedProperty'] = [];
             foreach ($e->referencedProperty as $referenced_property) {
@@ -438,6 +447,7 @@ class FileFilter
             }
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($e->referencedConstant) {
             $config['referencedConstant'] = [];
             foreach ($e->referencedConstant as $referenced_constant) {
@@ -445,6 +455,7 @@ class FileFilter
             }
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($e->referencedVariable) {
             $config['referencedVariable'] = [];
             foreach ($e->referencedVariable as $referenced_variable) {
@@ -483,8 +494,10 @@ class FileFilter
     {
         if (count($parts) < 2) {
             if ($only_dir) {
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 $list = glob($parts[0], GLOB_ONLYDIR | GLOB_NOSORT) ?: [];
             } else {
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 $list = array_filter(
                     glob($parts[0], GLOB_NOSORT) ?: [],
                     'file_exists',
@@ -590,6 +603,9 @@ class FileFilter
         }
 
         if (preg_match('/^[^:]+::[^:]+$/', $method_id)) {
+            /**
+             * @psalm-fixme PossiblyUndefinedIntArrayOffset
+             */
             $method_stub = '*::' . explode('::', $method_id)[1];
 
             foreach ($this->method_ids as $config_method_id) {

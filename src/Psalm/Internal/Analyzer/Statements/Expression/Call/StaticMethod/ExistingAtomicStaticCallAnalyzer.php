@@ -86,6 +86,7 @@ final class ExistingAtomicStaticCallAnalyzer
             $statements_analyzer->getSuppressedIssues(),
         );
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($class_storage->user_defined
             && $context->self
             && ($context->collect_mutations || $context->collect_initializations)
@@ -154,6 +155,7 @@ final class ExistingAtomicStaticCallAnalyzer
             !$statements_analyzer->isStatic() && $method_id->fq_class_name === $context->self,
         );
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($found_generic_params
             && $stmt->class instanceof PhpParser\Node\Name
             && $stmt->class->getParts() === ['parent']
@@ -184,6 +186,7 @@ final class ExistingAtomicStaticCallAnalyzer
             }
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         $template_result = new TemplateResult([], $found_generic_params ?: []);
 
         if ($inferred_template_result) {
@@ -264,6 +267,7 @@ final class ExistingAtomicStaticCallAnalyzer
         $method_storage = $codebase->methods->getUserMethodStorage($method_id);
 
         if ($method_storage) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($method_storage->abstract
                 && $stmt->class instanceof PhpParser\Node\Name
                 && (!$context->self
@@ -278,6 +282,9 @@ final class ExistingAtomicStaticCallAnalyzer
                         ]),
                     ))
             ) {
+                /**
+                 * @psalm-fixme ImplicitToStringCast
+                 */
                 IssueBuffer::maybeAdd(
                     new AbstractMethodCall(
                         'Cannot call an abstract static method ' . $method_id . ' directly',
@@ -368,6 +375,9 @@ final class ExistingAtomicStaticCallAnalyzer
                     ) {
                         $new_method_id = substr($transformation, 0, -4);
                         $old_declaring_fq_class_name = $declaring_method_id->fq_class_name;
+                        /**
+                         * @psalm-fixme PossiblyUndefinedIntArrayOffset
+                         */
                         [$new_fq_class_name, $new_method_name] = explode('::', $new_method_id);
 
                         if ($codebase->classlikes->handleClassLikeReferenceInMigration(
@@ -449,6 +459,9 @@ final class ExistingAtomicStaticCallAnalyzer
             && !$context->collect_initializations
             && !$context->collect_mutations
         ) {
+            /**
+             * @psalm-fixme ImplicitToStringCast
+             */
             $codebase->analyzer->addNodeReference(
                 $statements_analyzer->getFilePath(),
                 $stmt->name,
@@ -514,6 +527,7 @@ final class ExistingAtomicStaticCallAnalyzer
 
             $context_final = false;
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($lhs_type_part instanceof TTemplateParam) {
                 $static_type = $lhs_type_part;
             } elseif ($lhs_type_part instanceof TTemplateParamClass) {
@@ -524,7 +538,7 @@ final class ExistingAtomicStaticCallAnalyzer
                         : Type::getObject(),
                     $lhs_type_part->defining_class,
                 );
-            } elseif ($stmt->class instanceof PhpParser\Node\Name
+            } /** @psalm-fixme RiskyTruthyFalsyComparison */ elseif ($stmt->class instanceof PhpParser\Node\Name
                 && count($stmt->class->getParts()) === 1
                 && in_array(strtolower($stmt->class->getFirst()), ['self', 'static', 'parent'], true)
                 && $lhs_type_part instanceof TNamedObject

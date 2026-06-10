@@ -28,6 +28,9 @@ final class NotInArray extends Assertion
 
     public function __toString(): string
     {
+        /**
+         * @psalm-fixme ImplicitToStringCast
+         */
         return '!in-array-' . $this->type;
     }
 

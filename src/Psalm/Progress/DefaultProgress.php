@@ -68,6 +68,9 @@ class DefaultProgress extends LongProgress
      */
     private static function renderInnerProgressBar(int $length, float $p): string
     {
+        /**
+         * @psalm-fixme InvalidOperand
+         */
         $current_float = $p * $length;
         $current = (int)$current_float;
         $rest = max($length - $current, 0);
@@ -75,6 +78,9 @@ class DefaultProgress extends LongProgress
         if (!self::doesTerminalSupportUtf8()) {
             // Show a progress bar of "XXXX>------" in Windows when utf-8 is unsupported.
             $progress_bar = str_repeat('X', $current);
+            /**
+             * @psalm-fixme InvalidOperand
+             */
             $delta = $current_float - $current;
             if ($delta > 0.5) {
                 $progress_bar .= '>' . str_repeat('-', $rest - 1);
@@ -87,12 +93,18 @@ class DefaultProgress extends LongProgress
 
         // The left-most characters are "Light shade"
         $progress_bar = str_repeat("\u{2588}", $current);
+        /**
+         * @psalm-fixme InvalidOperand
+         */
         $delta = $current_float - $current;
+        /**
+         * @psalm-fixme InvalidOperand
+         */
         if ($delta > 3.0 / 4) {
             $progress_bar .= "\u{258A}" . str_repeat("\u{2591}", $rest - 1);
-        } elseif ($delta > 2.0 / 4) {
+        } /** @psalm-fixme InvalidOperand */ elseif ($delta > 2.0 / 4) {
             $progress_bar .= "\u{258C}" . str_repeat("\u{2591}", $rest - 1);
-        } elseif ($delta > 1.0 / 4) {
+        } /** @psalm-fixme InvalidOperand */ elseif ($delta > 1.0 / 4) {
             $progress_bar .= "\u{258E}" . str_repeat("\u{2591}", $rest - 1);
         } else {
             $progress_bar .= str_repeat("\u{2591}", $rest);

@@ -92,6 +92,7 @@ final class ExistingAtomicMethodCallAnalyzer extends CallAnalyzer
 
         $result->existent_method_ids[$method_id->__toString()] = true;
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($context->collect_initializations && $context->calling_method_id) {
             [$calling_method_class] = explode('::', $context->calling_method_id);
             $codebase->file_reference_provider->addMethodReferenceToClassMember(
@@ -138,6 +139,9 @@ final class ExistingAtomicMethodCallAnalyzer extends CallAnalyzer
             && !$context->collect_initializations
             && !$context->collect_mutations
         ) {
+            /**
+             * @psalm-fixme ImplicitToStringCast
+             */
             $codebase->analyzer->addNodeReference(
                 $statements_analyzer->getFilePath(),
                 $stmt_name,
@@ -145,6 +149,7 @@ final class ExistingAtomicMethodCallAnalyzer extends CallAnalyzer
             );
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($context->collect_initializations && $context->calling_method_id) {
             [$calling_method_class] = explode('::', $context->calling_method_id);
             $codebase->file_reference_provider->addMethodReferenceToClassMember(
@@ -213,6 +218,7 @@ final class ExistingAtomicMethodCallAnalyzer extends CallAnalyzer
         $method_template_params = [];
 
         if ($method_storage && $method_storage->if_this_is_type) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             $method_template_result = new TemplateResult($method_storage->template_types ?: [], []);
 
             TemplateStandinTypeReplacer::fillTemplateResult(
@@ -226,12 +232,14 @@ final class ExistingAtomicMethodCallAnalyzer extends CallAnalyzer
             $method_template_params = $method_template_result->lower_bounds;
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         $template_result = new TemplateResult([], $class_template_params ?: []);
         $template_result->lower_bounds += $method_template_params;
 
         if ($inferred_template_result) {
             $template_result->lower_bounds += $inferred_template_result->lower_bounds;
         }
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($method_storage && $method_storage->template_types) {
             $template_result->template_types += $method_storage->template_types;
         }
@@ -330,6 +338,7 @@ final class ExistingAtomicMethodCallAnalyzer extends CallAnalyzer
                 }
             }
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($method_storage->self_out_type && $lhs_var_id) {
                 $self_out_candidate = $method_storage->self_out_type;
 
@@ -618,6 +627,9 @@ final class ExistingAtomicMethodCallAnalyzer extends CallAnalyzer
 
                     if ($union_comparison_results->type_coerced) {
                         if ($union_comparison_results->type_coerced_from_mixed) {
+                            /**
+                             * @psalm-fixme ImplicitToStringCast
+                             */
                             IssueBuffer::maybeAdd(
                                 new MixedPropertyTypeCoercion(
                                     $prop_name . ' expects \'' . $pseudo_set_type->getId() . '\', '
@@ -628,6 +640,9 @@ final class ExistingAtomicMethodCallAnalyzer extends CallAnalyzer
                                 $statements_analyzer->getSuppressedIssues(),
                             );
                         } else {
+                            /**
+                             * @psalm-fixme ImplicitToStringCast
+                             */
                             IssueBuffer::maybeAdd(
                                 new PropertyTypeCoercion(
                                     $prop_name . ' expects \'' . $pseudo_set_type->getId() . '\', '
@@ -646,6 +661,9 @@ final class ExistingAtomicMethodCallAnalyzer extends CallAnalyzer
                             $second_arg_type,
                             $pseudo_set_type,
                         )) {
+                            /**
+                             * @psalm-fixme ImplicitToStringCast
+                             */
                             IssueBuffer::maybeAdd(
                                 new PossiblyInvalidPropertyAssignmentValue(
                                     $prop_name . ' with declared type \''
@@ -657,6 +675,9 @@ final class ExistingAtomicMethodCallAnalyzer extends CallAnalyzer
                                 $statements_analyzer->getSuppressedIssues(),
                             );
                         } else {
+                            /**
+                             * @psalm-fixme ImplicitToStringCast
+                             */
                             IssueBuffer::maybeAdd(
                                 new InvalidPropertyAssignmentValue(
                                     $prop_name . ' with declared type \''

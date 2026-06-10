@@ -71,6 +71,7 @@ final class MutableUnion implements TypeNode
 
     /**
      * Which class the type was initialised in
+     * @psalm-fixme PossiblyUnusedProperty
      */
     public ?string $initialized_class = null;
 
@@ -79,6 +80,9 @@ final class MutableUnion implements TypeNode
      */
     public bool $checked = false;
 
+    /**
+     * @psalm-fixme PossiblyUnusedProperty
+     */
     public bool $failed_reconciliation = false;
 
     /**
@@ -121,6 +125,7 @@ final class MutableUnion implements TypeNode
 
     /**
      * Whether or not this union comes from a template "as" default
+     * @psalm-fixme PossiblyUnusedProperty
      */
     public bool $from_template_default = false;
 
@@ -148,13 +153,23 @@ final class MutableUnion implements TypeNode
      * True if the type was passed or returned by reference, or if the type refers to an object's
      * property or an item in an array. Note that this is not true for locally created references
      * that don't refer to properties or array items (see Context::$references_in_scope).
+     * @psalm-fixme PossiblyUnusedProperty
      */
     public bool $by_ref = false;
 
+    /**
+     * @psalm-fixme PossiblyUnusedProperty
+     */
     public bool $reference_free = false;
 
+    /**
+     * @psalm-fixme PossiblyUnusedProperty
+     */
     public bool $allow_mutations = true;
 
+    /**
+     * @psalm-fixme PossiblyUnusedProperty
+     */
     public bool $has_mutations = true;
 
     /**
@@ -273,6 +288,7 @@ final class MutableUnion implements TypeNode
         if (isset($this->types[$type_string])) {
             unset($this->types[$type_string]);
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if (strpos($type_string, '(')) {
                 unset(
                     $this->literal_string_types[$type_string],

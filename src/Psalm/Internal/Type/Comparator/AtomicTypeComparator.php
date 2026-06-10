@@ -774,6 +774,9 @@ final class AtomicTypeComparator
      */
     public static function isLegacyTListLike(Atomic $array): bool
     {
+        /**
+         * @psalm-fixme PossiblyUndefinedIntArrayOffset
+         */
         return $array instanceof TKeyedArray
             && $array->is_list
             && $array->fallback_params
@@ -787,6 +790,9 @@ final class AtomicTypeComparator
      */
     public static function isLegacyTNonEmptyListLike(Atomic $array): bool
     {
+        /**
+         * @psalm-fixme PossiblyUndefinedIntArrayOffset
+         */
         return $array instanceof TKeyedArray
             && $array->is_list
             && $array->fallback_params

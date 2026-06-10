@@ -59,13 +59,16 @@ final class StaticCallAnalyzer extends CallAnalyzer
             if (count($stmt->class->getParts()) === 1
                 && in_array(strtolower($stmt->class->getFirst()), ['self', 'static', 'parent'], true)
             ) {
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($stmt->class->getFirst() === 'parent') {
                     $child_fq_class_name = $context->self;
 
+                    /** @psalm-fixme RiskyTruthyFalsyComparison */
                     $class_storage = $child_fq_class_name
                         ? $codebase->classlike_storage_provider->get($child_fq_class_name)
                         : null;
 
+                    /** @psalm-fixme RiskyTruthyFalsyComparison */
                     if (!$class_storage || !$class_storage->parent_class) {
                         return !IssueBuffer::accepts(
                             new ParentNotFound(
@@ -105,7 +108,7 @@ final class StaticCallAnalyzer extends CallAnalyzer
                             }
                         }
                     }
-                } elseif ($context->self) {
+                } /** @psalm-fixme RiskyTruthyFalsyComparison */ elseif ($context->self) {
                     if ($stmt->class->getFirst() === 'static' && isset($context->vars_in_scope['$this'])) {
                         $fq_class_name = (string) $context->vars_in_scope['$this'];
                         $lhs_type = $context->vars_in_scope['$this'];
@@ -128,6 +131,7 @@ final class StaticCallAnalyzer extends CallAnalyzer
             } else {
                 $aliases = $statements_analyzer->getAliases();
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($context->calling_method_id
                     && !$stmt->class instanceof PhpParser\Node\Name\FullyQualified
                 ) {
@@ -149,6 +153,7 @@ final class StaticCallAnalyzer extends CallAnalyzer
 
                 $does_class_exist = false;
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($context->self) {
                     $self_storage = $codebase->classlike_storage_provider->get($context->self);
 
@@ -346,6 +351,9 @@ final class StaticCallAnalyzer extends CallAnalyzer
         }
 
         if ($conditionally_removed_taints && $method_location) {
+            /**
+             * @psalm-fixme ImplicitToStringCast
+             */
             $assignment_node = DataFlowNode::getForAssignment(
                 $method_id . '-escaped',
                 $method_location,

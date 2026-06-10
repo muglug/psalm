@@ -112,6 +112,7 @@ final class ReturnAnalyzer
                     $statements_analyzer->getParentFQCLN(),
                 );
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($codebase->alter_code
                     && $var_comment->type_start
                     && $var_comment->type_end
@@ -133,6 +134,7 @@ final class ReturnAnalyzer
                     );
                 }
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if (!$var_comment->var_id) {
                     $var_comment_type = $comment_type;
                     continue;
@@ -272,6 +274,7 @@ final class ReturnAnalyzer
                     );
                 }
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($storage instanceof MethodStorage && $context->self) {
                     $self_class = $context->self;
 
@@ -282,6 +285,9 @@ final class ReturnAnalyzer
                         null,
                     );
 
+                    /**
+                     * @psalm-fixme PossiblyUndefinedIntArrayOffset
+                     */
                     [, $method_name] = explode('::', $cased_method_id);
                     if ($method_name === '__construct') {
                         IssueBuffer::maybeAdd(
@@ -304,6 +310,9 @@ final class ReturnAnalyzer
                     );
 
                     if ($storage instanceof MethodStorage) {
+                        /**
+                         * @psalm-fixme PossiblyUndefinedIntArrayOffset
+                         */
                         [$fq_class_name, $method_name] = explode('::', $cased_method_id);
 
                         $class_storage = $codebase->classlike_storage_provider->get($fq_class_name);
@@ -317,6 +326,7 @@ final class ReturnAnalyzer
                             true,
                         );
 
+                        /** @psalm-fixme RiskyTruthyFalsyComparison */
                         if ($found_generic_params) {
                             foreach ($found_generic_params as $template_name => $_) {
                                 unset($found_generic_params[$template_name][$fq_class_name]);
@@ -549,6 +559,9 @@ final class ReturnAnalyzer
                         && (!$local_return_type->hasBool() || $local_return_type->isTrue())
                         && !$local_return_type->hasScalar()
                     ) {
+                        /**
+                         * @psalm-fixme ImplicitToStringCast
+                         */
                         IssueBuffer::maybeAdd(
                             new FalsableReturnStatement(
                                 'The declared return type \'' . $local_return_type . '\' for '
@@ -644,6 +657,7 @@ final class ReturnAnalyzer
         Context $context,
     ): void {
         // if not returning from inside of a function, return
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (!$context->calling_method_id && !$context->calling_function_id) {
             return;
         }
@@ -653,6 +667,7 @@ final class ReturnAnalyzer
             ->getCodebase()
             ->getFunctionLikeStorage($statements_analyzer, $closure_id);
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         $parent_fn_storage = $statements_analyzer
             ->getCodebase()
             ->getFunctionLikeStorage(

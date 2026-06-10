@@ -80,6 +80,7 @@ final class ArrayAssignmentAnalyzer
             $context,
         );
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (!$statements_analyzer->node_data->getType($stmt->var) && $var_id) {
             $context->vars_in_scope[$var_id] = Type::getMixed();
         }
@@ -228,6 +229,7 @@ final class ArrayAssignmentAnalyzer
 
         $statements_analyzer->node_data->setType($root_array_expr, $root_type);
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($root_array_expr instanceof PhpParser\Node\Expr\PropertyFetch) {
             if ($root_array_expr->name instanceof PhpParser\Node\Identifier) {
                 InstancePropertyAssignmentAnalyzer::analyze(
@@ -260,7 +262,7 @@ final class ArrayAssignmentAnalyzer
             ) === false) {
                 return false;
             }
-        } elseif ($root_var_id) {
+        } /** @psalm-fixme RiskyTruthyFalsyComparison */ elseif ($root_var_id) {
             $context->vars_in_scope[$root_var_id] = $root_type;
         }
 
@@ -395,6 +397,7 @@ final class ArrayAssignmentAnalyzer
         ) {
             $var_location = new CodeLocation($statements_analyzer->getSource(), $expr->var);
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             $parent_node = DataFlowNode::getForAssignment(
                 $var_var_id ?: 'assignment',
                 $var_location,
@@ -505,6 +508,7 @@ final class ArrayAssignmentAnalyzer
                 $array_atomic_key_type = Type::getArrayKey();
             }
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($parent_var_id && ($parent_type = $context->vars_in_scope[$parent_var_id] ?? null)) {
                 if ($offset_already_existed && $parent_type->hasList() && !str_contains($parent_var_id, '[')) {
                     $array_atomic_type_list = $value_type;
@@ -795,6 +799,7 @@ final class ArrayAssignmentAnalyzer
 
             $extended_var_id = $root_var_id . implode('', $var_id_additions);
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($parent_var_id && isset($context->vars_in_scope[$parent_var_id])) {
                 $array_type = $context->vars_in_scope[$parent_var_id];
                 $statements_analyzer->node_data->setType($child_stmt->var, $array_type);
@@ -854,7 +859,9 @@ final class ArrayAssignmentAnalyzer
 
             $statements_analyzer->node_data->setType($child_stmt->var, $array_type);
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($root_var_id) {
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if (!$parent_var_id) {
                     $rooted_parent_id = $root_var_id;
                     $root_type = $array_type;
@@ -889,6 +896,7 @@ final class ArrayAssignmentAnalyzer
             );
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($root_var_id
             && $full_var_id
             && ($child_stmt_var_type = $statements_analyzer->node_data->getType($child_stmt->var))
@@ -968,6 +976,7 @@ final class ArrayAssignmentAnalyzer
 
             $parent_array_var_id = null;
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($root_var_id) {
                 $extended_var_id = $root_var_id . implode('', $var_id_additions);
                 $parent_array_var_id = $root_var_id . implode('', array_slice($var_id_additions, 0, -1));
@@ -989,6 +998,7 @@ final class ArrayAssignmentAnalyzer
                 if ($t_orig) {
                     $statements_analyzer->node_data->setType($child_stmt->var, $array_type);
                 }
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($root_var_id) {
                     if ($parent_array_var_id === $root_var_id) {
                         $rooted_parent_id = $root_var_id;
@@ -1109,9 +1119,13 @@ final class ArrayAssignmentAnalyzer
                 $statements_analyzer,
             );
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($object_id) {
                 $var_id_addition = '[' . $object_id . '->' . $child_stmt->dim->name->name . ']';
             } else {
+                /**
+                 * @psalm-fixme ImplicitToStringCast
+                 */
                 $var_id_addition = '[' . $child_stmt_dim_type . ']';
             }
 
@@ -1131,6 +1145,9 @@ final class ArrayAssignmentAnalyzer
             return [null, $var_id_addition, true];
         }
 
+        /**
+         * @psalm-fixme ImplicitToStringCast
+         */
         $var_id_addition = '[' . $child_stmt_dim_type . ']';
 
         return [null, $var_id_addition, false];

@@ -127,6 +127,7 @@ final class TemplateInferredTypeReplacer
 
                 $template_type = null;
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if (isset($inferred_lower_bounds[$atomic_type->array_param_name][$atomic_type->defining_class])
                     && !empty($inferred_lower_bounds[$atomic_type->offset_param_name])
                 ) {
@@ -305,6 +306,7 @@ final class TemplateInferredTypeReplacer
                     try {
                         $classlike_storage = $codebase->classlike_storage_provider->get($template_class);
 
+                        /** @psalm-fixme RiskyTruthyFalsyComparison */
                         if ($classlike_storage->template_extended_params) {
                             $defining_class = $atomic_type->defining_class;
 

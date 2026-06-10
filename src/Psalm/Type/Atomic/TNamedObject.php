@@ -201,6 +201,7 @@ class TNamedObject extends Atomic
         ?Codebase $codebase,
     ): self {
         $intersection = $this->replaceIntersectionTemplateTypesWithArgTypes($template_result, $codebase);
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (!$intersection) {
             return $this;
         }
@@ -237,6 +238,7 @@ class TNamedObject extends Atomic
             $add_lower_bound,
             $depth,
         );
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($intersection) {
             $cloned = clone $this;
             $cloned->extra_types = $intersection;

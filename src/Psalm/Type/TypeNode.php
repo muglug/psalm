@@ -13,6 +13,7 @@ interface TypeNode
      * @param static $node
      * @param-out static $node
      * @internal Should only be used by the MutableTypeVisitor
+     * @psalm-fixme ReferenceConstraintViolation
      */
     public static function visitMutable(MutableTypeVisitor $visitor, &$node, bool $cloned): bool;
 }

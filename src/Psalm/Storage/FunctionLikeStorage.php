@@ -223,6 +223,9 @@ abstract class FunctionLikeStorage implements HasAttributesInterface, Stringable
 
     public function getCompletionSignature(): string
     {
+        /**
+         * @psalm-fixme ImplicitToStringCast
+         */
         $symbol_text = 'function ' . $this->cased_name . '('   . implode(
             ',',
             array_map(

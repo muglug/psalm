@@ -35,6 +35,7 @@ final class MagicConstAnalyzer
         } elseif ($stmt instanceof PhpParser\Node\Scalar\MagicConst\Class_) {
             $codebase = $statements_analyzer->getCodebase();
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if (!$context->self) {
                 IssueBuffer::maybeAdd(
                     new UndefinedConstant(

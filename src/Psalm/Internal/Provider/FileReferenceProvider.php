@@ -663,6 +663,7 @@ final class FileReferenceProvider
 
             self::$classlike_files = $classlike_files;
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             self::$file_maps = $this->cache->getFileMapCache() ?: [];
 
             return true;
@@ -814,18 +815,21 @@ final class FileReferenceProvider
 
     public function isClassMethodReferenced(string $method_id): bool
     {
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         return !empty(self::$file_references_to_class_members[$method_id])
             || !empty(self::$method_references_to_class_members[$method_id]);
     }
 
     public function isClassPropertyReferenced(string $property_id): bool
     {
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         return !empty(self::$file_references_to_class_properties[$property_id])
             || !empty(self::$method_references_to_class_properties[$property_id]);
     }
 
     public function isMethodReturnReferenced(string $method_id): bool
     {
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         return !empty(self::$file_references_to_method_returns[$method_id])
             || !empty(self::$method_references_to_method_returns[$method_id]);
     }
@@ -838,6 +842,7 @@ final class FileReferenceProvider
 
     public function isMethodParamUsed(string $method_id, int $offset): bool
     {
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         return !empty(self::$method_param_uses[$method_id][$offset]);
     }
 

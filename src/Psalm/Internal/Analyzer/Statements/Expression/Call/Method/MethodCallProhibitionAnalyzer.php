@@ -56,6 +56,7 @@ final class MethodCallProhibitionAnalyzer
             && !$context->collect_mutations
         ) {
             if (!NamespaceAnalyzer::isWithinAny($caller_identifier ?? "", $storage->internal)) {
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 IssueBuffer::maybeAdd(
                     new InternalMethod(
                         'The method ' . $codebase_methods->getCasedMethodId($method_id)

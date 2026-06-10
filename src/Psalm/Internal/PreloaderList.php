@@ -6,6 +6,9 @@ namespace Psalm\Internal;
 
 /** @internal */
 final class PreloaderList {
+    /**
+     * @psalm-fixme DeprecatedClass
+     */
     public const CLASSES = [
         \AdvancedJsonRpc\Dispatcher::class,
         \AdvancedJsonRpc\Error::class,

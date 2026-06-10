@@ -225,6 +225,7 @@ final class DocumentationTest extends TestCase
 
         $is_taint_test = strpos($error_message, 'Tainted') !== false;
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         $is_array_offset_test = strpos($error_message, 'ArrayOffset') && strpos($error_message, 'PossiblyUndefined') !== false;
 
         $this->project_analyzer->getConfig()->ensure_array_string_offsets_exist = $is_array_offset_test;

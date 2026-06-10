@@ -28,6 +28,9 @@ final class EchoChecker implements AfterStatementAnalysisInterface
                 $expr_type = $statements_source->getNodeTypeProvider()->getType($expr);
 
                 if (!$expr_type || $expr_type->hasMixed()) {
+                    /**
+                     * @psalm-fixme ImplicitToStringCast
+                     */
                     IssueBuffer::maybeAdd(
                         new ArgumentTypeCoercion(
                             'Echo requires an unescaped string, ' . $expr_type . ' provided',
@@ -45,6 +48,9 @@ final class EchoChecker implements AfterStatementAnalysisInterface
                     if ($type instanceof TString
                         && !$type instanceof TLiteralString
                     ) {
+                        /**
+                         * @psalm-fixme ImplicitToStringCast
+                         */
                         IssueBuffer::maybeAdd(
                             new ArgumentTypeCoercion(
                                 'Echo requires an unescaped string, ' . $expr_type . ' provided',

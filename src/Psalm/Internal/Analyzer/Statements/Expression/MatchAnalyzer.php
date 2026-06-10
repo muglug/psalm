@@ -77,6 +77,7 @@ final class MatchAnalyzer
 
         $match_condition = $stmt->cond;
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (!$switch_var_id) {
             if ($stmt->cond instanceof PhpParser\Node\Expr\FuncCall
                 && $stmt->cond->name instanceof PhpParser\Node\Name
@@ -231,6 +232,7 @@ final class MatchAnalyzer
             return false;
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($switch_var_id && $last_arm->conds) {
             $codebase = $statements_analyzer->getCodebase();
 

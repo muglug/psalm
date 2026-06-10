@@ -65,6 +65,9 @@ final class TValueOf extends Atomic
     #[Override]
     public function getKey(bool $include_extra = true): string
     {
+        /**
+         * @psalm-fixme ImplicitToStringCast
+         */
         return 'value-of<' . $this->type . '>';
     }
 

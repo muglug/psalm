@@ -103,6 +103,7 @@ final class NewAnalyzer extends CallAnalyzer
             if (!in_array(strtolower($stmt->class->getFirst()), ['self', 'static', 'parent'], true)) {
                 $aliases = $statements_analyzer->getAliases();
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($context->calling_method_id
                     && !$stmt->class instanceof PhpParser\Node\Name\FullyQualified
                 ) {
@@ -144,6 +145,7 @@ final class NewAnalyzer extends CallAnalyzer
                 }
             }
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($codebase->store_node_types
                 && $fq_class_name
                 && !$context->collect_initializations
@@ -181,6 +183,7 @@ final class NewAnalyzer extends CallAnalyzer
             );
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($fq_class_name) {
             if ($codebase->alter_code
                 && $stmt->class instanceof PhpParser\Node\Name
@@ -319,6 +322,7 @@ final class NewAnalyzer extends CallAnalyzer
         $storage = $codebase->classlike_storage_provider->get($fq_class_name);
 
         if ($from_static) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if (!$storage->preserve_constructor_signature) {
                 IssueBuffer::maybeAdd(
                     new UnsafeInstantiation(
@@ -328,7 +332,7 @@ final class NewAnalyzer extends CallAnalyzer
                     ),
                     $statements_analyzer->getSuppressedIssues(),
                 );
-            } elseif ($storage->template_types
+            } /** @psalm-fixme RiskyTruthyFalsyComparison */ elseif ($storage->template_types
                 && !$storage->enforce_template_inheritance
             ) {
                 $source = $statements_analyzer->getSource();
@@ -378,6 +382,7 @@ final class NewAnalyzer extends CallAnalyzer
         }
 
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($context->self
             && !$context->collect_initializations
             && !$context->collect_mutations
@@ -396,6 +401,7 @@ final class NewAnalyzer extends CallAnalyzer
 
         $method_id = new MethodIdentifier($fq_class_name, '__construct');
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($codebase->methods->methodExists(
             $method_id,
             $context->calling_method_id,
@@ -445,6 +451,7 @@ final class NewAnalyzer extends CallAnalyzer
             if ($declaring_method_id) {
                 $method_storage = $codebase->methods->getStorage($declaring_method_id);
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 $caller_identifier = $statements_analyzer->getFullyQualifiedFunctionMethodOrNamespaceName() ?: '';
                 if (!NamespaceAnalyzer::isWithinAny($caller_identifier, $method_storage->internal)) {
                     IssueBuffer::maybeAdd(
@@ -515,6 +522,7 @@ final class NewAnalyzer extends CallAnalyzer
             $generic_param_types = null;
             $self_out_candidate = null;
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($storage->template_types) {
                 foreach ($storage->template_types as $template_name => $base_type) {
                     if (isset($template_result->lower_bounds[$template_name][$fq_class_name])) {
@@ -522,7 +530,7 @@ final class NewAnalyzer extends CallAnalyzer
                             $template_result->lower_bounds[$template_name][$fq_class_name],
                             $codebase,
                         );
-                    } elseif ($storage->template_extended_params && $template_result->lower_bounds) {
+                    } /** @psalm-fixme RiskyTruthyFalsyComparison */ elseif ($storage->template_extended_params && $template_result->lower_bounds) {
                         $generic_param_type = self::getGenericParamForOffset(
                             $fq_class_name,
                             $template_name,
@@ -615,7 +623,7 @@ final class NewAnalyzer extends CallAnalyzer
                 ),
                 $statements_analyzer->getSuppressedIssues(),
             );
-        } elseif ($storage->template_types) {
+        } /** @psalm-fixme RiskyTruthyFalsyComparison */ elseif ($storage->template_types) {
             $result_atomic_type = new TGenericObject(
                 $fq_class_name,
                 array_values(
@@ -991,6 +999,9 @@ final class NewAnalyzer extends CallAnalyzer
                 $new_types []= new Union([$lhs_type_part]);
                 continue;
             } else {
+                /**
+                 * @psalm-fixme ImplicitToStringCast
+                 */
                 IssueBuffer::maybeAdd(
                     new UndefinedClass(
                         'Type ' . $lhs_type_part . ' cannot be called as a class',

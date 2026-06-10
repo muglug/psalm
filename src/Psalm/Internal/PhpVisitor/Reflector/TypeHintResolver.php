@@ -164,6 +164,7 @@ final class TypeHintResolver
             [],
         );
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($type_string) {
             $atomic_type = $type->getSingleAtomic();
             /** @psalm-suppress InaccessibleProperty We just created this type */

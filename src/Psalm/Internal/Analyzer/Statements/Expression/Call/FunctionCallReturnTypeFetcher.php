@@ -111,6 +111,7 @@ final class FunctionCallReturnTypeFetcher
 
         if (!$stmt_type) {
             if (!$in_call_map || $is_stubbed) {
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($function_storage && $function_storage->template_types) {
                     foreach ($function_storage->template_types as $template_name => $_) {
                         if (!isset($template_result->lower_bounds[$template_name])) {
@@ -165,6 +166,7 @@ final class FunctionCallReturnTypeFetcher
                     if ($function_storage && $function_storage->return_type) {
                         $return_type = $function_storage->return_type;
 
+                        /** @psalm-fixme RiskyTruthyFalsyComparison */
                         if ($template_result->lower_bounds && $function_storage->template_types) {
                             $return_type = TypeExpander::expandUnion(
                                 $codebase,
@@ -284,6 +286,9 @@ final class FunctionCallReturnTypeFetcher
                 $fake_call_factory = new BuilderFactory();
 
                 if (str_contains($proxy_call['fqn'], '::')) {
+                    /**
+                     * @psalm-fixme PossiblyUndefinedIntArrayOffset
+                     */
                     [$fqcn, $method] = explode('::', $proxy_call['fqn']);
                     $fake_call = $fake_call_factory->staticCall($fqcn, $method, $fake_call_arguments);
                 } else {
@@ -335,6 +340,7 @@ final class FunctionCallReturnTypeFetcher
                     return new Union([$keyed_array]);
 
                 case 'get_called_class':
+                    /** @psalm-fixme RiskyTruthyFalsyComparison */
                     return new Union([
                         new TClassString(
                             $context->self ?: 'object',
@@ -343,6 +349,7 @@ final class FunctionCallReturnTypeFetcher
                     ]);
 
                 case 'get_parent_class':
+                    /** @psalm-fixme RiskyTruthyFalsyComparison */
                     if ($context->self && $codebase->classExists($context->self)) {
                         $classlike_storage = $codebase->classlike_storage_provider->get($context->self);
 

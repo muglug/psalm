@@ -28,6 +28,9 @@ final class ParserCacheProvider
             (string) filemtime(__DIR__.DIRECTORY_SEPARATOR.'StatementsProvider.php'),
         ];
 
+        /**
+         * @psalm-fixme PropertyTypeCoercion
+         */
         $this->stmtCache = new Cache($config, self::PARSER_CACHE_DIRECTORY, $deps, $persistent);
     }
 

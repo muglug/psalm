@@ -119,9 +119,10 @@ final class FunctionLikeDocblockScanner
             $storage->deprecated = true;
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (count($docblock_info->psalm_internal) !== 0) {
             $storage->internal = $docblock_info->psalm_internal;
-        } elseif ($docblock_info->internal && $aliases->namespace) {
+        } /** @psalm-fixme RiskyTruthyFalsyComparison */ elseif ($docblock_info->internal && $aliases->namespace) {
             $storage->internal = [NamespaceAnalyzer::getNameSpaceRoot($aliases->namespace)];
         }
 
@@ -220,11 +221,13 @@ final class FunctionLikeDocblockScanner
             $storage->inheritdoc = true;
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         $template_types = $classlike_storage && $classlike_storage->template_types
             ? $classlike_storage->template_types
             : null;
 
         $function_template_types = $existing_function_template_types;
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         $class_template_types = $classlike_storage ? ($classlike_storage->template_types ?: []) : [];
 
         if ($docblock_info->templates) {
@@ -429,6 +432,7 @@ final class FunctionLikeDocblockScanner
             );
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($docblock_info->description) {
             $storage->description = $docblock_info->description;
         }
@@ -820,13 +824,17 @@ final class FunctionLikeDocblockScanner
 
             $storage_param->has_docblock_type = true;
 
-            /** @psalm-suppress UnusedMethodCall */
+            /**
+             * @psalm-suppress UnusedMethodCall
+             * @psalm-fixme RiskyTruthyFalsyComparison
+             */
             $new_param_type->queueClassLikesForScanning(
                 $codebase,
                 $file_storage,
                 $storage->template_types ?: [],
             );
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($storage->template_types) {
                 foreach ($storage->template_types as $t => $type_map) {
                     foreach ($type_map as $obj => $type) {
@@ -860,6 +868,7 @@ final class FunctionLikeDocblockScanner
                 $storage_param->description = $docblock_param['description'];
             }
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if (!$storage_param->type || $storage_param->type->hasMixed() || $storage->template_types) {
                 if ($existing_param_type_nullable
                     && !$new_param_type->isNullable()
@@ -947,6 +956,7 @@ final class FunctionLikeDocblockScanner
         string $cased_function_id,
         FileStorage $file_storage,
     ): void {
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (!$fake_method
             && $docblock_info->return_type_line_number
             && $docblock_info->return_type_start
@@ -959,6 +969,7 @@ final class FunctionLikeDocblockScanner
                 $docblock_info->return_type_line_number,
             );
         } else {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             $storage->return_type_location = new CodeLocation(
                 $file_scanner,
                 $stmt,
@@ -1122,6 +1133,9 @@ final class FunctionLikeDocblockScanner
 
                 if (isset($flow_parts[0]) && str_starts_with(trim($flow_parts[0]), 'proxy')) {
                     $proxy_call = trim(substr($flow_parts[0], strlen('proxy')));
+                    /**
+                     * @psalm-fixme PossiblyUndefinedArrayOffset
+                     */
                     [$fully_qualified_name, $source_param_string] = explode('(', $proxy_call, 2);
 
                     if (!empty($fully_qualified_name) && !empty($source_param_string)) {
@@ -1410,7 +1424,10 @@ final class FunctionLikeDocblockScanner
             return;
         }
 
-        /** @psalm-suppress UnusedMethodCall */
+        /**
+         * @psalm-suppress UnusedMethodCall
+         * @psalm-fixme RiskyTruthyFalsyComparison
+         */
         $out_type->queueClassLikesForScanning(
             $codebase,
             $file_storage,
@@ -1454,6 +1471,7 @@ final class FunctionLikeDocblockScanner
                     }
                     $type_string = CommentAnalyzer::sanitizeDocblockType($type_string);
                     try {
+                        /** @psalm-fixme RiskyTruthyFalsyComparison */
                         $template_type = TypeParser::parseTokens(
                             TypeTokenizer::getFullyQualifiedTokens(
                                 $type_string,
@@ -1498,6 +1516,7 @@ final class FunctionLikeDocblockScanner
             }
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         return array_merge($template_types ?: [], $storage->template_types);
     }
 

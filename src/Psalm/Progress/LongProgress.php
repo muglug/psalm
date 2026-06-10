@@ -125,6 +125,9 @@ class LongProgress extends Progress
 
         $leadingSpaces = 1 + strlen((string) $this->number_of_tasks) - strlen((string) $this->progress);
         // Don't show 100% unless this is the last line of the progress bar.
+        /**
+         * @psalm-fixme InvalidOperand
+         */
         $percentage = floor($this->progress / $this->number_of_tasks * 100);
 
         return sprintf(

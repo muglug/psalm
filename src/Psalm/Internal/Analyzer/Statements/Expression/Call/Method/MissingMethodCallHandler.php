@@ -125,6 +125,7 @@ final class MissingMethodCallHandler
                 !$statements_analyzer->isStatic() && $method_id->fq_class_name === $context->self,
             );
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             ArgumentsAnalyzer::analyze(
                 $statements_analyzer,
                 $stmt->getArgs(),
@@ -135,6 +136,7 @@ final class MissingMethodCallHandler
                 $found_generic_params ? new TemplateResult([], $found_generic_params) : null,
             );
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             ArgumentsAnalyzer::checkArgumentsMatch(
                 $statements_analyzer,
                 $stmt->getArgs(),
@@ -150,6 +152,7 @@ final class MissingMethodCallHandler
             if ($pseudo_method_storage->return_type) {
                 $return_type_candidate = $pseudo_method_storage->return_type;
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($found_generic_params) {
                     $return_type_candidate = TemplateInferredTypeReplacer::replace(
                         $return_type_candidate,
@@ -287,6 +290,7 @@ final class MissingMethodCallHandler
                 !$statements_analyzer->isStatic() && $method_id->fq_class_name === $context->self,
             );
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if (ArgumentsAnalyzer::analyze(
                 $statements_analyzer,
                 $stmt->getArgs(),
@@ -299,6 +303,7 @@ final class MissingMethodCallHandler
                 return;
             }
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if (ArgumentsAnalyzer::checkArgumentsMatch(
                 $statements_analyzer,
                 $stmt->getArgs(),
@@ -316,6 +321,7 @@ final class MissingMethodCallHandler
             if ($pseudo_method_storage->return_type) {
                 $return_type_candidate = $pseudo_method_storage->return_type;
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($found_generic_params) {
                     $return_type_candidate = TemplateInferredTypeReplacer::replace(
                         $return_type_candidate,
@@ -385,8 +391,10 @@ final class MissingMethodCallHandler
             || !isset($class_storage->pseudo_methods[$method_name_lc])
         ) {
             if ($is_interface) {
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 $result->non_existent_interface_method_ids[] = $intersection_method_id ?: $cased_method_id;
             } else {
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 $result->non_existent_class_method_ids[] = $intersection_method_id ?: $cased_method_id;
             }
         }

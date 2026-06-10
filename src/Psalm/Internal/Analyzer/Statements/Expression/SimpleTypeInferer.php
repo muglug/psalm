@@ -331,6 +331,7 @@ final class SimpleTypeInferer
         }
 
         if ($stmt instanceof PhpParser\Node\Expr\ClassConstFetch) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($stmt->class instanceof PhpParser\Node\Name
                 && $stmt->name instanceof PhpParser\Node\Identifier
                 && $fq_classlike_name

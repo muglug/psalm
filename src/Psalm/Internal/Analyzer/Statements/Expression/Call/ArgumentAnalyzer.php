@@ -184,6 +184,9 @@ final class ArgumentAnalyzer
                 }
 
                 if ($param_type && !$param_type->hasMixed()) {
+                    /**
+                     * @psalm-fixme ImplicitToStringCast
+                     */
                     IssueBuffer::maybeAdd(
                         new MixedArgument(
                             'Argument ' . ($argument_offset + 1) . ' of ' . $cased_method_id
@@ -313,11 +316,13 @@ final class ArgumentAnalyzer
         $classlike_storage = null;
         $static_classlike_storage = null;
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($self_fq_class_name) {
             $classlike_storage = $codebase->classlike_storage_provider->get($self_fq_class_name);
             $parent_class = $classlike_storage->parent_class;
             $static_classlike_storage = $classlike_storage;
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($static_fq_class_name && $static_fq_class_name !== $self_fq_class_name) {
                 $static_classlike_storage = $codebase->classlike_storage_provider->get($static_fq_class_name);
             }
@@ -335,6 +340,7 @@ final class ArgumentAnalyzer
             true,
         );
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($class_generic_params) {
             // here we're replacing the param types and arg types with the bound
             // class template params.
@@ -351,6 +357,7 @@ final class ArgumentAnalyzer
             // don’t get overwritten
             $readonly_template_result->readonly = true;
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             $param_type = TemplateStandinTypeReplacer::replace(
                 $param_type,
                 $readonly_template_result,
@@ -362,6 +369,7 @@ final class ArgumentAnalyzer
                 $context->calling_function_id ?: $context->calling_method_id,
             );
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             $arg_value_type = TemplateStandinTypeReplacer::replace(
                 $arg_value_type,
                 $readonly_template_result,
@@ -408,6 +416,7 @@ final class ArgumentAnalyzer
                 }
             }
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             $param_type = TemplateStandinTypeReplacer::replace(
                 $param_type,
                 $template_result,
@@ -497,6 +506,7 @@ final class ArgumentAnalyzer
                     $statements_analyzer->getSuppressedIssues(),
                 );
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($cased_method_id) {
                     $arg_location = new CodeLocation($statements_analyzer->getSource(), $arg->value);
 
@@ -705,6 +715,7 @@ final class ArgumentAnalyzer
     /**
      * @param TKeyedArray|TArray|TClassStringMap|null $unpacked_atomic_array
      * @return  null|false
+     * @psalm-fixme ComplexMethod
      */
     public static function verifyType(
         StatementsAnalyzer $statements_analyzer,
@@ -747,6 +758,7 @@ final class ArgumentAnalyzer
                 }
             }
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($cased_method_id) {
                 self::processTaintedness(
                     $statements_analyzer,
@@ -766,6 +778,7 @@ final class ArgumentAnalyzer
             return null;
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         $method_identifier = $cased_method_id ? ' of ' . $cased_method_id : '';
 
         if ($input_type->hasMixed()) {
@@ -796,6 +809,9 @@ final class ArgumentAnalyzer
                 $origin_location = null;
             }
 
+            /**
+             * @psalm-fixme ImplicitToStringCast
+             */
             IssueBuffer::maybeAdd(
                 new MixedArgument(
                     'Argument ' . ($argument_offset + 1) . $method_identifier
@@ -829,6 +845,7 @@ final class ArgumentAnalyzer
                 }
             }
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($cased_method_id) {
                 self::processTaintedness(
                     $statements_analyzer,
@@ -902,6 +919,7 @@ final class ArgumentAnalyzer
                     // if we had an array callable, mark it as used now, since it's not possible later
                     $potential_method_id = null;
 
+                    /** @psalm-fixme RiskyTruthyFalsyComparison */
                     if ($atomic_type instanceof TKeyedArray) {
                         $potential_method_id = CallableTypeComparator::getCallableMethodIdFromTKeyedArray(
                             $atomic_type,
@@ -909,10 +927,13 @@ final class ArgumentAnalyzer
                             $context->calling_method_id,
                             $statements_analyzer->getFilePath(),
                         );
-                    } elseif ($atomic_type instanceof TLiteralString
+                    } /** @psalm-fixme RiskyTruthyFalsyComparison */ elseif ($atomic_type instanceof TLiteralString
                               && strpos($atomic_type->value, '::')
                     ) {
                         $parts = explode('::', $atomic_type->value);
+                        /**
+                         * @psalm-fixme PossiblyUndefinedIntArrayOffset
+                         */
                         $potential_method_id = new MethodIdentifier(
                             $parts[0],
                             strtolower($parts[1]),
@@ -970,6 +991,7 @@ final class ArgumentAnalyzer
             $input_type = $union_comparison_results->replacement_union_type;
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($cased_method_id) {
             self::processTaintedness(
                 $statements_analyzer,
@@ -1005,6 +1027,7 @@ final class ArgumentAnalyzer
                 : null;
 
             foreach ($input_type->getAtomicTypes() as $input_type_part) {
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($input_type_part instanceof TKeyedArray) {
                     // If the param accept an array, we don't report arrays as wrong callbacks.
                     if (null !== $param_type_without_callable && UnionTypeComparator::isContainedBy(
@@ -1057,7 +1080,7 @@ final class ArgumentAnalyzer
 
                         $potential_method_ids[] = $potential_method_id;
                     }
-                } elseif ($input_type_part instanceof TLiteralString
+                } /** @psalm-fixme RiskyTruthyFalsyComparison */ elseif ($input_type_part instanceof TLiteralString
                     && strpos($input_type_part->value, '::')
                 ) {
                     // If the param also accept a string, we don't report string as wrong callbacks.
@@ -1512,6 +1535,9 @@ final class ArgumentAnalyzer
                             $non_existent_method_ids = [];
 
                             foreach ($function_id_parts as $function_id_part) {
+                                /**
+                                 * @psalm-fixme PossiblyUndefinedIntArrayOffset
+                                 */
                                 [$callable_fq_class_name, $method_name] = explode('::', $function_id_part);
 
                                 switch ($callable_fq_class_name) {
@@ -1534,6 +1560,7 @@ final class ArgumentAnalyzer
                                             }
                                         }
 
+                                        /** @psalm-fixme RiskyTruthyFalsyComparison */
                                         if (!$container_class) {
                                             continue 2;
                                         }
@@ -1630,6 +1657,7 @@ final class ArgumentAnalyzer
             $statements_analyzer,
         );
         
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (!$var_id) {
             return;
         }
@@ -1815,6 +1843,9 @@ final class ArgumentAnalyzer
             ) {
                 $fq_classlike_name = $method_id->fq_class_name;
                 $method_name = $method_id->method_name;
+                /**
+                 * @psalm-fixme PossiblyUndefinedIntArrayOffset
+                 */
                 $cased_method_name = explode('::', $cased_method_id)[1];
 
                 $class_storage = $codebase->classlike_storage_provider->get($fq_classlike_name);

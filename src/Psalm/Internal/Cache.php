@@ -75,6 +75,9 @@ final class Cache
         $dir = $config->getCacheDirectory().DIRECTORY_SEPARATOR.$subdir;
 
         $hash = hash_init('xxh128');
+        /**
+         * @psalm-fixme MixedAssignment
+         */
         foreach ($dependencies as $dep) {
             hash_update($hash, (string) $dep);
             hash_update($hash, "\0");
@@ -124,7 +127,11 @@ final class Cache
             ) {
                 $key = file_get_contents($f->getPathname());
                 Assert::notFalse($key);
-                /** @var int */
+                /**
+                 * @var int
+                 * @psalm-fixme PossiblyInvalidArrayAccess
+                 * @psalm-fixme PossiblyUndefinedIntArrayOffset
+                 */
                 $hashLen = unpack('V', $key)[1];
                 $hash = substr($key, 4, $hashLen);
                 $key = substr($key, 4+$hashLen);
@@ -202,19 +209,26 @@ final class Cache
         }
 
         $fileHash = stream_get_contents($fp);
+        /**
+         * @psalm-fixme PossiblyFalseArgument
+         */
         if ($hash === null) {
             if ($fileHash === '') {
                 fclose($fp);
                 return null;
             }
             assert($fileHash !== false);
+            /**
+             * @psalm-fixme PossiblyInvalidArrayAccess
+             * @psalm-fixme PossiblyUndefinedIntArrayOffset
+             */
             $hashLen = unpack('V', $fileHash)[1];
             assert(is_int($hashLen));
             $hash = substr($fileHash, 4, $hashLen);
             if (substr_compare($fileHash, $key, 4+$hashLen) !== 0) {
                 throw new AssertionError("Hash collision on key $key");
             }
-        } elseif (substr_compare($fileHash, $hash, 4, strlen($hash)) !== 0
+        } /** @psalm-fixme PossiblyFalseArgument */ elseif (substr_compare($fileHash, $hash, 4, strlen($hash)) !== 0
             || substr_compare($fileHash, $key, strlen($hash)+4) !== 0
             || strlen($fileHash) !== strlen($key)+strlen($hash)+4
         ) {

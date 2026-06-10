@@ -163,6 +163,7 @@ final class PdoStatementReturnTypeProvider implements MethodReturnTypeProviderIn
         ) {
             $fetch_class_name = $second_arg_type->getSingleStringLiteral()->value;
         }
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         return match ($fetch_mode) {
             2 => new Union([
                 Type::getListAtomic(

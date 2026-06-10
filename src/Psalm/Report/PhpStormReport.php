@@ -44,6 +44,7 @@ final class PhpStormReport extends Report
             . "\n" . $issue_data->message . $issue_reference . "\n";
 
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($issue_data->taint_trace) {
             $issue_string .= $this->getTaintSnippets($issue_data->taint_trace);
         } elseif ($this->show_snippet) {

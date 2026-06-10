@@ -447,6 +447,7 @@ class FileAnalyzer extends SourceAnalyzer
     #[Override]
     public function getAliasedClassesFlipped(?string $namespace_name = null): array
     {
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($namespace_name && isset($this->namespace_aliased_classes_flipped[$namespace_name])) {
             return $this->namespace_aliased_classes_flipped[$namespace_name];
         }
@@ -461,6 +462,7 @@ class FileAnalyzer extends SourceAnalyzer
     #[Override]
     public function getAliasedClassesFlippedReplaceable(?string $namespace_name = null): array
     {
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($namespace_name && isset($this->namespace_aliased_classes_flipped_replaceable[$namespace_name])) {
             return $this->namespace_aliased_classes_flipped_replaceable[$namespace_name];
         }
@@ -500,6 +502,7 @@ class FileAnalyzer extends SourceAnalyzer
     #[Override]
     public function getRootFileName(): string
     {
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         return $this->root_file_name ?: $this->file_name;
     }
 
@@ -507,6 +510,7 @@ class FileAnalyzer extends SourceAnalyzer
     #[Override]
     public function getRootFilePath(): string
     {
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         return $this->root_file_path ?: $this->file_path;
     }
 

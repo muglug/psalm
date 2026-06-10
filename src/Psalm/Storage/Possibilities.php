@@ -56,6 +56,7 @@ final class Possibilities
             }
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         return new Possibilities(
             is_string($this->var_id) && $this_var_id
                 ? str_replace('$this->', $this_var_id . '->', $this->var_id)

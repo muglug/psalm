@@ -225,6 +225,9 @@ final class TypeParser
         }
 
         if ($parse_tree instanceof CallableWithReturnTypeTree) {
+            /**
+             * @psalm-fixme PossiblyUndefinedIntArrayOffset
+             */
             $callable_type = self::getTypeFromTree(
                 $parse_tree->children[0],
                 $codebase,
@@ -346,8 +349,14 @@ final class TypeParser
                 throw new TypeParseTreeException('Invalid conditional');
             }
 
+            /**
+             * @psalm-fixme PossiblyUndefinedIntArrayOffset
+             */
             $first_class = array_keys($template_type_map[$template_param_name])[0];
 
+            /**
+             * @psalm-fixme PossiblyUndefinedIntArrayOffset
+             */
             $conditional_type = self::getTypeFromTree(
                 $parse_tree->condition->children[0],
                 $codebase,
@@ -406,10 +415,17 @@ final class TypeParser
             return Type::getAtomicStringFromLiteral(substr($parse_tree->value, 1, -1), $from_docblock);
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (strpos($parse_tree->value, '::')) {
+            /**
+             * @psalm-fixme PossiblyUndefinedIntArrayOffset
+             */
             [$fq_classlike_name, $const_name] = explode('::', $parse_tree->value);
 
             if (isset($template_type_map[$fq_classlike_name]) && $const_name === 'class') {
+                /**
+                 * @psalm-fixme PossiblyUndefinedIntArrayOffset
+                 */
                 $first_class = array_keys($template_type_map[$fq_classlike_name])[0];
 
                 return self::getGenericParamClass(
@@ -759,6 +775,9 @@ final class TypeParser
             $class_name = $generic_params[0]->getId(false);
 
             if (isset($template_type_map[$class_name])) {
+                /**
+                 * @psalm-fixme PossiblyUndefinedIntArrayOffset
+                 */
                 $first_class = array_keys($template_type_map[$class_name])[0];
 
                 return self::getGenericParamClass(
@@ -1357,6 +1376,9 @@ final class TypeParser
 
         $offset_template_data = $template_type_map[$offset_param_name];
 
+        /**
+         * @psalm-fixme PossiblyUndefinedIntArrayOffset
+         */
         $offset_defining_class = array_keys($offset_template_data)[0];
 
         if (!$offset_defining_class
@@ -1370,6 +1392,9 @@ final class TypeParser
             }
         }
 
+        /**
+         * @psalm-fixme PossiblyUndefinedIntArrayOffset
+         */
         $array_defining_class = array_keys($template_type_map[$array_param_name])[0];
 
         if ($offset_defining_class !== $array_defining_class
@@ -1460,7 +1485,11 @@ final class TypeParser
                     $from_docblock,
                 );
                 $property_maybe_undefined = $property_branch->possibly_undefined;
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if (strpos($property_branch->value, '::')) {
+                    /**
+                     * @psalm-fixme PossiblyUndefinedIntArrayOffset
+                     */
                     [$fq_classlike_name, $const_name] = explode('::', $property_branch->value);
                     if ($const_name === 'class') {
                         $property_key = $fq_classlike_name;
@@ -1475,6 +1504,9 @@ final class TypeParser
                 } else {
                     $property_key = $property_branch->value;
                 }
+                /**
+                 * @psalm-fixme InvalidOperand
+                 */
                 if ($is_list && (
                         ArrayAnalyzer::getLiteralArrayKeyInt($property_key) === false
                         || ($had_optional && !$property_maybe_undefined)
@@ -1547,6 +1579,7 @@ final class TypeParser
             return new TArray([Type::getNever($from_docblock), Type::getNever($from_docblock)], $from_docblock);
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($extra_params) {
             if ($is_list && count($extra_params) !== 1) {
                 throw new TypeParseTreeException('Must have exactly one extra field!');
@@ -1762,6 +1795,9 @@ final class TypeParser
                 );
 
                 if ($new_type === null) {
+                    /**
+                     * @psalm-fixme ImplicitToStringCast
+                     */
                     throw new TypeParseTreeException(
                         'Incompatible intersection types for "' . $property . '", '
                         . $properties[$property] . ' and ' . $property_type

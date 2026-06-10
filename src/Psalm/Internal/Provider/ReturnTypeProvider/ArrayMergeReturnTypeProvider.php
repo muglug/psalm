@@ -263,6 +263,9 @@ final class ArrayMergeReturnTypeProvider implements FunctionReturnTypeProviderIn
             && ($generic_property_count < $max_keyed_array_size * 2
                 || $generic_property_count < 16)
         ) {
+            /**
+             * @psalm-fixme InvalidArgument
+             */
             $objectlike = new TKeyedArray(
                 $generic_properties,
                 $class_strings ?: null,

@@ -50,6 +50,7 @@ final class SwitchAnalyzer
             $statements_analyzer,
         );
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (!$switch_var_id
             && ($stmt->cond instanceof PhpParser\Node\Expr\FuncCall
                 || $stmt->cond instanceof PhpParser\Node\Expr\MethodCall
@@ -142,6 +143,7 @@ final class SwitchAnalyzer
 
         $all_options_matched = $has_default;
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (!$has_default && $switch_scope->negated_clauses && $switch_var_id) {
             $entry_clauses = Algebra::simplifyCNF(
                 [...$original_context->clauses, ...$switch_scope->negated_clauses],
@@ -180,15 +182,19 @@ final class SwitchAnalyzer
 
         // only update vars if there is a default or all possible cases accounted for
         // if the default has a throw/return/continue, that should be handled above
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($all_options_matched) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($switch_scope->new_vars_in_scope) {
                 $context->vars_in_scope = array_merge($context->vars_in_scope, $switch_scope->new_vars_in_scope);
             }
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($switch_scope->redefined_vars) {
                 $context->vars_in_scope = array_merge($context->vars_in_scope, $switch_scope->redefined_vars);
             }
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($switch_scope->possibly_redefined_vars) {
                 foreach ($switch_scope->possibly_redefined_vars as $var_id => $type) {
                     if (!isset($switch_scope->redefined_vars[$var_id])
@@ -204,7 +210,7 @@ final class SwitchAnalyzer
             }
 
             $stmt->setAttribute('allMatched', true);
-        } elseif ($switch_scope->possibly_redefined_vars) {
+        } /** @psalm-fixme RiskyTruthyFalsyComparison */ elseif ($switch_scope->possibly_redefined_vars) {
             foreach ($switch_scope->possibly_redefined_vars as $var_id => $type) {
                 if (isset($context->vars_in_scope[$var_id])) {
                     $context->vars_in_scope[$var_id] = Type::combineUnionTypes(
@@ -215,7 +221,11 @@ final class SwitchAnalyzer
             }
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($switch_scope->new_assigned_var_ids) {
+            /**
+             * @psalm-fixme InvalidPropertyAssignmentValue
+             */
             $context->assigned_var_ids += $switch_scope->new_assigned_var_ids;
         }
 

@@ -237,6 +237,9 @@ final class TObjectWithProperties extends TObject
                 $input_type_param = $input_type->properties[$offset];
             }
 
+            /**
+             * @psalm-fixme ImpureMethodCall
+             */
             $properties[$offset] = TemplateStandinTypeReplacer::replace(
                 $property,
                 $template_result,
@@ -265,6 +268,7 @@ final class TObjectWithProperties extends TObject
             $add_lower_bound,
             $depth,
         );
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($properties === $this->properties && !$intersection) {
             return $this;
         }
@@ -281,6 +285,9 @@ final class TObjectWithProperties extends TObject
     ): self {
         $properties = $this->properties;
         foreach ($properties as $offset => $property) {
+            /**
+             * @psalm-fixme ImpureMethodCall
+             */
             $properties[$offset] = TemplateInferredTypeReplacer::replace(
                 $property,
                 $template_result,
@@ -291,6 +298,7 @@ final class TObjectWithProperties extends TObject
             $template_result,
             $codebase,
         );
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($properties === $this->properties && !$intersection) {
             return $this;
         }

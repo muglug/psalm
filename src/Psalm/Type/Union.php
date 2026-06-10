@@ -107,6 +107,7 @@ final class Union implements TypeNode
 
     /**
      * Whether or not to ignore issues with isset on this type
+     * @psalm-fixme PossiblyUnusedProperty
      */
     public bool $ignore_isset = false;
 

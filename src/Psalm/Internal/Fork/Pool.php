@@ -66,6 +66,9 @@ final class Pool
                     #[Override]
                     public function start(string|array $script, ?Cancellation $cancellation = null): Context
                     {
+                        /**
+                         * @psalm-fixme ArgumentTypeCoercion
+                         */
                         return ForkContext::start($script, $this->ipcHub, $cancellation, $this->childConnectTimeout);
                     }
                 },

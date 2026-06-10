@@ -24,6 +24,9 @@ final class TLiteralFloat extends TFloat
         if (is_nan($this->value)) {
             return 'float(NAN)';
         }
+        /**
+         * @psalm-fixme InvalidOperand
+         */
         return 'float(' . $this->value . ')';
     }
 
@@ -37,6 +40,9 @@ final class TLiteralFloat extends TFloat
             return 'float(NAN)';
         }
 
+        /**
+         * @psalm-fixme InvalidOperand
+         */
         return 'float(' . $this->value . ')';
     }
 

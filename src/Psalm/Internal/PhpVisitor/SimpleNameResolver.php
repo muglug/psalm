@@ -34,6 +34,7 @@ final class SimpleNameResolver extends NodeVisitorAbstract
      */
     public function __construct(ErrorHandler $errorHandler, ?array $offset_map = null)
     {
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($offset_map) {
             foreach ($offset_map as [, , $b_s, $b_e]) {
                 if ($this->start_change === null) {
@@ -82,6 +83,7 @@ final class SimpleNameResolver extends NodeVisitorAbstract
             }
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($node instanceof Stmt\ClassMethod
             && $this->start_change
             && $this->end_change
@@ -90,6 +92,9 @@ final class SimpleNameResolver extends NodeVisitorAbstract
             $attrs = $node->getAttributes();
 
             if ($cs = $node->getComments()) {
+                /**
+                 * @psalm-fixme PossiblyUndefinedIntArrayOffset
+                 */
                 $attrs['startFilePos'] = $cs[0]->getStartFilePos();
             }
 

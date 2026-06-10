@@ -136,6 +136,9 @@ final class FileStatementsDiffer extends AstDiffer
                             $add_or_delete[] = 'use:' . (string) $use->alias;
                         } else {
                             $name_parts = $use->name->getParts();
+                            /**
+                             * @psalm-fixme RedundantCondition
+                             */
                             assert(!empty($name_parts));
 
                             $add_or_delete[] = 'use:' . end($name_parts);
@@ -164,6 +167,9 @@ final class FileStatementsDiffer extends AstDiffer
                             $add_or_delete[] = 'use:' . (string) $use->alias;
                         } else {
                             $name_parts = $use->name->getParts();
+                            /**
+                             * @psalm-fixme RedundantCondition
+                             */
                             assert(!empty($name_parts));
 
                             $add_or_delete[] = 'use:' . end($name_parts);

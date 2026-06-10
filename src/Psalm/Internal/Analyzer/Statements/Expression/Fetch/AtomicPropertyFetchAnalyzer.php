@@ -361,6 +361,7 @@ final class AtomicPropertyFetchAnalyzer
             );
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (!$naive_property_exists
             && $fq_class_name !== $context->self
             && $context->self
@@ -459,6 +460,7 @@ final class AtomicPropertyFetchAnalyzer
 
             $property_storage = $declaring_class_storage->properties[$prop_name];
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($context->self && !NamespaceAnalyzer::isWithinAny($context->self, $property_storage->internal)) {
                 IssueBuffer::maybeAdd(
                     new InternalProperty(
@@ -633,6 +635,7 @@ final class AtomicPropertyFetchAnalyzer
                         $lhs_type_part = new TGenericObject($lhs_type_part->value, $template_types);
                     }
 
+                    /** @psalm-fixme RiskyTruthyFalsyComparison */
                     $stmt_type = self::localizePropertyType(
                         $codebase,
                         $stmt_type,
@@ -701,6 +704,9 @@ final class AtomicPropertyFetchAnalyzer
             $statements_analyzer->node_data = $old_data_provider;
 
             if ($fake_method_call_type) {
+                /**
+                 * @psalm-fixme ReferenceConstraintViolation
+                 */
                 $stmt_type = $statements_analyzer->node_data->getType($stmt);
                 $statements_analyzer->node_data->setType(
                     $stmt,
@@ -746,6 +752,7 @@ final class AtomicPropertyFetchAnalyzer
         ClassLikeStorage $property_class_storage,
         ClassLikeStorage $property_declaring_class_storage,
     ): Union {
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         $template_types = CallAnalyzer::getTemplateTypesForCall(
             $codebase,
             $property_declaring_class_storage,
@@ -757,6 +764,7 @@ final class AtomicPropertyFetchAnalyzer
         $extended_types = $property_class_storage->template_extended_params;
 
         if ($template_types) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($property_class_storage->template_types) {
                 foreach ($lhs_type_part->type_params as $param_offset => $lhs_param_type) {
                     $i = -1;
@@ -850,6 +858,7 @@ final class AtomicPropertyFetchAnalyzer
                 $statements_analyzer,
             );
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($var_id) {
                 $var_type = $statements_analyzer->node_data->getType($stmt->var);
 
@@ -871,6 +880,7 @@ final class AtomicPropertyFetchAnalyzer
 
                 $data_flow_graph->addNode($var_node);
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 $property_node = DataFlowNode::getForAssignment(
                     $var_property_id ?: $var_id . '->$property',
                     $property_location,
@@ -878,6 +888,9 @@ final class AtomicPropertyFetchAnalyzer
 
                 $data_flow_graph->addNode($property_node);
 
+                /**
+                 * @psalm-fixme ImplicitToStringCast
+                 */
                 $data_flow_graph->addPath(
                     $var_node,
                     $property_node,
@@ -948,6 +961,7 @@ final class AtomicPropertyFetchAnalyzer
 
         $property_location = new CodeLocation($statements_analyzer->getSource(), $stmt);
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         $localized_property_node = DataFlowNode::getForAssignment(
             $var_property_id ?: $property_id,
             $property_location,
@@ -1125,6 +1139,7 @@ final class AtomicPropertyFetchAnalyzer
 
         $statements_analyzer->node_data->setType($stmt, $stmt_type);
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($var_id) {
             $context->vars_in_scope[$var_id] = $stmt_type;
         }
@@ -1249,6 +1264,7 @@ final class AtomicPropertyFetchAnalyzer
                     $lhs_type_part = new TGenericObject($lhs_type_part->value, $template_types);
                 }
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 $stmt_type = self::localizePropertyType(
                     $codebase,
                     $stmt_type,

@@ -288,6 +288,7 @@ abstract class FunctionLikeAnalyzer extends SourceAnalyzer
             $statements_analyzer->setByRefUses($byref_uses);
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($storage->template_types) {
             foreach ($storage->template_types as $param_name => $_) {
                 $fq_classlike_name = Type::getFQCLNFromString(
@@ -310,7 +311,9 @@ abstract class FunctionLikeAnalyzer extends SourceAnalyzer
 
         $template_types = $storage->template_types;
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($appearing_class_storage && $appearing_class_storage->template_types) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             $template_types = array_merge($template_types ?: [], $appearing_class_storage->template_types);
         }
 
@@ -388,6 +391,7 @@ abstract class FunctionLikeAnalyzer extends SourceAnalyzer
             $context->pure = true;
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($storage->mutation_free
             && $cased_method_id
             && !strpos($cased_method_id, '__construct')
@@ -460,6 +464,7 @@ abstract class FunctionLikeAnalyzer extends SourceAnalyzer
             return false;
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($context->collect_initializations || $context->collect_mutations) {
             $statements_analyzer->addSuppressedIssues([
                 'DocblockTypeContradiction',
@@ -478,7 +483,7 @@ abstract class FunctionLikeAnalyzer extends SourceAnalyzer
                     'PossiblyUndefinedMethod',
                 ]);
             }
-        } elseif ($cased_method_id && strpos($cased_method_id, '__destruct')) {
+        } /** @psalm-fixme RiskyTruthyFalsyComparison */ elseif ($cased_method_id && strpos($cased_method_id, '__destruct')) {
             $statements_analyzer->addSuppressedIssues([
                 'InvalidPropertyAssignmentValue',
                 'PossiblyNullPropertyAssignmentValue',
@@ -551,10 +556,12 @@ abstract class FunctionLikeAnalyzer extends SourceAnalyzer
             }
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($this->inferred_has_mutation && $context->self) {
             $this->codebase->analyzer->addMutableClass($context->self);
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (!$context->collect_initializations
             && !$context->collect_mutations
             && $project_analyzer->debug_performance
@@ -568,10 +575,14 @@ abstract class FunctionLikeAnalyzer extends SourceAnalyzer
 
             if ($node_counter->count > 5) {
                 $time_taken = microtime(true) - $time;
+                /**
+                 * @psalm-fixme InvalidOperand
+                 */
                 $codebase->analyzer->addFunctionTiming($cased_method_id, $time_taken / $node_counter->count);
             }
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         $final_actions = ScopeAnalyzer::getControlActions(
             $this->function->getStmts() ?: [],
             null,
@@ -703,6 +714,7 @@ abstract class FunctionLikeAnalyzer extends SourceAnalyzer
         }
 
         foreach ($storage->throws as $expected_exception => $_) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if (($expected_exception === 'self'
                     || $expected_exception === 'static')
                 && $context->self
@@ -807,6 +819,7 @@ abstract class FunctionLikeAnalyzer extends SourceAnalyzer
             $manipulator->addThrowsDocblock($missingThrowsDocblockErrors);
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($codebase->taint_flow_graph
             && $this->function instanceof ClassMethod
             && $cased_method_id
@@ -833,6 +846,7 @@ abstract class FunctionLikeAnalyzer extends SourceAnalyzer
 
         // Class methods are analyzed deferred, therefor it's required to
         // add taint sources additionally on analyze not only on call
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($codebase->taint_flow_graph
             && $this->function instanceof ClassMethod
             && $cased_method_id) {
@@ -876,11 +890,15 @@ abstract class FunctionLikeAnalyzer extends SourceAnalyzer
                 }
             }
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($hash
                 && $real_method_id
                 && $this instanceof MethodAnalyzer
                 && !$context->collect_initializations
             ) {
+                /**
+                 * @psalm-fixme ImplicitToStringCast
+                 */
                 $new_hash = md5($real_method_id . '::' . $context->getScopeSummary());
 
                 if ($new_hash === $hash) {
@@ -934,6 +952,7 @@ abstract class FunctionLikeAnalyzer extends SourceAnalyzer
 
         $unused_params = $this->detectUnusedParameters($statements_analyzer, $storage, $context);
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (!$storage instanceof MethodStorage
             || !$storage->cased_name
             || $storage->visibility === ClassLikeAnalyzer::VISIBILITY_PRIVATE
@@ -984,6 +1003,7 @@ abstract class FunctionLikeAnalyzer extends SourceAnalyzer
             }
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($storage instanceof MethodStorage
             && $this instanceof MethodAnalyzer
             && $class_storage
@@ -1227,6 +1247,9 @@ abstract class FunctionLikeAnalyzer extends SourceAnalyzer
                         continue;
                     }
 
+                    /**
+                     * @psalm-fixme ImplicitToStringCast
+                     */
                     IssueBuffer::maybeAdd(
                         new MismatchingDocblockParamType(
                             'Parameter ' . $function_param_id . ' has wrong type \'' . $param_type .
@@ -1403,9 +1426,10 @@ abstract class FunctionLikeAnalyzer extends SourceAnalyzer
 
                 $parent_fqcln = $this->getParentFQCLN();
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($resolved_name === 'self' && $context->self) {
                     $resolved_name = $context->self;
-                } elseif ($resolved_name === 'parent' && $parent_fqcln) {
+                } /** @psalm-fixme RiskyTruthyFalsyComparison */ elseif ($resolved_name === 'parent' && $parent_fqcln) {
                     $resolved_name = $parent_fqcln;
                 }
 
@@ -1437,9 +1461,10 @@ abstract class FunctionLikeAnalyzer extends SourceAnalyzer
 
                 $parent_fqcln = $this->getParentFQCLN();
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($resolved_name === 'self' && $context->self) {
                     $resolved_name = $context->self;
-                } elseif ($resolved_name === 'parent' && $parent_fqcln) {
+                } /** @psalm-fixme RiskyTruthyFalsyComparison */ elseif ($resolved_name === 'parent' && $parent_fqcln) {
                     $resolved_name = $parent_fqcln;
                 }
 
@@ -1663,12 +1688,17 @@ abstract class FunctionLikeAnalyzer extends SourceAnalyzer
         if ($this->function instanceof ClassMethod) {
             $function_name = (string)$this->function->name;
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             return ($context_self ?: $this->source->getFQCLN()) . '::' . $function_name;
         }
 
         if ($this->function instanceof Function_) {
             $namespace = $this->source->getNamespace();
 
+            /**
+             * @psalm-fixme ImplicitToStringCast
+             * @psalm-fixme RiskyTruthyFalsyComparison
+             */
             return ($namespace ? $namespace . '\\' : '') . $this->function->name;
         }
 
@@ -1772,6 +1802,7 @@ abstract class FunctionLikeAnalyzer extends SourceAnalyzer
     public function getTemplateTypeMap(): ?array
     {
         if ($this->source instanceof ClassLikeAnalyzer) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             return ($this->source->getTemplateTypeMap() ?: [])
                 + ($this->storage->template_types ?: []);
         }
@@ -1899,8 +1930,12 @@ abstract class FunctionLikeAnalyzer extends SourceAnalyzer
             $fq_class_name = (string)$context->self;
             $appearing_class_storage = $classlike_storage_provider->get($fq_class_name);
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($add_mutations) {
                 if (!$context->collect_initializations) {
+                    /**
+                     * @psalm-fixme ImplicitToStringCast
+                     */
                     $hash = md5($real_method_id . '::' . $context->getScopeSummary());
 
                     // if we know that the function has no effects on vars, we don't bother rechecking
@@ -1908,7 +1943,8 @@ abstract class FunctionLikeAnalyzer extends SourceAnalyzer
                         return null;
                     }
                 }
-            } elseif ($context->self) {
+            } /** @psalm-fixme RiskyTruthyFalsyComparison */ elseif ($context->self) {
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($appearing_class_storage->template_types) {
                     $template_params = [];
 
@@ -1951,6 +1987,9 @@ abstract class FunctionLikeAnalyzer extends SourceAnalyzer
                     && $storage->specialize_call
                     && $storage->location
                 ) {
+                    /**
+                     * @psalm-fixme ImplicitToStringCast
+                     */
                     $new_parent_node = DataFlowNode::getForAssignment('$this in ' . $method_id, $storage->location);
 
                     $codebase->taint_flow_graph->addNode($new_parent_node);
@@ -2027,6 +2066,9 @@ abstract class FunctionLikeAnalyzer extends SourceAnalyzer
                 && ($storage->cased_name !== '__toString'
                     || isset($appearing_class_storage->direct_class_interfaces['stringable']))
             ) {
+                /**
+                 * @psalm-fixme ImplicitToStringCast
+                 */
                 IssueBuffer::maybeAdd(
                     new MissingOverrideAttribute(
                         'Method ' . $method_id . ' should have the "Override" attribute',
@@ -2117,6 +2159,7 @@ abstract class FunctionLikeAnalyzer extends SourceAnalyzer
                 MethodAnalyzer::checkForbiddenEnumMethod($storage, $appearing_class_storage);
             }
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if (!$context->calling_method_id || !$context->collect_initializations) {
                 $context->calling_method_id = strtolower((string)$method_id);
             }
@@ -2218,6 +2261,7 @@ abstract class FunctionLikeAnalyzer extends SourceAnalyzer
                 continue;
             }
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if (!$storage instanceof MethodStorage
                 || !$storage->cased_name
                 || $storage->visibility === ClassLikeAnalyzer::VISIBILITY_PRIVATE

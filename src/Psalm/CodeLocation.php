@@ -144,6 +144,7 @@ class CodeLocation
         $this->docblock_start = $doc_comment ? $doc_comment->getStartFilePos() : null;
         $this->docblock_start_line_number = $doc_comment ? $doc_comment->getStartLine() : null;
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         $this->preview_start = $this->docblock_start ?: $this->file_start;
 
         /** @psalm-suppress ImpureMethodCall Actually mutation-free just not marked */
@@ -222,6 +223,7 @@ class CodeLocation
 
         $this->preview_end = $preview_end;
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($this->docblock_line_number &&
             $this->docblock_start_line_number &&
             $this->preview_start < $this->selection_start
@@ -276,6 +278,7 @@ class CodeLocation
                 $this->selection_end - $this->selection_start,
             );
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($this->text) {
                 $regex = '/(' . str_replace(',', ',[ ]*', preg_quote($this->text, '/')) . ')/';
             }
@@ -342,6 +345,7 @@ class CodeLocation
 
     public function getLineNumber(): int
     {
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         return $this->docblock_line_number ?: $this->raw_line_number;
     }
 

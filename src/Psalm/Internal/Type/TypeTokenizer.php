@@ -392,6 +392,9 @@ final class TypeTokenizer
                 continue;
             }
 
+            /**
+             * @psalm-fixme PossiblyInvalidArrayOffset
+             */
             if (isset($type_tokens[$i + 1])
                 && $type_tokens[$i + 1][0] === ':'
                 && isset($type_tokens[$i - 1])
@@ -404,6 +407,7 @@ final class TypeTokenizer
                 continue;
             }
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if (strpos($string_type_token[0], '$')) {
                 $string_type_token[0] = (string) preg_replace('/(.+)\$.*/', '$1', $string_type_token[0]);
             }
@@ -415,11 +419,13 @@ final class TypeTokenizer
             $type_tokens[$i][0] = $fixed_token;
             $string_type_token[0] = $fixed_token;
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($string_type_token[0] === 'self' && $self_fqcln) {
                 $type_tokens[$i][0] = $self_fqcln;
                 continue;
             }
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($string_type_token[0] === 'parent' && $parent_fqcln) {
                 $type_tokens[$i][0] = $parent_fqcln;
                 continue;
@@ -441,6 +447,9 @@ final class TypeTokenizer
                 continue;
             }
 
+            /**
+             * @psalm-fixme PossiblyInvalidArrayOffset
+             */
             if (isset($type_tokens[$i + 1])
                 && isset($type_tokens[$i - 1])
                 && ($type_tokens[$i - 1][0] === '{' || $type_tokens[$i - 1][0] === ',')

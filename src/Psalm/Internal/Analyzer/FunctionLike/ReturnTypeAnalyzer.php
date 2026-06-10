@@ -104,6 +104,7 @@ final class ReturnTypeAnalyzer
 
         $cased_method_id = $function_like_analyzer->getCorrectlyCasedMethodId();
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (!$function->getStmts() &&
             (
                 $function instanceof ClassMethod &&
@@ -203,6 +204,9 @@ final class ReturnTypeAnalyzer
             && (!$function_like_storage || !$function_like_storage->has_yield)
             && $function_returns_implicitly
         ) {
+            /**
+             * @psalm-fixme ImplicitToStringCast
+             */
             if (IssueBuffer::accepts(
                 new InvalidReturnType(
                     'Not all code paths of ' . $cased_method_id . ' end in a return statement, return type '
@@ -320,6 +324,9 @@ final class ReturnTypeAnalyzer
                     $union_comparison_results,
                 )
             ) {
+                /**
+                 * @psalm-fixme ImplicitToStringCast
+                 */
                 if (IssueBuffer::accepts(
                     new InvalidToString(
                         '__toString methods must return a string, ' . $inferred_return_type . ' returned',
@@ -332,6 +339,9 @@ final class ReturnTypeAnalyzer
             }
 
             if ($union_comparison_results->to_string_cast) {
+                /**
+                 * @psalm-fixme ImplicitToStringCast
+                 */
                 IssueBuffer::maybeAdd(
                     new ImplicitToStringCast(
                         'The declared return type for ' . $cased_method_id . ' expects string, ' .
@@ -420,12 +430,14 @@ final class ReturnTypeAnalyzer
             return null;
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         $self_fq_class_name = $fq_class_name ?: $source->getFQCLN();
 
         $parent_class = null;
 
         $classlike_storage = null;
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($self_fq_class_name) {
             $classlike_storage = $codebase->classlike_storage_provider->get($self_fq_class_name);
             $parent_class = $classlike_storage->parent_class;
@@ -482,6 +494,9 @@ final class ReturnTypeAnalyzer
             }
 
             if (!$declared_return_type->from_docblock || !$declared_return_type->isNullable()) {
+                /**
+                 * @psalm-fixme ImplicitToStringCast
+                 */
                 if (IssueBuffer::accepts(
                     new InvalidReturnType(
                         'No return statements were found for method ' . $cased_method_id .
@@ -714,6 +729,9 @@ final class ReturnTypeAnalyzer
             }
 
             if ($union_comparison_results->to_string_cast) {
+                /**
+                 * @psalm-fixme ImplicitToStringCast
+                 */
                 IssueBuffer::maybeAdd(
                     new ImplicitToStringCast(
                         'The declared return type for ' . $cased_method_id . ' expects \'' .
@@ -750,6 +768,9 @@ final class ReturnTypeAnalyzer
                     return null;
                 }
 
+                /**
+                 * @psalm-fixme ImplicitToStringCast
+                 */
                 if (IssueBuffer::accepts(
                     new InvalidNullableReturnType(
                         'The declared return type \'' . $declared_return_type . '\' for ' . $cased_method_id .
@@ -786,6 +807,9 @@ final class ReturnTypeAnalyzer
                     return null;
                 }
 
+                /**
+                 * @psalm-fixme ImplicitToStringCast
+                 */
                 if (IssueBuffer::accepts(
                     new InvalidFalsableReturnType(
                         'The declared return type \'' . $declared_return_type . '\' for ' . $cased_method_id .
@@ -824,6 +848,7 @@ final class ReturnTypeAnalyzer
 
         $classlike_storage = null;
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($context->self) {
             $classlike_storage = $codebase->classlike_storage_provider->get($context->self);
             $parent_class = $classlike_storage->parent_class;
@@ -930,6 +955,7 @@ final class ReturnTypeAnalyzer
             return false;
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($classlike_storage && $context->self) {
             $class_template_params = ClassTemplateParamCollector::collect(
                 $codebase,
@@ -940,6 +966,7 @@ final class ReturnTypeAnalyzer
                 true,
             );
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             $class_template_params = $class_template_params ?: [];
 
             if ($class_template_params) {

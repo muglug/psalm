@@ -66,6 +66,9 @@ final class AlgebraAnalyzer
                 && (isset($formula_1_hashes[$hash]) || isset($formula_2_hashes[$hash]))
                 && !array_intersect_key($new_assigned_var_ids, $formula_2_clause->possibilities)
             ) {
+                /**
+                 * @psalm-fixme ImplicitToStringCast
+                 */
                 IssueBuffer::maybeAdd(
                     new RedundantCondition(
                         $formula_2_clause . ' has already been asserted',
@@ -115,13 +118,22 @@ final class AlgebraAnalyzer
 
                     if (!$mini_formula_2[0]->wedge) {
                         if (count($mini_formula_2) > 1) {
+                            /**
+                             * @psalm-fixme ImplicitToStringCast
+                             */
                             $paradox_message = 'Condition ((' . implode(') && (', $mini_formula_2) . '))'
                                 . ' contradicts a previously-established condition (' . $clause_1 . ')';
                         } else {
+                            /**
+                             * @psalm-fixme ImplicitToStringCast
+                             */
                             $paradox_message = 'Condition (' . $mini_formula_2[0] . ')'
                                 . ' contradicts a previously-established condition (' . $clause_1 . ')';
                         }
                     } else {
+                        /**
+                         * @psalm-fixme ImplicitToStringCast
+                         */
                         $paradox_message = 'Condition not(' . $negated_clause_2 . ')'
                             . ' contradicts a previously-established condition (' . $clause_1 . ')';
                     }

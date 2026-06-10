@@ -120,6 +120,9 @@ final class FunctionCallAnalyzer extends CallAnalyzer
             }
 
             if ($original_function_id === 'call_user_func_array' && isset($stmt->getArgs()[1])) {
+                /**
+                 * @psalm-fixme PossiblyUndefinedArrayOffset
+                 */
                 $function_name = $stmt->getArgs()[0]->value;
 
                 $stmt = new VirtualFuncCall(
@@ -196,6 +199,7 @@ final class FunctionCallAnalyzer extends CallAnalyzer
 
         $function_callable = null;
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (!$is_first_class_callable
             && $function_name instanceof PhpParser\Node\Name
             && $function_call_info->function_id
@@ -242,6 +246,7 @@ final class FunctionCallAnalyzer extends CallAnalyzer
 
         $template_result->lower_bounds = [...$template_result->lower_bounds, ...$already_inferred_lower_bounds];
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($function_name instanceof PhpParser\Node\Name && $function_call_info->function_id) {
             $stmt_type = FunctionCallReturnTypeFetcher::fetch(
                 $statements_analyzer,
@@ -392,6 +397,7 @@ final class FunctionCallAnalyzer extends CallAnalyzer
                 );
             }
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($function_call_info->function_storage->deprecated && $function_call_info->function_id) {
                 IssueBuffer::maybeAdd(
                     new DeprecatedFunction(
@@ -404,6 +410,7 @@ final class FunctionCallAnalyzer extends CallAnalyzer
             }
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($function_name instanceof PhpParser\Node\Name && $function_call_info->function_id) {
             NamedFunctionCallHandler::handle(
                 $statements_analyzer,
@@ -759,10 +766,14 @@ final class FunctionCallAnalyzer extends CallAnalyzer
                             continue;
                         }
 
+                        /** @psalm-fixme RiskyTruthyFalsyComparison */
                         if (strpos($var_type_part->value, '::')) {
                             $parts = explode('::', strtolower($var_type_part->value));
                             $fq_class_name = $parts[0];
                             $fq_class_name = (string) preg_replace('/^\\\/', '', $fq_class_name, 1);
+                            /**
+                             * @psalm-fixme PossiblyUndefinedIntArrayOffset
+                             */
                             $potential_method_id = new MethodIdentifier($fq_class_name, $parts[1]);
                         } else {
                             $function_call_info->new_function_name = new VirtualFullyQualified(
@@ -973,6 +984,7 @@ final class FunctionCallAnalyzer extends CallAnalyzer
         if ($assert_type_assertions) {
             // while in an and, we allow scope to boil over to support
             // statements of the form if ($x && $x->foo())
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             [$op_vars_in_scope, $op_references_in_scope] = Reconciler::reconcileKeyedTypes(
                 $assert_type_assertions,
                 $assert_type_assertions,
@@ -1050,6 +1062,7 @@ final class FunctionCallAnalyzer extends CallAnalyzer
         ) {
             $must_use = true;
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             $callmap_function_pure = $function_call_info->function_id && $function_call_info->in_call_map
                 ? $codebase->functions->isCallMapFunctionPure(
                     $codebase,
@@ -1060,6 +1073,7 @@ final class FunctionCallAnalyzer extends CallAnalyzer
                 )
                 : null;
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ((!$function_call_info->in_call_map
                     && $function_call_info->function_storage
                     && !$function_call_info->function_storage->pure
@@ -1084,7 +1098,7 @@ final class FunctionCallAnalyzer extends CallAnalyzer
                 if (!$config->remember_property_assignments_after_call) {
                     $context->removeMutableObjectVars();
                 }
-            } elseif ($function_call_info->function_id
+            } /** @psalm-fixme RiskyTruthyFalsyComparison */ elseif ($function_call_info->function_id
                 && (($function_call_info->function_storage
                         && $function_call_info->function_storage->pure
                         && !$function_call_info->function_storage->assertions

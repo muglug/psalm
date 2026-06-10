@@ -108,6 +108,7 @@ final class ObjectComparator
 
             $any_inputs_contained = false;
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             $container_type_is_interface = $intersection_container_type_lower
                 && $codebase->interfaceExists($intersection_container_type_lower);
 

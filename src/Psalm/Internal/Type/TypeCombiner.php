@@ -127,6 +127,10 @@ final class TypeCombiner
             }
         }
 
+        /**
+         * @psalm-fixme PossiblyUndefinedIntArrayOffset
+         * @psalm-fixme RiskyTruthyFalsyComparison
+         */
         if (count($combination->value_types) === 1
             && !count($combination->objectlike_entries)
             && (!$combination->array_type_params
@@ -256,6 +260,7 @@ final class TypeCombiner
                 );
                 $new_types[] = $generic_object;
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($combination->named_object_types) {
                     unset($combination->named_object_types[$generic_type]);
                 }
@@ -278,7 +283,9 @@ final class TypeCombiner
             $new_types[] = $generic_object;
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($combination->class_string_types) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($combination->strings) {
                 foreach ($combination->strings as $k => $string) {
                     if ($string instanceof TLiteralClassString) {
@@ -311,14 +318,17 @@ final class TypeCombiner
             }
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($combination->strings) {
             $new_types = array_merge($new_types, array_values($combination->strings));
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($combination->ints) {
             $new_types = array_merge($new_types, array_values($combination->ints));
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($combination->floats) {
             $new_types = array_merge($new_types, array_values($combination->floats));
         }
@@ -474,6 +484,9 @@ final class TypeCombiner
             $type_key = $type->getKey();
         }
 
+        /**
+         * @psalm-fixme PossiblyUndefinedIntArrayOffset
+         */
         if ($type instanceof TIterable
             && $combination->array_type_params
             && ($type->has_docblock_params || $combination->array_type_params[1]->isMixed())
@@ -1082,6 +1095,7 @@ final class TypeCombiner
             $type_key = 'string';
 
             if (!isset($combination->value_types['string'])) {
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($combination->strings) {
                     if ($type instanceof TNumericString) {
                         $has_only_numeric_strings = true;
@@ -1307,6 +1321,7 @@ final class TypeCombiner
             }
         } else {
             if ($type instanceof TNonspecificLiteralInt) {
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($combination->ints || !isset($combination->value_types['int'])) {
                     $combination->value_types['int'] = $type;
                 } elseif (isset($combination->value_types['int'])
@@ -1318,6 +1333,7 @@ final class TypeCombiner
             } elseif ($type instanceof TIntRange) {
                 $min_bound = $type->min_bound;
                 $max_bound = $type->max_bound;
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($combination->ints) {
                     foreach ($combination->ints as $int) {
                         if (!$type->contains($int->value)) {
@@ -1357,6 +1373,7 @@ final class TypeCombiner
         /** @var array<string, bool>|null */
         $shared_classlikes = null;
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($combination->strings) {
             foreach ($combination->strings as $string_type) {
                 $classlikes = self::getClassLikes($codebase, $string_type->value);
@@ -1369,6 +1386,7 @@ final class TypeCombiner
             }
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($combination->class_string_types) {
             foreach ($combination->class_string_types as $value_type) {
                 if ($value_type instanceof TNamedObject) {
@@ -1383,6 +1401,7 @@ final class TypeCombiner
             }
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         return $shared_classlikes ?: [];
     }
 
@@ -1432,6 +1451,9 @@ final class TypeCombiner
         ) {
             foreach ($combination->array_type_params[0]->getAtomicTypes() as $atomic_key_type) {
                 if ($atomic_key_type instanceof TLiteralString) {
+                    /**
+                     * @psalm-fixme PossiblyUndefinedIntArrayOffset
+                     */
                     $combination->objectlike_entries[$atomic_key_type->value]
                         = $combination->array_type_params[1];
                 }
@@ -1441,6 +1463,9 @@ final class TypeCombiner
             $combination->objectlike_sealed = false;
         }
 
+        /**
+         * @psalm-fixme PossiblyUndefinedIntArrayOffset
+         */
         if (!$combination->array_type_params || $combination->array_type_params[1]->isNever()) {
             if (!$overwrite_empty_array
                 && $combination->array_type_params
@@ -1451,6 +1476,9 @@ final class TypeCombiner
                 unset($objectlike_entry);
             }
 
+            /**
+             * @psalm-fixme PossiblyUndefinedIntArrayOffset
+             */
             if ($combination->objectlike_value_type
                 && $combination->objectlike_value_type->isMixed()
                 && $combination->array_type_params
@@ -1475,7 +1503,7 @@ final class TypeCombiner
                 $fallback_value_type = null;
                 if ($combination->objectlike_value_type) {
                     $fallback_value_type = $combination->objectlike_value_type;
-                } elseif ($combination->array_type_params
+                } /** @psalm-fixme PossiblyUndefinedIntArrayOffset */ elseif ($combination->array_type_params
                     && $combination->array_type_params[1]->isMixed()
                 ) {
                     $fallback_value_type = $combination->array_type_params[1];
@@ -1616,6 +1644,7 @@ final class TypeCombiner
                 && $overwrite_empty_array)
         ) {
             if ($combination->all_arrays_lists) {
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($combination->objectlike_entries
                     && $combination->objectlike_sealed
                     && isset($combination->array_type_params[1])
@@ -1626,7 +1655,7 @@ final class TypeCombiner
                         [Type::getInt(), $combination->array_type_params[1]],
                         true,
                     );
-                } elseif ($combination->array_counts && count($combination->array_counts) === 1) {
+                } /** @psalm-fixme RiskyTruthyFalsyComparison */ elseif ($combination->array_counts && count($combination->array_counts) === 1) {
                     $cnt = array_keys($combination->array_counts)[0];
                     $properties = [];
                     for ($x = 0; $x < $cnt; $x++) {
@@ -1640,6 +1669,7 @@ final class TypeCombiner
                         true,
                     );
                 } else {
+                    /** @psalm-fixme RiskyTruthyFalsyComparison */
                     $cnt = $combination->array_min_counts
                         ? min(array_keys($combination->array_min_counts))
                         : 0;
@@ -1658,7 +1688,10 @@ final class TypeCombiner
                     );
                 }
             } else {
-                /** @psalm-suppress ArgumentTypeCoercion */
+                /**
+                 * @psalm-suppress ArgumentTypeCoercion
+                 * @psalm-fixme RiskyTruthyFalsyComparison
+                 */
                 $array_type = new TNonEmptyArray(
                     $generic_type_params,
                     $combination->array_min_counts

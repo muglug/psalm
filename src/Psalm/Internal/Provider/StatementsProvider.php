@@ -97,6 +97,7 @@ final class StatementsProvider
 
         $config = Config::getInstance();
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (!$this->parser_cache_provider
             || (!$config->isInProjectDirs($file_path) && strpos($file_path, 'vendor'))
         ) {
@@ -366,6 +367,7 @@ final class StatementsProvider
 
         $error_handler = new Collecting();
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($existing_statements && $file_changes && $existing_file_contents) {
             $clashing_traverser = new CustomTraverser;
             $offset_analyzer = new PartialParserVisitor(
@@ -383,7 +385,10 @@ final class StatementsProvider
                 $stmts = $existing_statements;
             } else {
                 try {
-                    /** @var list<Stmt> */
+                    /**
+                     * @var list<Stmt>
+                     * @psalm-fixme RiskyTruthyFalsyComparison
+                     */
                     $stmts = self::$parser->parse($file_contents, $error_handler) ?: [];
                 } catch (Throwable) {
                     $stmts = [];
@@ -393,7 +398,10 @@ final class StatementsProvider
             }
         } else {
             try {
-                /** @var list<Stmt> */
+                /**
+                 * @var list<Stmt>
+                 * @psalm-fixme RiskyTruthyFalsyComparison
+                 */
                 $stmts = self::$parser->parse($file_contents, $error_handler) ?: [];
             } catch (Throwable) {
                 $stmts = [];
@@ -402,6 +410,7 @@ final class StatementsProvider
             }
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($error_handler->hasErrors() && $file_path) {
             $config = Config::getInstance();
             $has_errors = true;

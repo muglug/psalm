@@ -174,6 +174,7 @@ final class AssertionFinder
                 )
                 : [];
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($var_name) {
                 if ($candidate_if_types) {
                     $if_types[$var_name] = [[new NestedAssertions($candidate_if_types[0])]];
@@ -191,6 +192,7 @@ final class AssertionFinder
             $source,
         );
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($var_name) {
             $if_types[$var_name] = [[new Truthy()]];
 
@@ -241,6 +243,7 @@ final class AssertionFinder
                 $source,
             );
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($var_name) {
                 $if_types[$var_name] = [[new IsNotType(new TNull())]];
             }
@@ -300,6 +303,7 @@ final class AssertionFinder
                 $source,
             );
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($var_name) {
                 if ($conditional->expr instanceof PhpParser\Node\Expr\Variable
                     && $source instanceof StatementsAnalyzer
@@ -324,6 +328,7 @@ final class AssertionFinder
                     $source,
                 );
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($var_name) {
                     if ($isset_var instanceof PhpParser\Node\Expr\Variable
                         && $source instanceof StatementsAnalyzer
@@ -340,6 +345,7 @@ final class AssertionFinder
                     // look for any variables we *can* use for an isset assertion
                     $array_root = $isset_var;
 
+                    /** @psalm-fixme RiskyTruthyFalsyComparison */
                     while ($array_root instanceof PhpParser\Node\Expr\ArrayDimFetch && !$var_name) {
                         $array_root = $array_root->var;
 
@@ -350,6 +356,7 @@ final class AssertionFinder
                         );
                     }
 
+                    /** @psalm-fixme RiskyTruthyFalsyComparison */
                     if ($var_name) {
                         $if_types[$var_name] = [[new IsEqualIsset]];
                     }
@@ -388,6 +395,7 @@ final class AssertionFinder
 
         $false_position = self::hasFalseVariable($conditional);
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($false_position) {
             return self::getFalseEqualityAssertions(
                 $conditional,
@@ -402,6 +410,7 @@ final class AssertionFinder
 
         $true_position = self::hasTrueVariable($conditional);
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($true_position) {
             return self::getTrueEqualityAssertions(
                 $conditional,
@@ -428,6 +437,7 @@ final class AssertionFinder
 
         $gettype_position = self::hasGetTypeCheck($conditional);
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($gettype_position) {
             return self::getGettypeEqualityAssertions(
                 $conditional,
@@ -439,6 +449,7 @@ final class AssertionFinder
 
         $get_debug_type_position = self::hasGetDebugTypeCheck($conditional);
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($get_debug_type_position) {
             return self::getGetdebugtypeEqualityAssertions(
                 $conditional,
@@ -451,6 +462,7 @@ final class AssertionFinder
         $count = null;
         $count_equality_position = self::hasCountEqualityCheck($conditional, $count);
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($count_equality_position) {
             $if_types = [];
 
@@ -462,7 +474,10 @@ final class AssertionFinder
                 throw new UnexpectedValueException('$count_equality_position value');
             }
 
-            /** @var PhpParser\Node\Expr\FuncCall $count_expr */
+            /**
+             * @var PhpParser\Node\Expr\FuncCall $count_expr
+             * @psalm-fixme PossiblyUndefinedIntArrayOffset
+             */
             $var_name = ExpressionIdentifier::getExtendedVarId(
                 $count_expr->getArgs()[0]->value,
                 $this_class_name,
@@ -489,6 +504,7 @@ final class AssertionFinder
                 }
             }
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($var_name) {
                 if ($count > 0) {
                     $if_types[$var_name] = [[new HasExactCount($count)]];
@@ -506,6 +522,7 @@ final class AssertionFinder
 
         $getclass_position = self::hasGetClassCheck($conditional, $source);
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($getclass_position) {
             return self::getGetclassEqualityAssertions(
                 $conditional,
@@ -517,6 +534,7 @@ final class AssertionFinder
 
         $typed_value_position = self::hasTypedValueComparison($conditional, $source);
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($typed_value_position) {
             return self::getTypedValueEqualityAssertions(
                 $conditional,
@@ -564,6 +582,7 @@ final class AssertionFinder
                         $all_assertions[] = new IsIdentical($atomic_type);
                     }
 
+                    /** @psalm-fixme RiskyTruthyFalsyComparison */
                     if ($var_name_left && $var_assertion_different) {
                         $if_types[$var_name_left] = [$all_assertions];
                     }
@@ -576,6 +595,7 @@ final class AssertionFinder
 
                     $other_assertion_different = $other_type->getId() !== $intersection_type->getId();
 
+                    /** @psalm-fixme RiskyTruthyFalsyComparison */
                     if ($var_name_right && $other_assertion_different) {
                         $if_types[$var_name_right] = [$all_assertions];
                     }
@@ -614,6 +634,7 @@ final class AssertionFinder
 
         $false_position = self::hasFalseVariable($conditional);
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($false_position) {
             return self::getFalseInequalityAssertions(
                 $conditional,
@@ -628,6 +649,7 @@ final class AssertionFinder
 
         $true_position = self::hasTrueVariable($conditional);
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($true_position) {
             return self::getTrueInequalityAssertions(
                 $conditional,
@@ -654,6 +676,7 @@ final class AssertionFinder
 
         $gettype_position = self::hasGetTypeCheck($conditional);
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($gettype_position) {
             return self::getGettypeInequalityAssertions(
                 $conditional,
@@ -665,6 +688,7 @@ final class AssertionFinder
 
         $get_debug_type_position = self::hasGetDebugTypeCheck($conditional);
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($get_debug_type_position) {
             return self::getGetdebugTypeInequalityAssertions(
                 $conditional,
@@ -677,6 +701,7 @@ final class AssertionFinder
         $count = null;
         $count_inequality_position = self::hasCountEqualityCheck($conditional, $count);
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($count_inequality_position) {
             $if_types = [];
 
@@ -688,7 +713,10 @@ final class AssertionFinder
                 throw new UnexpectedValueException('$count_inequality_position value');
             }
 
-            /** @var PhpParser\Node\Expr\FuncCall $count_expr */
+            /**
+             * @var PhpParser\Node\Expr\FuncCall $count_expr
+             * @psalm-fixme PossiblyUndefinedIntArrayOffset
+             */
             $var_name = ExpressionIdentifier::getExtendedVarId(
                 $count_expr->getArgs()[0]->value,
                 $this_class_name,
@@ -715,6 +743,7 @@ final class AssertionFinder
                 }
             }
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($var_name) {
                 if ($count > 0) {
                     $if_types[$var_name] = [[new DoesNotHaveExactCount($count)]];
@@ -732,6 +761,7 @@ final class AssertionFinder
 
         $getclass_position = self::hasGetClassCheck($conditional, $source);
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($getclass_position) {
             return self::getGetclassInequalityAssertions(
                 $conditional,
@@ -743,6 +773,7 @@ final class AssertionFinder
 
         $typed_value_position = self::hasTypedValueComparison($conditional, $source);
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($typed_value_position) {
             return self::getTypedValueInequalityAssertions(
                 $conditional,
@@ -794,9 +825,13 @@ final class AssertionFinder
         } elseif ($source instanceof StatementsAnalyzer && self::hasIsACheck($expr, $source)) {
             return self::getIsaAssertions($expr, $source, $this_class_name, $first_var_name);
         } elseif (self::hasCallableCheck($expr)) {
+            /**
+             * @psalm-fixme RiskyTruthyFalsyComparison
+             * @psalm-fixme PossiblyUndefinedIntArrayOffset
+             */
             if ($first_var_name) {
                 $if_types[$first_var_name] = [[new IsType(new TCallable())]];
-            } elseif ($expr->getArgs()[0]->value instanceof PhpParser\Node\Expr\Array_
+            } /** @psalm-fixme PossiblyUndefinedIntArrayOffset */ elseif ($expr->getArgs()[0]->value instanceof PhpParser\Node\Expr\Array_
                 && isset($expr->getArgs()[0]->value->items[0], $expr->getArgs()[0]->value->items[1])
                 && $expr->getArgs()[0]->value->items[1]->value instanceof PhpParser\Node\Scalar\String_
             ) {
@@ -805,6 +840,7 @@ final class AssertionFinder
                     $this_class_name,
                     $source,
                 );
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($first_var_name_in_array_argument) {
                     $if_types[$first_var_name_in_array_argument] = [
                         [new HasMethod($expr->getArgs()[0]->value->items[1]->value->value)],
@@ -812,11 +848,13 @@ final class AssertionFinder
                 }
             }
         } elseif ($class_exists_check_type = self::hasClassExistsCheck($expr)) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($first_var_name) {
                 $class_string_type = new TClassString('object', null, $class_exists_check_type === 1);
                 $if_types[$first_var_name] = [[new IsType($class_string_type)]];
             }
         } elseif ($class_exists_check_type = self::hasTraitExistsCheck($expr)) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($first_var_name) {
                 if ($class_exists_check_type === 2) {
                     $if_types[$first_var_name] = [[new IsType(new TTraitString())]];
@@ -825,16 +863,19 @@ final class AssertionFinder
                 }
             }
         } elseif (self::hasEnumExistsCheck($expr)) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($first_var_name) {
                 $class_string = new TClassString('object', null, false, false, true);
                 $if_types[$first_var_name] = [[new IsType($class_string)]];
             }
         } elseif (self::hasInterfaceExistsCheck($expr)) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($first_var_name) {
                 $class_string = new TClassString('object', null, false, true, false);
                 $if_types[$first_var_name] = [[new IsType($class_string)]];
             }
         } elseif (self::hasFunctionExistsCheck($expr)) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($first_var_name) {
                 $if_types[$first_var_name] = [[new IsType(new TCallableString())]];
             }
@@ -843,6 +884,7 @@ final class AssertionFinder
             && isset($expr->getArgs()[1])
             && $expr->getArgs()[1]->value instanceof PhpParser\Node\Scalar\String_
         ) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($first_var_name) {
                 $if_types[$first_var_name] = [[new HasMethod($expr->getArgs()[1]->value->value)]];
             }
@@ -858,6 +900,7 @@ final class AssertionFinder
                 $codebase && $codebase->literal_array_key_check,
             );
         } elseif (self::hasNonEmptyCountCheck($expr)) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($first_var_name) {
                 $if_types[$first_var_name] = [[new NonEmptyCountable(true)]];
             }
@@ -890,6 +933,9 @@ final class AssertionFinder
 
         if (!$negate) {
             if ($first_var_type->from_docblock) {
+                /**
+                 * @psalm-fixme ImplicitToStringCast
+                 */
                 IssueBuffer::maybeAdd(
                     new RedundantConditionGivenDocblockType(
                         'Docblock type ' . $first_var_type . ' always contains ' . $expected_type,
@@ -899,6 +945,9 @@ final class AssertionFinder
                     $source->getSuppressedIssues(),
                 );
             } else {
+                /**
+                 * @psalm-fixme ImplicitToStringCast
+                 */
                 IssueBuffer::maybeAdd(
                     new RedundantCondition(
                         $first_var_type . ' always contains ' . $expected_type,
@@ -910,6 +959,9 @@ final class AssertionFinder
             }
         } else {
             if ($first_var_type->from_docblock) {
+                /**
+                 * @psalm-fixme ImplicitToStringCast
+                 */
                 IssueBuffer::maybeAdd(
                     new DocblockTypeContradiction(
                         'Docblock type !' . $first_var_type . ' does not contain ' . $expected_type,
@@ -919,6 +971,9 @@ final class AssertionFinder
                     $source->getSuppressedIssues(),
                 );
             } else {
+                /**
+                 * @psalm-fixme ImplicitToStringCast
+                 */
                 IssueBuffer::maybeAdd(
                     new TypeDoesNotContainType(
                         '!' . $first_var_type . ' does not contain ' . $expected_type,
@@ -961,6 +1016,7 @@ final class AssertionFinder
 
         $anded_types = [];
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($if_true_assertions) {
             foreach ($if_true_assertions as $assertion) {
                 $if_types = [];
@@ -1000,7 +1056,11 @@ final class AssertionFinder
                         );
                     }
 
+                    /** @psalm-fixme RiskyTruthyFalsyComparison */
                     if ($var_name) {
+                        /**
+                         * @psalm-fixme PossiblyUndefinedIntArrayOffset
+                         */
                         $if_types[$var_name] = [[$assertion->rule[0]]];
                     }
                 } elseif ($assertion->var_id === '$this') {
@@ -1020,7 +1080,11 @@ final class AssertionFinder
                         $source,
                     );
 
+                    /** @psalm-fixme RiskyTruthyFalsyComparison */
                     if ($var_id) {
+                        /**
+                         * @psalm-fixme PossiblyUndefinedIntArrayOffset
+                         */
                         $if_types[$var_id] = [[$assertion->rule[0]]];
                     }
                 } elseif (is_string($assertion->var_id)) {
@@ -1050,6 +1114,9 @@ final class AssertionFinder
                         $arg_var_id = ExpressionIdentifier::getExtendedVarId($arg_value, null, $source);
 
                         if (null === $arg_var_id) {
+                            /**
+                             * @psalm-fixme InvalidOperand
+                             */
                             IssueBuffer::maybeAdd(
                                 new InvalidDocblock(
                                     'Variable being asserted as argument ' . ($var_id+1) .  ' cannot be found
@@ -1092,6 +1159,9 @@ final class AssertionFinder
                         );
                         continue;
                     }
+                    /**
+                     * @psalm-fixme PossiblyUndefinedIntArrayOffset
+                     */
                     $if_types[$assertion_var_id] = [[$assertion->rule[0]]];
                 }
 
@@ -1101,6 +1171,7 @@ final class AssertionFinder
             }
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($if_false_assertions) {
             foreach ($if_false_assertions as $assertion) {
                 $if_types = [];
@@ -1140,7 +1211,11 @@ final class AssertionFinder
                         );
                     }
 
+                    /** @psalm-fixme RiskyTruthyFalsyComparison */
                     if ($var_name) {
+                        /**
+                         * @psalm-fixme PossiblyUndefinedIntArrayOffset
+                         */
                         $if_types[$var_name] = [[$assertion->rule[0]->getNegation()]];
                     }
                 } elseif ($assertion->var_id === '$this' && $expr instanceof PhpParser\Node\Expr\MethodCall) {
@@ -1150,7 +1225,11 @@ final class AssertionFinder
                         $source,
                     );
 
+                    /** @psalm-fixme RiskyTruthyFalsyComparison */
                     if ($var_id) {
+                        /**
+                         * @psalm-fixme PossiblyUndefinedIntArrayOffset
+                         */
                         $if_types[$var_id] = [[$assertion->rule[0]->getNegation()]];
                     }
                 } elseif (is_string($assertion->var_id)) {
@@ -1178,6 +1257,9 @@ final class AssertionFinder
                         $arg_var_id = ExpressionIdentifier::getExtendedVarId($arg_value, null, $source);
 
                         if (null === $arg_var_id) {
+                            /**
+                             * @psalm-fixme InvalidOperand
+                             */
                             IssueBuffer::maybeAdd(
                                 new InvalidDocblock(
                                     'Variable being asserted as argument ' . ($var_id+1) .  ' cannot be found
@@ -1204,6 +1286,9 @@ final class AssertionFinder
                             }
                         }
 
+                        /**
+                         * @psalm-fixme PossiblyUndefinedIntArrayOffset
+                         */
                         $rule = $assertion->rule[0]->getNegation();
 
                         $assertion_var_id = str_replace($var_id, $arg_var_id, $assertion->var_id);
@@ -1214,6 +1299,9 @@ final class AssertionFinder
                         if (str_starts_with($var_id, 'self::')) {
                             $var_id = $this_class_name.'::'.substr($var_id, 6);
                         }
+                        /**
+                         * @psalm-fixme PossiblyUndefinedIntArrayOffset
+                         */
                         $if_types[$var_id] = [[$assertion->rule[0]->getNegation()]];
                     } else {
                         IssueBuffer::maybeAdd(
@@ -1932,6 +2020,7 @@ final class AssertionFinder
                 )) //or this function name does not exist in current namespace
             )
         ) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($first_var_name) {
                 $if_types[$first_var_name] = [[$assertion_type]];
             } elseif ($first_var_type
@@ -2082,6 +2171,7 @@ final class AssertionFinder
             $source,
         );
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($var_name) {
             if ($base_conditional instanceof PhpParser\Node\Expr\Assign) {
                 $var_name = '=' . $var_name;
@@ -2111,6 +2201,9 @@ final class AssertionFinder
                     $var_type,
                 )) {
                     if ($var_type->from_docblock) {
+                        /**
+                         * @psalm-fixme ImplicitToStringCast
+                         */
                         IssueBuffer::maybeAdd(
                             new RedundantConditionGivenDocblockType(
                                 'Docblock-defined type ' . $var_type . ' can never contain null',
@@ -2120,6 +2213,9 @@ final class AssertionFinder
                             $source->getSuppressedIssues(),
                         );
                     } else {
+                        /**
+                         * @psalm-fixme ImplicitToStringCast
+                         */
                         IssueBuffer::maybeAdd(
                             new RedundantCondition(
                                 $var_type . ' can never contain null',
@@ -2165,6 +2261,7 @@ final class AssertionFinder
             $source,
         );
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($var_name) {
             if ($conditional instanceof PhpParser\Node\Expr\BinaryOp\NotIdentical) {
                 $if_types[$var_name] = [[new IsNotType(new TFalse())]];
@@ -2231,6 +2328,9 @@ final class AssertionFinder
                 $var_type,
             )) {
                 if ($var_type->from_docblock) {
+                    /**
+                     * @psalm-fixme ImplicitToStringCast
+                     */
                     IssueBuffer::maybeAdd(
                         new RedundantConditionGivenDocblockType(
                             'Docblock-defined type ' . $var_type . ' can never contain false',
@@ -2240,6 +2340,9 @@ final class AssertionFinder
                         $source->getSuppressedIssues(),
                     );
                 } else {
+                    /**
+                     * @psalm-fixme ImplicitToStringCast
+                     */
                     IssueBuffer::maybeAdd(
                         new RedundantCondition(
                             $var_type . ' can never contain false',
@@ -2294,6 +2397,7 @@ final class AssertionFinder
                 $source,
             );
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($var_name) {
                 if ($conditional instanceof PhpParser\Node\Expr\BinaryOp\NotIdentical) {
                     $if_types[$var_name] = [[new IsNotType(new TTrue())]];
@@ -2384,6 +2488,9 @@ final class AssertionFinder
                     $var_type,
                 )) {
                     if ($var_type->from_docblock) {
+                        /**
+                         * @psalm-fixme ImplicitToStringCast
+                         */
                         IssueBuffer::maybeAdd(
                             new RedundantConditionGivenDocblockType(
                                 'Docblock-defined type ' . $var_type . ' can never contain true',
@@ -2393,6 +2500,9 @@ final class AssertionFinder
                             $source->getSuppressedIssues(),
                         );
                     } else {
+                        /**
+                         * @psalm-fixme ImplicitToStringCast
+                         */
                         IssueBuffer::maybeAdd(
                             new RedundantCondition(
                                 $var_type . ' can never contain ' . $true_type,
@@ -2437,6 +2547,7 @@ final class AssertionFinder
             $source,
         );
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($var_name) {
             if ($conditional instanceof PhpParser\Node\Expr\BinaryOp\NotIdentical) {
                 $if_types[$var_name] = [[new NonEmptyCountable(true)]];
@@ -2509,7 +2620,10 @@ final class AssertionFinder
             throw new UnexpectedValueException('$gettype_position value');
         }
 
-        /** @var PhpParser\Node\Expr\FuncCall $gettype_expr */
+        /**
+         * @var PhpParser\Node\Expr\FuncCall $gettype_expr
+         * @psalm-fixme PossiblyUndefinedIntArrayOffset
+         */
         $var_name = ExpressionIdentifier::getExtendedVarId(
             $gettype_expr->getArgs()[0]->value,
             $this_class_name,
@@ -2537,6 +2651,7 @@ final class AssertionFinder
                 ),
             );
         } else {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($var_name && $var_type) {
                 if ($var_type === 'class@anonymous') {
                     $if_types[$var_name] = [[new IsNotIdentical(new TObject())]];
@@ -2575,7 +2690,10 @@ final class AssertionFinder
             throw new UnexpectedValueException('$gettype_position value');
         }
 
-        /** @var PhpParser\Node\Expr\FuncCall $get_debug_type_expr */
+        /**
+         * @var PhpParser\Node\Expr\FuncCall $get_debug_type_expr
+         * @psalm-fixme PossiblyUndefinedIntArrayOffset
+         */
         $var_name = ExpressionIdentifier::getExtendedVarId(
             $get_debug_type_expr->getArgs()[0]->value,
             $this_class_name,
@@ -2595,6 +2713,7 @@ final class AssertionFinder
             throw new UnexpectedValueException('Shouldn’t get here');
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($var_name && $var_type) {
             if ($var_type === 'class@anonymous') {
                 $if_types[$var_name] = [[new IsNotIdentical(new TObject())]];
@@ -2633,6 +2752,9 @@ final class AssertionFinder
         }
 
         if ($getclass_expr instanceof PhpParser\Node\Expr\FuncCall) {
+            /**
+             * @psalm-fixme PossiblyUndefinedIntArrayOffset
+             */
             $var_name = ExpressionIdentifier::getExtendedVarId(
                 $getclass_expr->getArgs()[0]->value,
                 $this_class_name,
@@ -2668,6 +2790,7 @@ final class AssertionFinder
         } else {
             $type = $source->node_data->getType($whichclass_expr);
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($type && $var_name) {
                 foreach ($type->getAtomicTypes() as $type_part) {
                     if ($type_part instanceof TTemplateParamClass) {
@@ -2685,6 +2808,7 @@ final class AssertionFinder
             return $if_types ? [$if_types] : [];
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (!$var_type
             || ClassLikeAnalyzer::checkFullyQualifiedClassLikeName(
                 $source,
@@ -2695,6 +2819,7 @@ final class AssertionFinder
                 $source->getSuppressedIssues(),
             ) !== false
         ) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($var_name && $var_type) {
                 $if_types[$var_name] = [[new IsClassNotEqual($var_type)]];
             }
@@ -2739,6 +2864,7 @@ final class AssertionFinder
         }
 
         if ($var_type) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($var_name) {
                 $not_identical = $conditional instanceof PhpParser\Node\Expr\BinaryOp\NotIdentical
                     || ($other_type
@@ -2804,10 +2930,12 @@ final class AssertionFinder
             $source,
         );
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($var_name && $base_conditional instanceof PhpParser\Node\Expr\Assign) {
             $var_name = '=' . $var_name;
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($var_name) {
             if ($conditional instanceof PhpParser\Node\Expr\BinaryOp\Identical) {
                 $if_types[$var_name] = [[new IsType(new TNull())]];
@@ -2833,6 +2961,9 @@ final class AssertionFinder
                 $var_type,
             )) {
                 if ($var_type->from_docblock) {
+                    /**
+                     * @psalm-fixme ImplicitToStringCast
+                     */
                     IssueBuffer::maybeAdd(
                         new DocblockTypeContradiction(
                             $var_type . ' does not contain null',
@@ -2842,6 +2973,9 @@ final class AssertionFinder
                         $source->getSuppressedIssues(),
                     );
                 } else {
+                    /**
+                     * @psalm-fixme ImplicitToStringCast
+                     */
                     IssueBuffer::maybeAdd(
                         new TypeDoesNotContainNull(
                             $var_type . ' does not contain null',
@@ -2895,6 +3029,7 @@ final class AssertionFinder
                 $source,
             );
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($var_name) {
                 if ($conditional instanceof PhpParser\Node\Expr\BinaryOp\Identical) {
                     $if_types[$var_name] = [[new IsType(new TTrue())]];
@@ -2960,6 +3095,9 @@ final class AssertionFinder
                 $var_type,
             )) {
                 if ($var_type->from_docblock) {
+                    /**
+                     * @psalm-fixme ImplicitToStringCast
+                     */
                     IssueBuffer::maybeAdd(
                         new DocblockTypeContradiction(
                             $var_type . ' does not contain true',
@@ -2969,6 +3107,9 @@ final class AssertionFinder
                         $source->getSuppressedIssues(),
                     );
                 } else {
+                    /**
+                     * @psalm-fixme ImplicitToStringCast
+                     */
                     IssueBuffer::maybeAdd(
                         new TypeDoesNotContainType(
                             $var_type . ' does not contain true',
@@ -3023,6 +3164,7 @@ final class AssertionFinder
                 $source,
             );
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($var_name) {
                 if ($conditional instanceof PhpParser\Node\Expr\BinaryOp\Identical) {
                     $if_types[$var_name] = [[new IsType(new TFalse())]];
@@ -3112,6 +3254,9 @@ final class AssertionFinder
                     $var_type,
                 )) {
                     if ($var_type->from_docblock) {
+                        /**
+                         * @psalm-fixme ImplicitToStringCast
+                         */
                         IssueBuffer::maybeAdd(
                             new DocblockTypeContradiction(
                                 $var_type . ' does not contain false',
@@ -3121,6 +3266,9 @@ final class AssertionFinder
                             $source->getSuppressedIssues(),
                         );
                     } else {
+                        /**
+                         * @psalm-fixme ImplicitToStringCast
+                         */
                         IssueBuffer::maybeAdd(
                             new TypeDoesNotContainType(
                                 $var_type . ' does not contain false',
@@ -3165,6 +3313,7 @@ final class AssertionFinder
             $source,
         );
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($var_name) {
             if ($conditional instanceof PhpParser\Node\Expr\BinaryOp\Identical) {
                 $if_types[$var_name] = [[new NotNonEmptyCountable()]];
@@ -3186,6 +3335,9 @@ final class AssertionFinder
                 $var_type,
             )) {
                 if ($var_type->from_docblock) {
+                    /**
+                     * @psalm-fixme ImplicitToStringCast
+                     */
                     IssueBuffer::maybeAdd(
                         new DocblockTypeContradiction(
                             $var_type . ' does not contain an empty array',
@@ -3195,6 +3347,9 @@ final class AssertionFinder
                         $source->getSuppressedIssues(),
                     );
                 } else {
+                    /**
+                     * @psalm-fixme ImplicitToStringCast
+                     */
                     IssueBuffer::maybeAdd(
                         new TypeDoesNotContainType(
                             $var_type . ' does not contain empty array',
@@ -3232,7 +3387,10 @@ final class AssertionFinder
             throw new UnexpectedValueException('$gettype_position value');
         }
 
-        /** @var PhpParser\Node\Expr\FuncCall $gettype_expr */
+        /**
+         * @var PhpParser\Node\Expr\FuncCall $gettype_expr
+         * @psalm-fixme PossiblyUndefinedIntArrayOffset
+         */
         $var_name = ExpressionIdentifier::getExtendedVarId(
             $gettype_expr->getArgs()[0]->value,
             $this_class_name,
@@ -3250,6 +3408,7 @@ final class AssertionFinder
                 ),
             );
         } else {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($var_name && $var_type) {
                 if ($var_type === 'class@anonymous') {
                     $if_types[$var_name] = [[new IsIdentical(new TObject())]];
@@ -3294,7 +3453,10 @@ final class AssertionFinder
             throw new UnexpectedValueException('$gettype_position value');
         }
 
-        /** @var PhpParser\Node\Expr\FuncCall $get_debug_type_expr */
+        /**
+         * @var PhpParser\Node\Expr\FuncCall $get_debug_type_expr
+         * @psalm-fixme PossiblyUndefinedIntArrayOffset
+         */
         $var_name = ExpressionIdentifier::getExtendedVarId(
             $get_debug_type_expr->getArgs()[0]->value,
             $this_class_name,
@@ -3314,6 +3476,7 @@ final class AssertionFinder
             throw new UnexpectedValueException('Shouldn’t get here');
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($var_name && $var_type) {
             if ($var_type === 'class@anonymous') {
                 $if_types[$var_name] = [[new IsIdentical(new TObject())]];
@@ -3389,6 +3552,7 @@ final class AssertionFinder
                 $var_type = null;
             }
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($var_type) {
                 if (ClassLikeAnalyzer::checkFullyQualifiedClassLikeName(
                     $source,
@@ -3404,12 +3568,14 @@ final class AssertionFinder
                 }
             }
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($var_name && $var_type) {
                 $if_types[$var_name] = [[new IsClassEqual($var_type)]];
             }
         } else {
             $type = $source->node_data->getType($whichclass_expr);
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($type && $var_name) {
                 foreach ($type->getAtomicTypes() as $type_part) {
                     if ($type_part instanceof TTemplateParamClass) {
@@ -3486,6 +3652,7 @@ final class AssertionFinder
                 )
             );
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($var_name
             && $var_type
             && !$var_type->isMixed()
@@ -3504,6 +3671,7 @@ final class AssertionFinder
             $if_types[$var_name] = [$orred_types];
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($other_var_name
             && $other_type
             && !$other_type->isMixed()
@@ -3548,6 +3716,9 @@ final class AssertionFinder
     ): array {
         $if_types = [];
 
+        /**
+         * @psalm-fixme PossiblyUndefinedIntArrayOffset
+         */
         if ($expr->getArgs()[0]->value instanceof PhpParser\Node\Expr\ClassConstFetch
             && $expr->getArgs()[0]->value->name instanceof PhpParser\Node\Identifier
             && strtolower($expr->getArgs()[0]->value->name->name) === 'class'
@@ -3558,8 +3729,15 @@ final class AssertionFinder
             $first_var_name = '$this';
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($first_var_name) {
+            /**
+             * @psalm-fixme PossiblyUndefinedIntArrayOffset
+             */
             $first_arg = $expr->getArgs()[0]->value;
+            /**
+             * @psalm-fixme PossiblyUndefinedIntArrayOffset
+             */
             $second_arg = $expr->getArgs()[1]->value;
             $third_arg = $expr->getArgs()[2]->value ?? null;
 
@@ -3651,6 +3829,10 @@ final class AssertionFinder
     ): array {
         $if_types = [];
 
+        /**
+         * @psalm-fixme PossiblyUndefinedIntArrayOffset
+         * @psalm-fixme RiskyTruthyFalsyComparison
+         */
         if ($first_var_name
             && ($second_arg_type = $source->node_data->getType($expr->getArgs()[1]->value))
             && isset($expr->getArgs()[0]->value)
@@ -3726,6 +3908,9 @@ final class AssertionFinder
         ?string $this_class_name,
         bool $check_literal_keys,
     ): array {
+        /**
+         * @psalm-fixme PossiblyUndefinedIntArrayOffset
+         */
         if ($check_literal_keys
             && $first_var_type
             && $source instanceof StatementsAnalyzer
@@ -3795,6 +3980,7 @@ final class AssertionFinder
                 )
                 : null;
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($array_root && isset($expr->getArgs()[0])) {
                 if ($first_var_name === null) {
                     $first_arg = $expr->getArgs()[0];
@@ -3854,6 +4040,7 @@ final class AssertionFinder
                     }
                 }
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($first_var_name !== null
                     && !strpos($first_var_name, '->')
                     && !strpos($first_var_name, '[')
@@ -3888,6 +4075,7 @@ final class AssertionFinder
             $superior_value_comparison,
         );
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($count_equality_position) {
             if ($count_equality_position === self::ASSIGNMENT_TO_RIGHT) {
                 $counted_expr = $conditional->left;
@@ -3895,14 +4083,19 @@ final class AssertionFinder
                 throw new UnexpectedValueException('$count_equality_position value');
             }
 
-            /** @var PhpParser\Node\Expr\FuncCall $counted_expr */
+            /**
+             * @var PhpParser\Node\Expr\FuncCall $counted_expr
+             * @psalm-fixme PossiblyUndefinedIntArrayOffset
+             */
             $var_name = ExpressionIdentifier::getExtendedVarId(
                 $counted_expr->getArgs()[0]->value,
                 $this_class_name,
                 $source,
             );
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($var_name) {
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if (self::hasReconcilableNonEmptyCountEqualityCheck($conditional)) {
                     $if_types[$var_name] = [[new NonEmptyCountable(true)]];
                 } else {
@@ -3917,6 +4110,7 @@ final class AssertionFinder
             return $if_types ? [$if_types] : [];
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($count_inequality_position) {
             if ($count_inequality_position === self::ASSIGNMENT_TO_LEFT) {
                 $count_expr = $conditional->right;
@@ -3924,13 +4118,17 @@ final class AssertionFinder
                 throw new UnexpectedValueException('$count_inequality_position value');
             }
 
-            /** @var PhpParser\Node\Expr\FuncCall $count_expr */
+            /**
+             * @var PhpParser\Node\Expr\FuncCall $count_expr
+             * @psalm-fixme PossiblyUndefinedIntArrayOffset
+             */
             $var_name = ExpressionIdentifier::getExtendedVarId(
                 $count_expr->getArgs()[0]->value,
                 $this_class_name,
                 $source,
             );
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($var_name) {
                 if ($max_count > 0) {
                     $if_types[$var_name] = [[new DoesNotHaveAtLeastCount($max_count + 1)]];
@@ -3942,6 +4140,7 @@ final class AssertionFinder
             return $if_types ? [$if_types] : [];
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($superior_value_position && $superior_value_comparison !== null) {
             if ($superior_value_position === self::ASSIGNMENT_TO_RIGHT) {
                 $var_name = ExpressionIdentifier::getExtendedVarId(
@@ -4000,6 +4199,7 @@ final class AssertionFinder
             $inferior_value_comparison,
         );
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($count_equality_position) {
             if ($count_equality_position === self::ASSIGNMENT_TO_LEFT) {
                 $count_expr = $conditional->right;
@@ -4007,13 +4207,17 @@ final class AssertionFinder
                 throw new UnexpectedValueException('$count_equality_position value');
             }
 
-            /** @var PhpParser\Node\Expr\FuncCall $count_expr */
+            /**
+             * @var PhpParser\Node\Expr\FuncCall $count_expr
+             * @psalm-fixme PossiblyUndefinedIntArrayOffset
+             */
             $var_name = ExpressionIdentifier::getExtendedVarId(
                 $count_expr->getArgs()[0]->value,
                 $this_class_name,
                 $source,
             );
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($var_name) {
                 if ($min_count > 0) {
                     $if_types[$var_name] = [[new HasAtLeastCount($min_count)]];
@@ -4025,6 +4229,7 @@ final class AssertionFinder
             return $if_types ? [$if_types] : [];
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($count_inequality_position) {
             if ($count_inequality_position === self::ASSIGNMENT_TO_RIGHT) {
                 $count_expr = $conditional->left;
@@ -4032,13 +4237,17 @@ final class AssertionFinder
                 throw new UnexpectedValueException('$count_inequality_position value');
             }
 
-            /** @var PhpParser\Node\Expr\FuncCall $count_expr */
+            /**
+             * @var PhpParser\Node\Expr\FuncCall $count_expr
+             * @psalm-fixme PossiblyUndefinedIntArrayOffset
+             */
             $var_name = ExpressionIdentifier::getExtendedVarId(
                 $count_expr->getArgs()[0]->value,
                 $this_class_name,
                 $source,
             );
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($var_name) {
                 if ($max_count > 0) {
                     $if_types[$var_name] = [[new DoesNotHaveAtLeastCount($max_count + 1)]];
@@ -4050,6 +4259,7 @@ final class AssertionFinder
             return $if_types ? [$if_types] : [];
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($inferior_value_position) {
             if ($inferior_value_position === self::ASSIGNMENT_TO_RIGHT) {
                 $var_name = ExpressionIdentifier::getExtendedVarId(
@@ -4109,6 +4319,7 @@ final class AssertionFinder
                 $source,
             );
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($var_name) {
                 $if_types[$var_name] = [$instanceof_assertions];
 

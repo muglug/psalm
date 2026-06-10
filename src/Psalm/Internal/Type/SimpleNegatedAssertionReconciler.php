@@ -95,6 +95,7 @@ final class SimpleNegatedAssertionReconciler extends Reconciler
                 return Type::getNever();
             }
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if (!$existing_var_type->isNullable()
                 && $key
                 && !str_contains($key, '[')
@@ -102,6 +103,9 @@ final class SimpleNegatedAssertionReconciler extends Reconciler
             ) {
                 if ($code_location) {
                     if ($existing_var_type->from_static_property) {
+                        /**
+                         * @psalm-fixme ImplicitToStringCast
+                         */
                         IssueBuffer::maybeAdd(
                             new RedundantPropertyInitializationCheck(
                                 'Static property ' . $key . ' with type '
@@ -112,6 +116,9 @@ final class SimpleNegatedAssertionReconciler extends Reconciler
                             $suppressed_issues,
                         );
                     } elseif ($existing_var_type->from_property) {
+                        /**
+                         * @psalm-fixme ImplicitToStringCast
+                         */
                         IssueBuffer::maybeAdd(
                             new RedundantPropertyInitializationCheck(
                                 'Property ' . $key . ' with type '
@@ -121,6 +128,9 @@ final class SimpleNegatedAssertionReconciler extends Reconciler
                             $suppressed_issues,
                         );
                     } elseif ($existing_var_type->from_docblock) {
+                        /**
+                         * @psalm-fixme ImplicitToStringCast
+                         */
                         IssueBuffer::maybeAdd(
                             new DocblockTypeContradiction(
                                 'Cannot resolve types for ' . $key . ' with docblock-defined type '
@@ -131,6 +141,9 @@ final class SimpleNegatedAssertionReconciler extends Reconciler
                             $suppressed_issues,
                         );
                     } else {
+                        /**
+                         * @psalm-fixme ImplicitToStringCast
+                         */
                         IssueBuffer::maybeAdd(
                             new TypeDoesNotContainType(
                                 'Cannot resolve types for ' . $key . ' with type '
@@ -163,6 +176,7 @@ final class SimpleNegatedAssertionReconciler extends Reconciler
             );
 
             if ($intersection === null) {
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($key && $code_location) {
                     self::triggerIssueForImpossible(
                         $existing_var_type,
@@ -517,6 +531,7 @@ final class SimpleNegatedAssertionReconciler extends Reconciler
         }
 
         if ($redundant || !$non_bool_types) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($key && $code_location && !$is_equality) {
                 self::triggerIssueForImpossible(
                     $existing_var_type,
@@ -626,6 +641,7 @@ final class SimpleNegatedAssertionReconciler extends Reconciler
             } elseif (!$array_atomic_type instanceof TArray || !$array_atomic_type->isEmptyArray()) {
                 $redundant = false;
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if (!$count) {
                     $existing_var_type->addType(new TArray(
                         [
@@ -640,6 +656,7 @@ final class SimpleNegatedAssertionReconciler extends Reconciler
                 && !$existing_var_type->hasMixed()
                 && ($redundant || $existing_var_type->isUnionEmpty())
             ) {
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($key && $code_location) {
                     self::triggerIssueForImpossible(
                         $existing_var_type,
@@ -706,6 +723,7 @@ final class SimpleNegatedAssertionReconciler extends Reconciler
         unset($type);
 
         if ($redundant || !$types) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($key && $code_location && !$is_equality) {
                 self::triggerIssueForImpossible(
                     $existing_var_type,
@@ -786,6 +804,7 @@ final class SimpleNegatedAssertionReconciler extends Reconciler
         unset($type);
 
         if ($redundant || !$types) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($key && $code_location && !$is_equality) {
                 self::triggerIssueForImpossible(
                     $existing_var_type,
@@ -866,6 +885,7 @@ final class SimpleNegatedAssertionReconciler extends Reconciler
         unset($type);
 
         if ($redundant || !$types) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($key && $code_location && !$is_equality) {
                 self::triggerIssueForImpossible(
                     $existing_var_type,
@@ -930,6 +950,7 @@ final class SimpleNegatedAssertionReconciler extends Reconciler
 
         if (!$redundant && $existing_var_type->isUnionEmpty()) {
             //every type was removed, this is an impossible assertion
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($code_location && $key && !$recursive_check) {
                 self::triggerIssueForImpossible(
                     $existing_var_type,
@@ -950,6 +971,7 @@ final class SimpleNegatedAssertionReconciler extends Reconciler
 
         if ($redundant) {
             //nothing was removed, this is a redundant assertion
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($code_location && $key && !$recursive_check) {
                 self::triggerIssueForImpossible(
                     $existing_var_type,
@@ -1130,6 +1152,7 @@ final class SimpleNegatedAssertionReconciler extends Reconciler
         }
 
         if ($redundant || !$non_scalar_types) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($key && $code_location) {
                 self::triggerIssueForImpossible(
                     $existing_var_type,
@@ -1229,6 +1252,7 @@ final class SimpleNegatedAssertionReconciler extends Reconciler
         }
 
         if (!$non_object_types || $redundant) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($key && $code_location) {
                 self::triggerIssueForImpossible(
                     $existing_var_type,
@@ -1323,6 +1347,7 @@ final class SimpleNegatedAssertionReconciler extends Reconciler
         }
 
         if (!$non_numeric_types || $redundant) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($key && $code_location && !$is_equality) {
                 self::triggerIssueForImpossible(
                     $existing_var_type,
@@ -1423,6 +1448,7 @@ final class SimpleNegatedAssertionReconciler extends Reconciler
         }
 
         if (!$non_int_types || $redundant) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($key && $code_location && !$is_equality) {
                 self::triggerIssueForImpossible(
                     $existing_var_type,
@@ -1518,6 +1544,7 @@ final class SimpleNegatedAssertionReconciler extends Reconciler
         }
 
         if (!$non_float_types || $redundant) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($key && $code_location && !$is_equality) {
                 self::triggerIssueForImpossible(
                     $existing_var_type,
@@ -1622,6 +1649,7 @@ final class SimpleNegatedAssertionReconciler extends Reconciler
         }
 
         if (!$non_string_types || $redundant) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($key && $code_location) {
                 self::triggerIssueForImpossible(
                     $existing_var_type,
@@ -1722,6 +1750,7 @@ final class SimpleNegatedAssertionReconciler extends Reconciler
         }
 
         if ((!$non_array_types || $redundant)) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($key && $code_location) {
                 self::triggerIssueForImpossible(
                     $existing_var_type,
@@ -1796,6 +1825,7 @@ final class SimpleNegatedAssertionReconciler extends Reconciler
         unset($type);
 
         if ($redundant || !$types) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($key && $code_location && !$is_equality) {
                 self::triggerIssueForImpossible(
                     $existing_var_type,
@@ -1898,6 +1928,7 @@ final class SimpleNegatedAssertionReconciler extends Reconciler
             }
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (!$inside_loop && $redundant && $var_id && $code_location) {
             self::triggerIssueForImpossible(
                 $existing_var_type,
@@ -1912,6 +1943,7 @@ final class SimpleNegatedAssertionReconciler extends Reconciler
         }
 
         if ($existing_var_type->isUnionEmpty()) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($var_id && $code_location) {
                 self::triggerIssueForImpossible(
                     $existing_var_type,
@@ -2003,6 +2035,7 @@ final class SimpleNegatedAssertionReconciler extends Reconciler
             }
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (!$inside_loop && $redundant && $var_id && $code_location) {
             self::triggerIssueForImpossible(
                 $existing_var_type,
@@ -2017,6 +2050,7 @@ final class SimpleNegatedAssertionReconciler extends Reconciler
         }
 
         if ($existing_var_type->isUnionEmpty()) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($var_id && $code_location) {
                 self::triggerIssueForImpossible(
                     $existing_var_type,

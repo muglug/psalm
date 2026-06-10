@@ -89,6 +89,7 @@ abstract class CallAnalyzer
         $project_analyzer = $source->getFileAnalyzer()->project_analyzer;
         $codebase = $source->getCodebase();
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($context->collect_mutations &&
             $context->self &&
             (
@@ -120,7 +121,7 @@ abstract class CallAnalyzer
                     $source->getRootFileName(),
                 );
             }
-        } elseif ($context->collect_initializations &&
+        } /** @psalm-fixme RiskyTruthyFalsyComparison */ elseif ($context->collect_initializations &&
             $context->self &&
             (
                 $context->self === $fq_class_name
@@ -321,6 +322,7 @@ abstract class CallAnalyzer
 
                 $documenting_method_storage = $codebase->methods->getStorage($documenting_method_id);
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($documenting_method_storage->template_types) {
                     $method_storage = $documenting_method_storage;
                 }
@@ -388,6 +390,7 @@ abstract class CallAnalyzer
         $template_types = $existing_template_types;
 
         if ($declaring_class_storage) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($calling_class_storage
                 && $declaring_class_storage !== $calling_class_storage
                 && $calling_class_storage->template_extended_params
@@ -419,7 +422,7 @@ abstract class CallAnalyzer
                         }
                     }
                 }
-            } elseif ($declaring_class_storage->template_types) {
+            } /** @psalm-fixme RiskyTruthyFalsyComparison */ elseif ($declaring_class_storage->template_types) {
                 foreach ($declaring_class_storage->template_types as $template_name => $type_map) {
                     foreach ($type_map as $key => $type) {
                         $template_types[$template_name][$key]
@@ -522,7 +525,10 @@ abstract class CallAnalyzer
             return [];
         }
 
-        /** @psalm-suppress PossiblyNullPropertyFetch */
+        /**
+         * @psalm-suppress PossiblyNullPropertyFetch
+         * @psalm-fixme PossiblyUndefinedIntArrayOffset
+         */
         if ($callable_arg->items[0]->key || $callable_arg->items[1]->key) {
             return [];
         }
@@ -650,6 +656,7 @@ abstract class CallAnalyzer
 
             $arg_value = null;
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if (is_int($var_possibilities->var_id)) {
                 if (!isset($args[$var_possibilities->var_id])) {
                     continue;
@@ -659,6 +666,7 @@ abstract class CallAnalyzer
 
                 $arg_var_id = ExpressionIdentifier::getExtendedVarId($arg_value, null, $statements_analyzer);
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($arg_var_id) {
                     $assertion_var_id = $arg_var_id;
                 }
@@ -666,7 +674,7 @@ abstract class CallAnalyzer
                 $assertion_var_id = $thisName;
             } elseif (str_starts_with($var_possibilities->var_id, '$this->') && $thisName !== null) {
                 $assertion_var_id = $thisName . str_replace('$this->', '->', $var_possibilities->var_id);
-            } elseif (str_starts_with($var_possibilities->var_id, 'self::') && $context->self) {
+            } /** @psalm-fixme RiskyTruthyFalsyComparison */ elseif (str_starts_with($var_possibilities->var_id, 'self::') && $context->self) {
                 $assertion_var_id = $context->self . str_replace('self::', '::', $var_possibilities->var_id);
             } elseif (str_contains($var_possibilities->var_id, '::$')) {
                 // allow assertions to bring external static props into scope
@@ -705,6 +713,7 @@ abstract class CallAnalyzer
 
                 $arg_var_id = ExpressionIdentifier::getExtendedVarId($arg_value, null, $statements_analyzer);
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if (!$arg_var_id) {
                     IssueBuffer::maybeAdd(
                         new InvalidDocblock(
@@ -736,6 +745,7 @@ abstract class CallAnalyzer
 
             $codebase = $statements_analyzer->getCodebase();
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($assertion_var_id) {
                 $orred_rules = [];
 

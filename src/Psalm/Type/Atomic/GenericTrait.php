@@ -93,6 +93,9 @@ trait GenericTrait
                 return $base_value;
             }
 
+            /**
+             * @psalm-fixme PossiblyUndefinedIntArrayOffset
+             */
             $value_type = $this->type_params[1];
 
             if ($value_type->isMixed() || $value_type->isNever()) {
@@ -184,6 +187,9 @@ trait GenericTrait
         if ($input_type instanceof TGenericObject
             && ($this instanceof TGenericObject || $this instanceof TIterable)
         ) {
+            /**
+             * @psalm-fixme ImpureMethodCall
+             */
             $input_object_type_params = TemplateStandinTypeReplacer::getMappedGenericTypeParams(
                 $codebase,
                 $input_type,
@@ -215,6 +221,10 @@ trait GenericTrait
                 $input_type_param = $input_object_type_params[$offset];
             }
 
+            /**
+             * @psalm-fixme ImpureMethodCall
+             * @psalm-fixme RiskyTruthyFalsyComparison
+             */
             $type_params[$offset] = TemplateStandinTypeReplacer::replace(
                 $type_param,
                 $template_result,
@@ -246,6 +256,9 @@ trait GenericTrait
     ): ?array {
         $type_params = $this->type_params;
         foreach ($type_params as $offset => $type_param) {
+            /**
+             * @psalm-fixme ImpureMethodCall
+             */
             $type_param = TemplateInferredTypeReplacer::replace(
                 $type_param,
                 $template_result,

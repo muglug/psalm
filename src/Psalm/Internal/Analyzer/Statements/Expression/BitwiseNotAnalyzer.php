@@ -73,6 +73,9 @@ final class BitwiseNotAnalyzer
             }
 
             if ($unacceptable_type || !$acceptable_types) {
+                /**
+                 * @psalm-fixme ImplicitToStringCast
+                 */
                 $message = 'Cannot negate a non-numeric non-string type ' . $unacceptable_type;
                 if ($has_valid_operand) {
                     IssueBuffer::maybeAdd(

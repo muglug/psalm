@@ -694,6 +694,7 @@ final class Context
         $vars_to_remove = [];
 
         foreach ($this->vars_in_scope as $var_id => $type) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($type->has_mutations
                 && (str_contains($var_id, '->') || str_contains($var_id, '::'))
                 && (!$methods_only || strpos($var_id, '()'))
@@ -716,6 +717,7 @@ final class Context
             $abandon_clause = false;
 
             foreach (array_keys($clause->possibilities) as $key) {
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ((str_contains($key, '->') || str_contains($key, '::'))
                     && (!$methods_only || strpos($key, '()'))
                 ) {

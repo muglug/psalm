@@ -95,6 +95,9 @@ final class PropertyDocblockManipulator
             return;
         }
 
+        /**
+         * @psalm-fixme PossiblyUndefinedIntArrayOffset
+         */
         $prop = $stmt->props[0];
 
         if ($stmt->type) {
@@ -115,6 +118,7 @@ final class PropertyDocblockManipulator
         if (!$docblock) {
             $preceding_semicolon_pos = strrpos($file_contents, ";", $preceding_newline_pos - strlen($file_contents));
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($preceding_semicolon_pos) {
                 $preceding_space = substr(
                     $file_contents,
@@ -170,10 +174,12 @@ final class PropertyDocblockManipulator
             $old_phpdoc_type = array_shift($parsed_docblock->tags['var']);
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($this->new_phpdoc_type
             && $this->new_phpdoc_type !== $old_phpdoc_type
         ) {
             $modified_docblock = true;
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             $parsed_docblock->tags['var'] = [
                 $this->new_phpdoc_type
                     . ($this->type_description ? (' ' . $this->type_description) : ''),
@@ -185,6 +191,7 @@ final class PropertyDocblockManipulator
             $old_psalm_type = array_shift($parsed_docblock->tags['psalm-var']);
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($this->new_psalm_type
             && $this->new_phpdoc_type !== $this->new_psalm_type
             && $this->new_psalm_type !== $old_psalm_type
@@ -216,7 +223,9 @@ final class PropertyDocblockManipulator
         $file_manipulations = [];
 
         foreach (self::$manipulators[$file_path] as $manipulator) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($manipulator->new_php_type) {
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($manipulator->typehint_start && $manipulator->typehint_end) {
                     $file_manipulations[$manipulator->typehint_start] = new FileManipulation(
                         $manipulator->typehint_start,
@@ -230,7 +239,7 @@ final class PropertyDocblockManipulator
                         ' ' . $manipulator->new_php_type,
                     );
                 }
-            } elseif ($manipulator->new_php_type === ''
+            } /** @psalm-fixme RiskyTruthyFalsyComparison */ elseif ($manipulator->new_php_type === ''
                 && $manipulator->new_phpdoc_type
                 && $manipulator->typehint_start
                 && $manipulator->typehint_end
@@ -242,6 +251,7 @@ final class PropertyDocblockManipulator
                 );
             }
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if (!$manipulator->new_php_type
                 || !$manipulator->type_is_php_compatible
                 || $manipulator->docblock_start !== $manipulator->docblock_end

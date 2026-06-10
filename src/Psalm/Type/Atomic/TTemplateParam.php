@@ -149,6 +149,7 @@ final class TTemplateParam extends Atomic
         ?Codebase $codebase,
     ): self {
         $intersection = $this->replaceIntersectionTemplateTypesWithArgTypes($template_result, $codebase);
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (!$intersection) {
             return $this;
         }

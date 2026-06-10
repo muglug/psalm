@@ -390,6 +390,7 @@ abstract class Atomic implements TypeNode, Stringable
                 return new TClosure('Closure');
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (strpos($value, '-') && !str_starts_with($value, 'OCI-')) {
             throw new TypeParseTreeException('Unrecognized type ' . $value);
         }
@@ -399,6 +400,9 @@ abstract class Atomic implements TypeNode, Stringable
         }
 
         if (isset($template_type_map[$value])) {
+            /**
+             * @psalm-fixme PossiblyUndefinedIntArrayOffset
+             */
             $first_class = array_keys($template_type_map[$value])[0];
 
             return new TTemplateParam(
@@ -499,6 +503,9 @@ abstract class Atomic implements TypeNode, Stringable
                 return new TIterable([Type::getMixed(), Type::getMixed()]);
             }
 
+            /**
+             * @psalm-fixme ImpureMethodCall
+             */
             $implemented_traversable_templates = TemplateStandinTypeReplacer::getMappedGenericTypeParams(
                 $codebase,
                 $this,
@@ -524,6 +531,9 @@ abstract class Atomic implements TypeNode, Stringable
      */
     public function hasTraversableInterface(Codebase $codebase): bool
     {
+        /**
+         * @psalm-fixme ImpureMethodCall
+         */
         return $this instanceof TNamedObject
             && (
                 strtolower($this->value) === 'traversable'
@@ -547,6 +557,9 @@ abstract class Atomic implements TypeNode, Stringable
 
     public function hasCountableInterface(Codebase $codebase): bool
     {
+        /**
+         * @psalm-fixme ImpureMethodCall
+         */
         return $this instanceof TNamedObject
             && (
                 strtolower($this->value) === 'countable'
@@ -585,6 +598,9 @@ abstract class Atomic implements TypeNode, Stringable
 
     public function hasArrayAccessInterface(Codebase $codebase): bool
     {
+        /**
+         * @psalm-fixme ImpureMethodCall
+         */
         return $this instanceof TNamedObject
             && (
                 strtolower($this->value) === 'arrayaccess'
@@ -619,11 +635,17 @@ abstract class Atomic implements TypeNode, Stringable
                         continue;
                     }
 
+                    /**
+                     * @psalm-fixme ImpureMethodCall
+                     */
                     if ($visitor->traverse($type) === false) {
                         return false;
                     }
                 }
             } elseif ($value instanceof TypeNode) {
+                /**
+                 * @psalm-fixme ImpureMethodCall
+                 */
                 if ($visitor->traverse($value) === false) {
                     return false;
                 }
@@ -674,6 +696,9 @@ abstract class Atomic implements TypeNode, Stringable
                     foreach ($value as $type) {
                         $new[$type->getKey()] = $type;
                     }
+                    /**
+                     * @psalm-fixme ReferenceConstraintViolation
+                     */
                     $value = $new;
                 }
                 $node->{$key} = $value;

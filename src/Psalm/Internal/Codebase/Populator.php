@@ -134,6 +134,7 @@ final class Populator
             );
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (!strpos($fq_classlike_name_lc, '\\')
             && !isset($storage->methods['__construct'])
             && isset($storage->methods[$fq_classlike_name_lc])
@@ -613,6 +614,7 @@ final class Populator
             $storage->yield = $parent_storage->yield;
             $storage->declaring_yield_fqcn ??= $parent_storage->name;
         }
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($parent_storage->template_types) {
             $storage->template_extended_params[$parent_storage->name] = [];
 
@@ -622,12 +624,14 @@ final class Populator
 
                     $mapped_name = $parent_template_type_names[$i] ?? null;
 
+                    /** @psalm-fixme RiskyTruthyFalsyComparison */
                     if ($mapped_name) {
                         $storage->template_extended_params[$parent_storage->name][$mapped_name]
                             = $type;
                     }
                 }
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($parent_storage->template_extended_params) {
                     foreach ($parent_storage->template_extended_params as $t_storage_class => $type_map) {
                         foreach ($type_map as $i => $type) {
@@ -647,6 +651,7 @@ final class Populator
                 }
 
                 if ($from_direct_parent) {
+                    /** @psalm-fixme RiskyTruthyFalsyComparison */
                     if ($parent_storage->template_extended_params) {
                         $storage->template_extended_params = array_merge(
                             $storage->template_extended_params,
@@ -655,7 +660,8 @@ final class Populator
                     }
                 }
             }
-        } elseif ($parent_storage->template_extended_params) {
+        } /** @psalm-fixme RiskyTruthyFalsyComparison */ elseif ($parent_storage->template_extended_params) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             $storage->template_extended_params = array_merge(
                 $storage->template_extended_params ?: [],
                 $parent_storage->template_extended_params,

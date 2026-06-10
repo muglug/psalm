@@ -38,6 +38,7 @@ final class ExpressionIdentifier
             if (count($stmt->class->getParts()) === 1
                 && in_array(strtolower($stmt->class->getFirst()), ['self', 'static', 'parent'], true)
             ) {
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if (!$this_class_name) {
                     $fq_class_name = $stmt->class->getFirst();
                 } else {
@@ -58,6 +59,7 @@ final class ExpressionIdentifier
         if ($stmt instanceof PhpParser\Node\Expr\PropertyFetch && $stmt->name instanceof PhpParser\Node\Identifier) {
             $object_id = self::getVarId($stmt->var, $this_class_name, $source);
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if (!$object_id) {
                 return null;
             }
@@ -88,6 +90,7 @@ final class ExpressionIdentifier
         if ($stmt instanceof PhpParser\Node\Expr\PropertyFetch && $stmt->name instanceof PhpParser\Node\Identifier) {
             $property_root = self::getRootVarId($stmt->var, $this_class_name, $source);
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($property_root) {
                 return $property_root . '->' . $stmt->name->name;
             }
@@ -114,6 +117,7 @@ final class ExpressionIdentifier
 
             $offset = null;
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($root_var_id) {
                 if ($stmt->dim instanceof PhpParser\Node\Scalar\String_
                     || $stmt->dim instanceof PhpParser\Node\Scalar\Int_
@@ -131,7 +135,11 @@ final class ExpressionIdentifier
                 } elseif ($stmt->dim instanceof PhpParser\Node\Expr\PropertyFetch) {
                     $object_id = self::getExtendedVarId($stmt->dim->var, $this_class_name, $source);
 
+                    /** @psalm-fixme RiskyTruthyFalsyComparison */
                     if ($object_id && $stmt->dim->name instanceof PhpParser\Node\Identifier) {
+                        /**
+                         * @psalm-fixme ImplicitToStringCast
+                         */
                         $offset = $object_id . '->' . $stmt->dim->name;
                     }
                 } elseif ($stmt->dim instanceof PhpParser\Node\Expr\ClassConstFetch
@@ -139,6 +147,9 @@ final class ExpressionIdentifier
                     && $stmt->dim->class instanceof PhpParser\Node\Name
                     && $stmt->dim->class->getFirst() === 'static'
                 ) {
+                    /**
+                     * @psalm-fixme ImplicitToStringCast
+                     */
                     $offset = 'static::' . $stmt->dim->name;
                 } elseif ($stmt->dim
                     && $source instanceof StatementsAnalyzer
@@ -165,7 +176,11 @@ final class ExpressionIdentifier
                     /** @var string|null */
                     $resolved_name = $stmt->dim->class->getAttribute('resolvedName');
 
+                    /** @psalm-fixme RiskyTruthyFalsyComparison */
                     if ($resolved_name) {
+                        /**
+                         * @psalm-fixme ImplicitToStringCast
+                         */
                         $offset = $resolved_name . '::' . $stmt->dim->name;
                     }
                 }
@@ -177,11 +192,15 @@ final class ExpressionIdentifier
         if ($stmt instanceof PhpParser\Node\Expr\PropertyFetch) {
             $object_id = self::getExtendedVarId($stmt->var, $this_class_name, $source);
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if (!$object_id) {
                 return null;
             }
 
             if ($stmt->name instanceof PhpParser\Node\Identifier) {
+                /**
+                 * @psalm-fixme ImplicitToStringCast
+                 */
                 return $object_id . '->' . $stmt->name;
             }
 
@@ -200,11 +219,16 @@ final class ExpressionIdentifier
             /** @var string|null */
             $resolved_name = $stmt->class->getAttribute('resolvedName');
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($resolved_name) {
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if (($resolved_name === 'self' || $resolved_name === 'static') && $this_class_name) {
                     $resolved_name = $this_class_name;
                 }
 
+                /**
+                 * @psalm-fixme ImplicitToStringCast
+                 */
                 return $resolved_name . '::' . $stmt->name;
             }
         }
@@ -223,6 +247,7 @@ final class ExpressionIdentifier
                     $source,
                 );
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if (!$lhs_var_name) {
                     return null;
                 }

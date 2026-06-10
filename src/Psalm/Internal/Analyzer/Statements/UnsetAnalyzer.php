@@ -48,6 +48,7 @@ final class UnsetAnalyzer
                 $statements_analyzer,
             );
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($var_id) {
                 $context->remove($var_id);
                 unset($context->references_possibly_from_confusing_scope[$var_id]);
@@ -61,6 +62,7 @@ final class UnsetAnalyzer
                 );
 
                 $key_type = $statements_analyzer->node_data->getType($var->dim);
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($root_var_id && isset($context->vars_in_scope[$root_var_id]) && $key_type) {
                     $root_types = [];
 

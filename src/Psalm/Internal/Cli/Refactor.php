@@ -217,6 +217,7 @@ final class Refactor
             }
 
             if ($arg === '--into') {
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($operation !== 'move' || !$last_arg) {
                     fwrite(STDERR, '--into is not expected here' . PHP_EOL);
                     exit(1);
@@ -232,6 +233,7 @@ final class Refactor
             }
 
             if ($arg === '--to') {
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($operation !== 'rename' || !$last_arg) {
                     fwrite(STDERR, '--to is not expected here' . PHP_EOL);
                     exit(1);
@@ -248,6 +250,7 @@ final class Refactor
             }
 
             if ($operation === 'move_into' || $operation === 'rename_to') {
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if (!$last_arg) {
                     fwrite(STDERR, 'Expecting a previous argument' . PHP_EOL);
                     exit(1);
@@ -260,7 +263,11 @@ final class Refactor
                     }
 
                     foreach ($last_arg_parts as $last_arg_part) {
+                        /** @psalm-fixme RiskyTruthyFalsyComparison */
                         if (strpos($last_arg_part, '::')) {
+                            /**
+                             * @psalm-fixme PossiblyUndefinedIntArrayOffset
+                             */
                             [, $identifier_name] = explode('::', $last_arg_part);
                             $to_refactor[$last_arg_part] = $arg . '::' . $identifier_name;
                         } else {

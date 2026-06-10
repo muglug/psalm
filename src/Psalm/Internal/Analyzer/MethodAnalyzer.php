@@ -124,6 +124,9 @@ final class MethodAnalyzer extends FunctionLikeAnalyzer
                 return;
             }
 
+            /**
+             * @psalm-fixme ImplicitToStringCast
+             */
             throw new LogicException('Declaring method for ' . $original_method_id . ' should not be null');
         }
 
@@ -174,6 +177,7 @@ final class MethodAnalyzer extends FunctionLikeAnalyzer
         ?string $calling_method_id = null,
         bool $with_pseudo = false,
     ): ?bool {
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($codebase->methods->methodExists(
             $method_id,
             $calling_method_id,
@@ -191,6 +195,9 @@ final class MethodAnalyzer extends FunctionLikeAnalyzer
         }
 
         if ($with_pseudo) {
+            /**
+             * @psalm-fixme ImplicitToStringCast
+             */
             if (IssueBuffer::accepts(
                 new UndefinedMagicMethod(
                     'Magic method ' . $method_id . ' does not exist',
@@ -202,6 +209,9 @@ final class MethodAnalyzer extends FunctionLikeAnalyzer
                 return false;
             }
         } else {
+            /**
+             * @psalm-fixme ImplicitToStringCast
+             */
             if (IssueBuffer::accepts(
                 new UndefinedMethod('Method ' . $method_id . ' does not exist', $code_location, (string) $method_id),
                 $suppressed_issues,
@@ -272,19 +282,23 @@ final class MethodAnalyzer extends FunctionLikeAnalyzer
                 return true;
 
             case ClassLikeAnalyzer::VISIBILITY_PRIVATE:
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 return $context->self && $appearing_method_class === $context->self;
 
             case ClassLikeAnalyzer::VISIBILITY_PROTECTED:
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if (!$context->self) {
                     return false;
                 }
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($appearing_method_class
                     && $codebase->classExtends($appearing_method_class, $context->self)
                 ) {
                     return true;
                 }
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($appearing_method_class
                     && !$codebase->classExtends($context->self, $appearing_method_class)
                 ) {
@@ -328,6 +342,7 @@ final class MethodAnalyzer extends FunctionLikeAnalyzer
     {
         $function_name = (string)$this->function->name;
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         return new MethodIdentifier(
             $context_self ?: (string) $this->source->getFQCLN(),
             strtolower($function_name),

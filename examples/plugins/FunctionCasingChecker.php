@@ -80,6 +80,7 @@ final class FunctionCasingChecker implements AfterFunctionCallAnalysisInterface,
                 strtolower($function_id),
             );
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if (!$function_storage->cased_name) {
                 return;
             }

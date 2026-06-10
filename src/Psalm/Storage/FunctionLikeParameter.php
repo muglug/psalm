@@ -87,15 +87,27 @@ final class FunctionLikeParameter implements HasAttributesInterface, TypeNode
     #[Override]
     public function visit(TypeVisitor $visitor): bool
     {
+        /**
+         * @psalm-fixme ImpureMethodCall
+         */
         if ($this->type && !$visitor->traverse($this->type)) {
             return false;
         }
+        /**
+         * @psalm-fixme ImpureMethodCall
+         */
         if ($this->signature_type && !$visitor->traverse($this->signature_type)) {
             return false;
         }
+        /**
+         * @psalm-fixme ImpureMethodCall
+         */
         if ($this->out_type && !$visitor->traverse($this->out_type)) {
             return false;
         }
+        /**
+         * @psalm-fixme ImpureMethodCall
+         */
         if ($this->default_type instanceof Union && !$visitor->traverse($this->default_type)) {
             return false;
         }

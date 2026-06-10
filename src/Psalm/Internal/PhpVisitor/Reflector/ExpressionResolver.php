@@ -191,6 +191,7 @@ final class ExpressionResolver
         }
 
         if ($stmt instanceof PhpParser\Node\Expr\ClassConstFetch) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($stmt->class instanceof PhpParser\Node\Name
                 && $stmt->name instanceof PhpParser\Node\Identifier
                 && $fq_classlike_name
@@ -441,6 +442,7 @@ final class ExpressionResolver
                 $string_value = (string) $function->getArgs()[0]->value->class->getAttribute('resolvedName');
             }
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($string_value && class_exists($string_value)) {
                 $reflection_class = new ReflectionClass($string_value);
 
@@ -471,6 +473,7 @@ final class ExpressionResolver
                 $string_value = (string) $function->getArgs()[0]->value->class->getAttribute('resolvedName');
             }
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($string_value && interface_exists($string_value)) {
                 $reflection_class = new ReflectionClass($string_value);
 
@@ -503,6 +506,7 @@ final class ExpressionResolver
 
             // We're using class_exists here because enum_exists doesn't exist on old versions of PHP
             // Not sure what happens if we try to autoload or reflect on an enum on an old version of PHP though...
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($string_value && class_exists($string_value)) {
                 $reflection_class = new ReflectionClass($string_value);
 

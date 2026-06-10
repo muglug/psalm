@@ -429,6 +429,9 @@ final class ArrayMapReturnTypeProvider implements FunctionReturnTypeProviderInte
                     }
 
                     $method_id_parts = explode('::', $mapping_function_id_part);
+                    /**
+                     * @psalm-fixme PossiblyUndefinedIntArrayOffset
+                     */
                     [$callable_fq_class_name, $callable_method_name] = $method_id_parts;
 
                     if ($is_instance) {

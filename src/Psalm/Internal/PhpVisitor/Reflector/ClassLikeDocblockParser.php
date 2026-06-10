@@ -325,6 +325,7 @@ final class ClassLikeDocblockParser
 
                 $doc_line_parts = CommentAnalyzer::splitDocLine($method_entry);
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if (count($doc_line_parts) > 2
                     && $doc_line_parts[0] === 'static'
                     && !strpos($doc_line_parts[1], '(')
@@ -355,6 +356,9 @@ final class ClassLikeDocblockParser
                 $end_of_method_regex = '/(?<!array\()\) ?(\: ?(\??[\\\\a-zA-Z0-9_]+))?/';
 
                 if (preg_match($end_of_method_regex, $method_entry, $matches, PREG_OFFSET_CAPTURE)) {
+                    /**
+                     * @psalm-fixme PossiblyUndefinedIntArrayOffset
+                     */
                     $method_entry = substr($method_entry, 0, $matches[0][1] + strlen($matches[0][0]));
                 }
 
@@ -398,12 +402,18 @@ final class ClassLikeDocblockParser
 
                 if ($method_tree instanceof MethodWithReturnTypeTree) {
                     if (!$has_return) {
+                        /**
+                         * @psalm-fixme PossiblyUndefinedIntArrayOffset
+                         */
                         $docblock_lines[] = '@return ' . TypeParser::getTypeFromTree(
                             $method_tree->children[1],
                             $codebase,
                         )->toNamespacedString($aliases->namespace, $aliases->uses, null, false);
                     }
 
+                    /**
+                     * @psalm-fixme PossiblyUndefinedIntArrayOffset
+                     */
                     $method_tree = $method_tree->children[0];
                 }
 
@@ -428,6 +438,9 @@ final class ClassLikeDocblockParser
                         try {
                             $param_type = TypeParser::getTypeFromTree($method_tree_child->children[0], $codebase);
                         } catch (Exception $e) {
+                            /**
+                             * @psalm-fixme ImplicitToStringCast
+                             */
                             throw new DocblockParseException(
                                 'Badly-formatted @method string ' . $method_entry . ' - ' . $e,
                             );

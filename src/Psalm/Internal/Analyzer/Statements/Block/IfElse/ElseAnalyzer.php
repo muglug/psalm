@@ -63,6 +63,7 @@ final class ElseAnalyzer
         if ($else_types) {
             $changed_var_ids = [];
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             [$else_context->vars_in_scope, $else_context->references_in_scope] = Reconciler::reconcileKeyedTypes(
                 $else_types,
                 [],
@@ -179,6 +180,7 @@ final class ElseAnalyzer
         }
 
         // update the parent context as necessary
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($if_scope->negatable_if_types) {
             $outer_context->update(
                 $old_else_context,

@@ -28,6 +28,7 @@ final class Composer
      */
     public static function getJsonFilePath(string $root): string
     {
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         $file_name = getenv('COMPOSER') ?: 'composer.json';
         $file_name = basename(trim($file_name));
 

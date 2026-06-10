@@ -186,6 +186,7 @@ final class NamedFunctionCallHandler
         if (in_array($function_id, ['is_file', 'file_exists']) && $first_arg) {
             $var_id = ExpressionIdentifier::getExtendedVarId($first_arg->value, null);
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($var_id) {
                 $context->phantom_files[$var_id] = true;
                 return;
@@ -202,6 +203,7 @@ final class NamedFunctionCallHandler
                 $config,
             );
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($path_to_file) {
                 $context->phantom_files[$path_to_file] = true;
             }
@@ -351,6 +353,7 @@ final class NamedFunctionCallHandler
             }
 
             foreach ($context->vars_in_scope as $var_id => $_) {
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($var_id === '$this' || strpos($var_id, '[') || strpos($var_id, '>')) {
                     continue;
                 }
@@ -682,6 +685,7 @@ final class NamedFunctionCallHandler
     ): void {
         $first_arg = $stmt->getArgs()[0] ?? null;
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($first_arg) {
             $var = $first_arg->value;
 
@@ -767,7 +771,7 @@ final class NamedFunctionCallHandler
                     $statements_analyzer->node_data->setType($real_stmt, new Union($class_string_types));
                 }
             }
-        } elseif ($function_id === 'get_class'
+        } /** @psalm-fixme RiskyTruthyFalsyComparison */ elseif ($function_id === 'get_class'
             && ($get_class_name = $statements_analyzer->getFQCLN())
         ) {
             $statements_analyzer->node_data->setType(

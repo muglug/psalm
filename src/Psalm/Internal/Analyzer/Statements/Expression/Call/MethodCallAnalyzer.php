@@ -85,6 +85,7 @@ final class MethodCallAnalyzer extends CallAnalyzer
         $context->inside_call = $was_inside_call;
 
         if ($stmt->var instanceof PhpParser\Node\Expr\Variable) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if (is_string($stmt->var->name) && $stmt->var->name === 'this' && !$statements_analyzer->getFQCLN()) {
                 if (IssueBuffer::accepts(
                     new InvalidScope(
@@ -116,6 +117,7 @@ final class MethodCallAnalyzer extends CallAnalyzer
             $statements_analyzer,
         );
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         $class_type = $lhs_var_id && $context->hasVariable($lhs_var_id)
             ? $context->vars_in_scope[$lhs_var_id]
             : null;
@@ -216,6 +218,7 @@ final class MethodCallAnalyzer extends CallAnalyzer
                 $possible_new_class_types[] = $context->vars_in_scope[$lhs_var_id];
             }
         }
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (!$stmt->isFirstClassCallable()
             && !$stmt->getArgs()
             && $lhs_var_id && $stmt->name instanceof PhpParser\Node\Identifier
@@ -245,6 +248,9 @@ final class MethodCallAnalyzer extends CallAnalyzer
         }
 
         if ($result->invalid_method_call_types) {
+            /**
+             * @psalm-fixme PossiblyUndefinedIntArrayOffset
+             */
             $invalid_class_type = $result->invalid_method_call_types[0];
 
             if ($result->has_valid_method_call_type || $result->has_mixed_method_call) {
@@ -268,6 +274,9 @@ final class MethodCallAnalyzer extends CallAnalyzer
 
         if ($result->non_existent_magic_method_ids) {
             if ($context->check_methods) {
+                /**
+                 * @psalm-fixme PossiblyUndefinedIntArrayOffset
+                 */
                 IssueBuffer::maybeAdd(
                     new UndefinedMagicMethod(
                         'Magic method ' . $result->non_existent_magic_method_ids[0] . ' does not exist',
@@ -282,6 +291,9 @@ final class MethodCallAnalyzer extends CallAnalyzer
         if ($result->non_existent_class_method_ids) {
             if ($context->check_methods) {
                 if ($result->existent_method_ids || $result->has_mixed_method_call) {
+                    /**
+                     * @psalm-fixme PossiblyUndefinedIntArrayOffset
+                     */
                     IssueBuffer::maybeAdd(
                         new PossiblyUndefinedMethod(
                             'Method ' . $result->non_existent_class_method_ids[0] . ' does not exist',
@@ -291,6 +303,9 @@ final class MethodCallAnalyzer extends CallAnalyzer
                         $statements_analyzer->getSuppressedIssues(),
                     );
                 } else {
+                    /**
+                     * @psalm-fixme PossiblyUndefinedIntArrayOffset
+                     */
                     IssueBuffer::maybeAdd(
                         new UndefinedMethod(
                             'Method ' . $result->non_existent_class_method_ids[0] . ' does not exist',
@@ -308,6 +323,9 @@ final class MethodCallAnalyzer extends CallAnalyzer
         if ($result->non_existent_interface_method_ids) {
             if ($context->check_methods) {
                 if ($result->existent_method_ids || $result->has_mixed_method_call) {
+                    /**
+                     * @psalm-fixme PossiblyUndefinedIntArrayOffset
+                     */
                     IssueBuffer::maybeAdd(
                         new PossiblyUndefinedMethod(
                             'Method ' . $result->non_existent_interface_method_ids[0] . ' does not exist',
@@ -317,6 +335,9 @@ final class MethodCallAnalyzer extends CallAnalyzer
                         $statements_analyzer->getSuppressedIssues(),
                     );
                 } else {
+                    /**
+                     * @psalm-fixme PossiblyUndefinedIntArrayOffset
+                     */
                     IssueBuffer::maybeAdd(
                         new UndefinedInterfaceMethod(
                             'Method ' . $result->non_existent_interface_method_ids[0] . ' does not exist',
@@ -334,6 +355,9 @@ final class MethodCallAnalyzer extends CallAnalyzer
         if ($result->too_many_arguments && $result->too_many_arguments_method_ids) {
             $error_method_id = $result->too_many_arguments_method_ids[0];
 
+            /**
+             * @psalm-fixme ImplicitToStringCast
+             */
             IssueBuffer::maybeAdd(
                 new TooManyArguments(
                     'Too many arguments for method ' . $error_method_id . ' - saw ' . count($stmt->getArgs()),
@@ -347,6 +371,9 @@ final class MethodCallAnalyzer extends CallAnalyzer
         if ($result->too_few_arguments && $result->too_few_arguments_method_ids) {
             $error_method_id = $result->too_few_arguments_method_ids[0];
 
+            /**
+             * @psalm-fixme ImplicitToStringCast
+             */
             IssueBuffer::maybeAdd(
                 new TooFewArguments(
                     'Too few arguments for method ' . $error_method_id . ' saw ' . count($stmt->getArgs()),
@@ -402,6 +429,7 @@ final class MethodCallAnalyzer extends CallAnalyzer
 
         // if we called a method on this nullable variable, remove the nullable status here
         // because any further calls must have worked
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($lhs_var_id
             && !$class_type->isMixed()
             && $result->has_valid_method_call_type

@@ -35,6 +35,7 @@ final class PluginList
      */
     public function getEnabled(): array
     {
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (!$this->enabled_plugins) {
             $this->enabled_plugins = [];
             if ($this->config_file) {

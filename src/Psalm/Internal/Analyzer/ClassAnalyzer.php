@@ -121,6 +121,7 @@ final class ClassAnalyzer extends ClassLikeAnalyzer
      */
     public function __construct(PhpParser\Node\Stmt $class, SourceAnalyzer $source, ?string $fq_class_name)
     {
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (!$fq_class_name) {
             if (!$class instanceof PhpParser\Node\Stmt\Class_) {
                 throw new UnexpectedValueException('Anonymous enums are not allowed');
@@ -171,6 +172,7 @@ final class ClassAnalyzer extends ClassLikeAnalyzer
             throw new LogicException('Something went badly wrong');
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         $fq_class_name = $class_context && $class_context->self ? $class_context->self : $this->fq_class_name;
 
         $storage = $this->storage;
@@ -276,6 +278,7 @@ final class ClassAnalyzer extends ClassLikeAnalyzer
 
         $parent_fq_class_name = $this->parent_fq_class_name;
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($class instanceof PhpParser\Node\Stmt\Class_ && $class->extends && $parent_fq_class_name) {
             $this->checkParentClass(
                 $class,
@@ -305,6 +308,7 @@ final class ClassAnalyzer extends ClassLikeAnalyzer
         }
 
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($storage->template_types) {
             foreach ($storage->template_types as $param_name => $_) {
                 $fq_classlike_name = Type::getFQCLNFromString(
@@ -354,6 +358,7 @@ final class ClassAnalyzer extends ClassLikeAnalyzer
             );
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($storage->template_extended_params) {
             foreach ($storage->template_extended_params as $type_map) {
                 foreach ($type_map as $atomic_type) {
@@ -483,6 +488,9 @@ final class ClassAnalyzer extends ClassLikeAnalyzer
                     }
 
                     if ($codebase->alter_code) {
+                        /**
+                         * @psalm-fixme ImplicitToStringCast
+                         */
                         $property_id = strtolower($this->fq_class_name) . '::$' . $prop->name;
 
                         $property_storage = $codebase->properties->getStorage($property_id);
@@ -540,6 +548,9 @@ final class ClassAnalyzer extends ClassLikeAnalyzer
                         );
                     }
 
+                    /**
+                     * @psalm-fixme ImplicitToStringCast
+                     */
                     $const_id = strtolower($this->fq_class_name) . '::' . $const->name;
 
                     foreach ($codebase->class_constants_to_rename as $original_const_id => $new_const_name) {
@@ -895,6 +906,7 @@ final class ClassAnalyzer extends ClassLikeAnalyzer
                 true,
             );
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($class_template_params) {
                 $this_object_type = self::getThisObjectType(
                     $storage,
@@ -964,6 +976,9 @@ final class ClassAnalyzer extends ClassLikeAnalyzer
                         $union_comparison_result,
                     ) && !$union_comparison_result->type_coerced_from_mixed
                     ) {
+                        /**
+                         * @psalm-fixme ImplicitToStringCast
+                         */
                         IssueBuffer::maybeAdd(
                             new MismatchingDocblockPropertyType(
                                 'Parameter '
@@ -1028,6 +1043,7 @@ final class ClassAnalyzer extends ClassLikeAnalyzer
             return;
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         $fq_class_name = $class_context->self ?: $this->fq_class_name;
         $fq_class_name_lc = strtolower($fq_class_name);
 
@@ -1281,6 +1297,9 @@ final class ClassAnalyzer extends ClassLikeAnalyzer
             );
 
             foreach ($uninitialized_properties as $property_id => $property_storage) {
+                /**
+                 * @psalm-fixme PossiblyUndefinedIntArrayOffset
+                 */
                 [, $property_name] = explode('::$', $property_id);
 
                 if (!isset($method_context->vars_in_scope['$this->' . $property_name])) {
@@ -1300,6 +1319,7 @@ final class ClassAnalyzer extends ClassLikeAnalyzer
                 if ($fq_class_name_lc !== $constructor_appearing_fqcln
                     && $property_storage->visibility === ClassLikeAnalyzer::VISIBILITY_PRIVATE
                 ) {
+                    /** @psalm-fixme RiskyTruthyFalsyComparison */
                     $a_class_storage = $classlike_storage_provider->get(
                         $end_type->initialized_class ?: $constructor_appearing_fqcln,
                     );
@@ -1359,6 +1379,9 @@ final class ClassAnalyzer extends ClassLikeAnalyzer
         if (!$storage->abstract && $uninitialized_typed_properties) {
             foreach ($uninitialized_typed_properties as $id => $uninitialized_property) {
                 if ($uninitialized_property->location) {
+                    /**
+                     * @psalm-fixme PossiblyUndefinedIntArrayOffset
+                     */
                     IssueBuffer::maybeAdd(
                         new MissingConstructor(
                             $class_storage->name . ' has an uninitialized property ' . $id .
@@ -1539,6 +1562,9 @@ final class ClassAnalyzer extends ClassLikeAnalyzer
         Context $context,
     ): void {
         $fq_class_name = $source->getFQCLN();
+        /**
+         * @psalm-fixme PossiblyUndefinedIntArrayOffset
+         */
         $property_name = $stmt->props[0]->name->name;
 
         $codebase = $this->getCodebase();
@@ -1550,6 +1576,7 @@ final class ClassAnalyzer extends ClassLikeAnalyzer
             true,
         );
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (!$declaring_property_class) {
             return;
         }
@@ -1723,6 +1750,7 @@ final class ClassAnalyzer extends ClassLikeAnalyzer
 
         $included_file_path = $source->getFilePath();
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($class_context->self && strtolower($class_context->self) !== strtolower((string) $source->getFQCLN())) {
             $analyzed_method_id = $method_analyzer->getMethodId($class_context->self);
 
@@ -1781,6 +1809,9 @@ final class ClassAnalyzer extends ClassLikeAnalyzer
         $comments = $stmt->getComments();
 
         if ($comments) {
+            /**
+             * @psalm-fixme PossiblyUndefinedIntArrayOffset
+             */
             $start = $comments[0]->getStartFilePos();
         }
 
@@ -1790,6 +1821,9 @@ final class ClassAnalyzer extends ClassLikeAnalyzer
             && !$class_context->collect_mutations
             && !$is_fake
         ) {
+            /**
+             * @psalm-fixme ImplicitToStringCast
+             */
             $project_analyzer->progress->debug(
                 'Skipping analysis of pre-analyzed method ' . $analyzed_method_id . "\n",
             );
@@ -1830,6 +1864,7 @@ final class ClassAnalyzer extends ClassLikeAnalyzer
             $global_context ? clone $global_context : null,
         );
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($stmt->name->name !== '__construct'
             && $config->reportIssueInFile('InvalidReturnType', $source->getFilePath())
             && $class_context->self
@@ -1863,6 +1898,7 @@ final class ClassAnalyzer extends ClassLikeAnalyzer
         ClassLikeStorage $class_storage,
         string $original_fq_classlike_name,
     ): TNamedObject {
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($class_storage->template_types) {
             $template_params = [];
 
@@ -1916,6 +1952,7 @@ final class ClassAnalyzer extends ClassLikeAnalyzer
             $method_analyzer,
         );
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($return_type && $class_storage->template_extended_params) {
             $declaring_method_id = $codebase->methods->getDeclaringMethodId($analyzed_method_id);
 
@@ -1930,6 +1967,7 @@ final class ClassAnalyzer extends ClassLikeAnalyzer
                 $original_fq_classlike_name,
             );
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             $class_template_params = ClassTemplateParamCollector::collect(
                 $codebase,
                 $class_storage,
@@ -1976,6 +2014,7 @@ final class ClassAnalyzer extends ClassLikeAnalyzer
                     $interface_method_id,
                 );
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 ReturnTypeAnalyzer::verifyReturnType(
                     $stmt,
                     $stmt->getStmts() ?: [],
@@ -2002,6 +2041,7 @@ final class ClassAnalyzer extends ClassLikeAnalyzer
         }
 
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         ReturnTypeAnalyzer::verifyReturnType(
             $stmt,
             $stmt->getStmts() ?: [],

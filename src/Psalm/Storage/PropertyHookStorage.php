@@ -10,6 +10,7 @@ use Psalm\CodeLocation;
  * Storage for property hooks ('get' & 'set') introduced in PHP 8.4
  *
  * @psalm-immutable
+ * @psalm-fixme PossiblyUnusedProperty
  */
 final class PropertyHookStorage
 {

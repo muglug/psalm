@@ -92,6 +92,7 @@ final class SwitchCaseAnalyzer
 
         $fake_switch_condition = false;
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($switch_var_id && str_starts_with($switch_var_id, '$__tmp_switch__')) {
             $switch_condition = new VirtualVariable(
                 substr($switch_var_id, 1),
@@ -125,7 +126,10 @@ final class SwitchCaseAnalyzer
                 ),
             );
 
-            /** @var PhpParser\Node\Expr */
+            /**
+             * @var PhpParser\Node\Expr
+             * @psalm-fixme PossiblyUndefinedIntArrayOffset
+             */
             $switch_condition = $traverser->traverse([$switch_condition])[0];
 
             if ($fake_switch_condition) {
@@ -200,6 +204,7 @@ final class SwitchCaseAnalyzer
                     }
                 }
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($type_statements && count($type_statements) === 1) {
                     $switch_condition = $type_statements[0];
 
@@ -268,6 +273,9 @@ final class SwitchCaseAnalyzer
                 )
                 : $case_equality_expr;
 
+            /**
+             * @psalm-fixme PossiblyUndefinedIntArrayOffset
+             */
             if ($continue_case_equality_expr
                 && $switch_scope->leftover_statements[0] instanceof PhpParser\Node\Stmt\If_
             ) {
@@ -327,6 +335,9 @@ final class SwitchCaseAnalyzer
 
                 $case_context->inside_conditional = true;
 
+                /**
+                 * @psalm-fixme PossiblyUndefinedIntArrayOffset
+                 */
                 ExpressionAnalyzer::analyze(
                     $statements_analyzer,
                     $new_case_equality_expr->getArgs()[1]->value,
@@ -403,6 +414,7 @@ final class SwitchCaseAnalyzer
                 $statements_analyzer->addSuppressedIssues(['RedundantConditionGivenDocblockType']);
             }
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             [$case_vars_in_scope_reconciled, $case_references_in_scope_reconciled] =
                 Reconciler::reconcileKeyedTypes(
                     $reconcilable_if_types,
@@ -565,6 +577,7 @@ final class SwitchCaseAnalyzer
         string $case_exit_type,
         SwitchScope $switch_scope,
     ): ?bool {
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (!$case->cond
             && $switch_var_id
             && isset($case_context->vars_in_scope[$switch_var_id])
@@ -661,6 +674,7 @@ final class SwitchCaseAnalyzer
         if ($case_equality_expr instanceof PhpParser\Node\Expr\BinaryOp\BooleanOr) {
             $nested_or_options = self::getOptionsFromNestedOr($case_equality_expr, $var);
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($nested_or_options) {
                 return new VirtualFuncCall(
                     new VirtualFullyQualified(['in_array']),

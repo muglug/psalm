@@ -72,6 +72,7 @@ final class CliUtils
 
         $psalm_dir = dirname(__DIR__, 3);
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         $in_phar = Phar::running() || strpos(__NAMESPACE__, 'HumbugBox');
 
         if ($in_phar) {
@@ -260,6 +261,7 @@ final class CliUtils
     {
         $paths_to_check = [];
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($f_paths) {
             $input_paths = is_array($f_paths) ? $f_paths : [$f_paths];
         } else {
@@ -303,6 +305,7 @@ final class CliUtils
         if ($filtered_input_paths === ['-']) {
             $meta = stream_get_meta_data(STDIN);
             stream_set_blocking(STDIN, false);
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($stdin = fgets(STDIN)) {
                 $filtered_input_paths = preg_split('/\s+/', trim($stdin));
                 if ($filtered_input_paths === false) {
@@ -326,6 +329,7 @@ final class CliUtils
 
             $path_to_check = realpath($path_to_check);
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if (!$path_to_check) {
                 fwrite(STDERR, 'Error getting realpath for file' . PHP_EOL);
                 exit(1);
@@ -350,6 +354,7 @@ final class CliUtils
         bool $create_if_non_existent = false,
     ): Config {
         try {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($path_to_config) {
                 $config = Config::loadFromXMLFile($path_to_config, $current_dir);
             } else {
@@ -401,6 +406,7 @@ final class CliUtils
             $config_file = Config::locateConfigFile($config_file_path);
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (!$config_file) {
             fwrite(STDERR, "Don't forget to set errorBaseline=\"{$baseline_path}\" to your config.");
 
@@ -410,6 +416,7 @@ final class CliUtils
         $config_file_contents = file_get_contents($config_file);
         assert($config_file_contents !== false);
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($config->error_baseline) {
             $amended_config_file_contents = (string) preg_replace(
                 '/errorBaseline=".*?"/',
@@ -419,6 +426,7 @@ final class CliUtils
         } else {
             $end_psalm_open_tag = strpos($config_file_contents, '>', (int)strpos($config_file_contents, '<psalm'));
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if (!$end_psalm_open_tag) {
                 fwrite(STDERR, " Don't forget to set errorBaseline=\"{$baseline_path}\" in your config.");
                 return;
@@ -483,6 +491,7 @@ final class CliUtils
     {
         $source = null;
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (isset($options['php-version'])) {
             if (!is_string($options['php-version'])) {
                 fwrite(STDERR, 'Expecting a version number in the format x.y' . PHP_EOL);
@@ -490,9 +499,9 @@ final class CliUtils
             }
             $version = $options['php-version'];
             $source = 'cli';
-        } elseif ($version = $config->getPhpVersionFromConfig()) {
+        } /** @psalm-fixme RiskyTruthyFalsyComparison */ elseif ($version = $config->getPhpVersionFromConfig()) {
             $source = 'config';
-        } elseif ($version = $config->getPHPVersionFromComposerJson()) {
+        } /** @psalm-fixme RiskyTruthyFalsyComparison */ elseif ($version = $config->getPHPVersionFromComposerJson()) {
             $source = 'composer';
         }
 

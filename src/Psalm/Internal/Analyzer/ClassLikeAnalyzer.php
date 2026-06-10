@@ -157,6 +157,7 @@ abstract class ClassLikeAnalyzer extends SourceAnalyzer
 
                             $actual_method_id = $method_analyzer->getMethodId();
 
+                            /** @psalm-fixme RiskyTruthyFalsyComparison */
                             if ($context->self && $context->self !== $this->fq_class_name) {
                                 $analyzed_method_id = $method_analyzer->getMethodId($context->self);
                                 $declaring_method_id = $codebase->methods->getDeclaringMethodId($analyzed_method_id);
@@ -401,6 +402,7 @@ abstract class ClassLikeAnalyzer extends SourceAnalyzer
         /** @var string|null */
         $resolved_name = $class_name->getAttribute('resolvedName');
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($resolved_name) {
             return $resolved_name;
         }
@@ -529,6 +531,9 @@ abstract class ClassLikeAnalyzer extends SourceAnalyzer
         array $suppressed_issues,
         bool $emit_issues = true,
     ): ?bool {
+        /**
+         * @psalm-fixme PossiblyUndefinedIntArrayOffset
+         */
         [$fq_class_name, $property_name] = explode('::$', $property_id);
 
         $codebase = $source->getCodebase();
@@ -557,6 +562,7 @@ abstract class ClassLikeAnalyzer extends SourceAnalyzer
             true,
         );
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (!$declaring_property_class || !$appearing_property_class) {
             throw new UnexpectedValueException(
                 'Appearing/Declaring classes are not defined for ' . $property_id,
@@ -599,6 +605,7 @@ abstract class ClassLikeAnalyzer extends SourceAnalyzer
 
                 return null;
             case self::VISIBILITY_PROTECTED:
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if (!$context->self) {
                     if ($emit_issues) {
                         IssueBuffer::maybeAdd(
@@ -666,6 +673,7 @@ abstract class ClassLikeAnalyzer extends SourceAnalyzer
             );
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         $storage_param_count = ($storage->template_types ? count($storage->template_types) : 0);
 
         if ($parent_storage->enforce_template_inheritance
@@ -692,6 +700,7 @@ abstract class ClassLikeAnalyzer extends SourceAnalyzer
             }
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($parent_storage->template_types && $storage->template_extended_params) {
             $i = 0;
 
@@ -709,6 +718,7 @@ abstract class ClassLikeAnalyzer extends SourceAnalyzer
                         && !$parent_storage->template_covariants[$i]
                     ) {
                         foreach ($extended_type->getAtomicTypes() as $t) {
+                            /** @psalm-fixme RiskyTruthyFalsyComparison */
                             if ($t instanceof TTemplateParam
                                 && $storage->template_types
                                 && $storage->template_covariants

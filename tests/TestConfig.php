@@ -12,6 +12,9 @@ use SimpleXMLElement;
 
 use function getcwd;
 
+/**
+ * @psalm-fixme InvalidExtendClass
+ */
 final class TestConfig extends Config
 {
     private static ?ProjectFileFilter $cached_project_files = null;
@@ -62,7 +65,9 @@ final class TestConfig extends Config
                 </projectFiles>';
     }
 
-    /** @return false */
+    /**
+     * @return false
+     */
     #[Override]
     public function getComposerFilePathForClassLike(string $fq_classlike_name): bool
     {

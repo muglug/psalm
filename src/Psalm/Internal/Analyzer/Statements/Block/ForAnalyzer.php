@@ -53,6 +53,9 @@ final class ForAnalyzer
 
         $while_true = !$stmt->cond && !$stmt->init && !$stmt->loop;
 
+        /**
+         * @psalm-fixme ArgumentTypeCoercion
+         */
         return LoopAnalyzer::analyzeForOrWhile(
             $statements_analyzer,
             $stmt,

@@ -94,11 +94,13 @@ final class ArgumentsAnalyzer
         Context $context,
         ?TemplateResult $template_result = null,
     ): ?bool {
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         $last_param = $function_params
             ? $function_params[count($function_params) - 1]
             : null;
 
         // if this modifies the array type based on further args
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (in_array($method_id, ['array_push', 'array_unshift'], true)
             && $function_params
             && isset($args[0])
@@ -117,6 +119,7 @@ final class ArgumentsAnalyzer
             return null;
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($method_id === 'array_splice' && $function_params && count($args) > 1) {
             if (ArrayFunctionArgumentsAnalyzer::handleSplice($statements_analyzer, $args, $context) === false) {
                 return false;
@@ -293,6 +296,7 @@ final class ArgumentsAnalyzer
             ) {
                 $codebase = $statements_analyzer->getCodebase();
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 TemplateStandinTypeReplacer::fillTemplateResult(
                     $param->type,
                     $template_result,
@@ -342,6 +346,7 @@ final class ArgumentsAnalyzer
 
         $existing_type = $statements_analyzer->node_data->getType($arg->value);
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         TemplateStandinTypeReplacer::fillTemplateResult(
             new Union([
                 new TArray([
@@ -439,6 +444,7 @@ final class ArgumentsAnalyzer
         );
         unset($new_bounds);
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         $replaced_type = TemplateStandinTypeReplacer::replace(
             $replaced_type,
             $replace_template_result,
@@ -564,6 +570,7 @@ final class ArgumentsAnalyzer
         CodeLocation $code_location,
         Context $context,
     ): ?bool {
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         $in_call_map = $method_id ? InternalCallMapHandler::inCallMap((string) $method_id) : false;
 
         $cased_method_id = (string) $method_id;
@@ -574,6 +581,7 @@ final class ArgumentsAnalyzer
 
         $codebase = $statements_analyzer->getCodebase();
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($method_id) {
             if ($method_id instanceof MethodIdentifier) {
                 $fq_class_name = $method_id->fq_class_name;
@@ -760,6 +768,10 @@ final class ArgumentsAnalyzer
                                 if ($candidate_param->name === $key_type->value || $candidate_param->is_variadic) {
                                     if ($candidate_param->name === $key_type->value) {
                                         if (isset($matched_args[$candidate_param->name])) {
+                                            /**
+                                             * @psalm-fixme ImplicitToStringCast
+                                             * @psalm-fixme RiskyTruthyFalsyComparison
+                                             */
                                             IssueBuffer::maybeAdd(
                                                 new InvalidNamedArgument(
                                                     'Parameter $' . $key_type->value . ' has already been used in '
@@ -780,6 +792,10 @@ final class ArgumentsAnalyzer
                             }
 
                             if (!$param_found) {
+                                /**
+                                 * @psalm-fixme ImplicitToStringCast
+                                 * @psalm-fixme RiskyTruthyFalsyComparison
+                                 */
                                 IssueBuffer::maybeAdd(
                                     new InvalidNamedArgument(
                                         'Parameter $' . $key_type->value . ' does not exist on function '
@@ -800,6 +816,10 @@ final class ArgumentsAnalyzer
                     if ($candidate_param->name === $arg->name->name || $candidate_param->is_variadic) {
                         if ($candidate_param->name === $arg->name->name) {
                             if (isset($matched_args[$candidate_param->name])) {
+                                /**
+                                 * @psalm-fixme ImplicitToStringCast
+                                 * @psalm-fixme RiskyTruthyFalsyComparison
+                                 */
                                 IssueBuffer::maybeAdd(
                                     new InvalidNamedArgument(
                                         'Parameter $' . $arg->name->name . ' has already been used in '
@@ -820,6 +840,10 @@ final class ArgumentsAnalyzer
                 }
 
                 if (!isset($arg_function_params[$argument_offset])) {
+                    /**
+                     * @psalm-fixme ImplicitToStringCast
+                     * @psalm-fixme RiskyTruthyFalsyComparison
+                     */
                     IssueBuffer::maybeAdd(
                         new InvalidNamedArgument(
                             'Parameter $' . $arg->name->name . ' does not exist on function '
@@ -890,6 +914,7 @@ final class ArgumentsAnalyzer
             }
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($statements_analyzer->data_flow_graph instanceof TaintFlowGraph
             && $cased_method_id
         ) {
@@ -899,6 +924,7 @@ final class ArgumentsAnalyzer
                 }
 
                 foreach ($arg_function_params[$argument_offset] as $function_param) {
+                    /** @psalm-fixme RiskyTruthyFalsyComparison */
                     if ($function_param->sinks) {
                         if (!$function_storage || $function_storage->specialize_call) {
                             $sink = TaintSink::getForMethodArgument(
@@ -961,6 +987,7 @@ final class ArgumentsAnalyzer
 
         if ($method_id === 'get_class' && $args === []) {
             //get_class without args only works when inside a class
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if (!$context->self) {
                 IssueBuffer::maybeAdd(
                     new TooFewArguments(
@@ -1092,6 +1119,7 @@ final class ArgumentsAnalyzer
                 if ($template_result && $by_ref_type) {
                     $original_by_ref_type = $by_ref_type;
 
+                    /** @psalm-fixme RiskyTruthyFalsyComparison */
                     $by_ref_type = TemplateStandinTypeReplacer::replace(
                         $by_ref_type,
                         $template_result,
@@ -1117,6 +1145,7 @@ final class ArgumentsAnalyzer
                 if ($template_result && $by_ref_out_type) {
                     $original_by_ref_out_type = $by_ref_out_type;
 
+                    /** @psalm-fixme RiskyTruthyFalsyComparison */
                     $by_ref_out_type = TemplateStandinTypeReplacer::replace(
                         $by_ref_out_type,
                         $template_result,
@@ -1220,6 +1249,7 @@ final class ArgumentsAnalyzer
             );
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($var_id) {
             if ($arg->value instanceof PhpParser\Node\Expr\Variable) {
                 $statements_analyzer->registerPossiblyUndefinedVariable($var_id, $arg->value);
@@ -1334,6 +1364,7 @@ final class ArgumentsAnalyzer
         if ($arg->value instanceof PhpParser\Node\Expr\PropertyFetch
             && $arg->value->name instanceof PhpParser\Node\Identifier) {
             $prop_name = $arg->value->name->name;
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if (!empty($statements_analyzer->getFQCLN())) {
                 $fq_class_name = $statements_analyzer->getFQCLN();
 
@@ -1353,6 +1384,7 @@ final class ArgumentsAnalyzer
                     $statements_analyzer,
                 );
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($var_id && isset($context->vars_in_scope[$var_id])) {
                     foreach ($context->vars_in_scope[$var_id]->getAtomicTypes() as $atomic_type) {
                         if ($atomic_type instanceof TNamedObject) {
@@ -1371,6 +1403,7 @@ final class ArgumentsAnalyzer
             }
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (($var_id && isset($context->vars_in_scope[$var_id]))
             || ($method_id
                 && in_array(
@@ -1398,6 +1431,7 @@ final class ArgumentsAnalyzer
         }
 
         // special handling for array sort
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($argument_offset === 0
             && $method_id
             && in_array(
@@ -1499,6 +1533,7 @@ final class ArgumentsAnalyzer
         array $function_params,
         ?FunctionLikeParameter $last_param,
     ): ?TemplateResult {
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         $template_types = CallAnalyzer::getTemplateTypesForCall(
             $codebase,
             $class_storage,
@@ -1559,6 +1594,7 @@ final class ArgumentsAnalyzer
                 $calling_class_storage->final ?? false,
             );
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             TemplateStandinTypeReplacer::fillTemplateResult(
                 $fleshed_out_param_type,
                 $template_result,
@@ -1602,6 +1638,10 @@ final class ArgumentsAnalyzer
                 || ($method_id instanceof MethodIdentifier
                     && $method_id->method_name === '__construct'))
         ) {
+            /**
+             * @psalm-fixme ImplicitToStringCast
+             * @psalm-fixme RiskyTruthyFalsyComparison
+             */
             IssueBuffer::maybeAdd(
                 new TooManyArguments(
                     'Too many arguments for ' . ($cased_method_id ?: $method_id)
@@ -1732,6 +1772,7 @@ final class ArgumentsAnalyzer
                         $default_type = new Union([$default_type_atomic]);
                     }
 
+                    /** @psalm-fixme RiskyTruthyFalsyComparison */
                     TemplateStandinTypeReplacer::fillTemplateResult(
                         $param->type,
                         $template_result,

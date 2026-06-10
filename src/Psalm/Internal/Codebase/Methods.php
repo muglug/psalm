@@ -137,6 +137,7 @@ final class Methods
 
         $calling_class_name = $source ? $source->getFQCLN() : null;
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (!$calling_class_name && $calling_method_id) {
             $calling_class_name = explode('::', $calling_method_id)[0];
         }
@@ -153,12 +154,13 @@ final class Methods
             $declaring_fq_class_name = strtolower($declaring_method_id->fq_class_name);
 
             if ($declaring_fq_class_name !== strtolower((string) $calling_class_name)) {
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($calling_method_id) {
                     $this->file_reference_provider->addMethodReferenceToClass(
                         $calling_method_id,
                         $declaring_fq_class_name,
                     );
-                } elseif ($source_file_path) {
+                } /** @psalm-fixme RiskyTruthyFalsyComparison */ elseif ($source_file_path) {
                     $this->file_reference_provider->addNonMethodReferenceToClass(
                         $source_file_path,
                         $declaring_fq_class_name,
@@ -171,13 +173,14 @@ final class Methods
                 && isset($class_storage->potential_declaring_method_ids[$method_name])
             ) {
                 foreach ($class_storage->potential_declaring_method_ids[$method_name] as $potential_id => $_) {
+                    /** @psalm-fixme RiskyTruthyFalsyComparison */
                     if ($calling_method_id) {
                         $this->file_reference_provider->addMethodReferenceToClassMember(
                             $calling_method_id,
                             $potential_id,
                             $is_used,
                         );
-                    } elseif ($source_file_path) {
+                    } /** @psalm-fixme RiskyTruthyFalsyComparison */ elseif ($source_file_path) {
                         $this->file_reference_provider->addFileReferenceToClassMember(
                             $source_file_path,
                             $potential_id,
@@ -186,13 +189,14 @@ final class Methods
                     }
                 }
             } else {
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($calling_method_id) {
                     $this->file_reference_provider->addMethodReferenceToClassMember(
                         $calling_method_id,
                         strtolower((string) $declaring_method_id),
                         $is_used,
                     );
-                } elseif ($source_file_path) {
+                } /** @psalm-fixme RiskyTruthyFalsyComparison */ elseif ($source_file_path) {
                     $this->file_reference_provider->addFileReferenceToClassMember(
                         $source_file_path,
                         strtolower((string) $declaring_method_id),
@@ -218,13 +222,14 @@ final class Methods
                     );
                 }
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($calling_method_id) {
                     $this->file_reference_provider->addMethodReferenceToClassMember(
                         $calling_method_id,
                         $interface_method_id_lc,
                         $is_used,
                     );
-                } elseif ($source_file_path) {
+                } /** @psalm-fixme RiskyTruthyFalsyComparison */ elseif ($source_file_path) {
                     $this->file_reference_provider->addFileReferenceToClassMember(
                         $source_file_path,
                         $interface_method_id_lc,
@@ -249,6 +254,7 @@ final class Methods
                         );
                     }
 
+                    /** @psalm-fixme RiskyTruthyFalsyComparison */
                     if ($calling_method_id) {
                         // also store failures in case the method is added later
                         $this->file_reference_provider->addMethodReferenceToClassMember(
@@ -256,7 +262,7 @@ final class Methods
                             strtolower((string) $overridden_method_id),
                             $is_used,
                         );
-                    } elseif ($source_file_path) {
+                    } /** @psalm-fixme RiskyTruthyFalsyComparison */ elseif ($source_file_path) {
                         $this->file_reference_provider->addFileReferenceToClassMember(
                             $source_file_path,
                             strtolower((string) $overridden_method_id),
@@ -269,7 +275,9 @@ final class Methods
             return true;
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($source_file_path && $fq_class_name !== strtolower((string) $calling_class_name)) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($calling_method_id) {
                 $this->file_reference_provider->addMethodReferenceToClass(
                     $calling_method_id,
@@ -294,6 +302,7 @@ final class Methods
             $old_method_id = $fq_class_name . '::' . $old_constructor_name;
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (!$class_storage->user_defined
             && (InternalCallMapHandler::inCallMap((string) $method_id)
                 || ($old_method_id && InternalCallMapHandler::inCallMap($old_method_id)))
@@ -304,13 +313,14 @@ final class Methods
         foreach ($class_storage->parent_classes + $class_storage->used_traits as $potential_future_declaring_fqcln) {
             $potential_id = strtolower($potential_future_declaring_fqcln) . '::' . $method_name;
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($calling_method_id) {
                 // also store failures in case the method is added later
                 $this->file_reference_provider->addMethodReferenceToMissingClassMember(
                     $calling_method_id,
                     $potential_id,
                 );
-            } elseif ($source_file_path) {
+            } /** @psalm-fixme RiskyTruthyFalsyComparison */ elseif ($source_file_path) {
                 $this->file_reference_provider->addFileReferenceToMissingClassMember(
                     $source_file_path,
                     $potential_id,
@@ -318,13 +328,14 @@ final class Methods
             }
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($calling_method_id) {
             // also store failures in case the method is added later
             $this->file_reference_provider->addMethodReferenceToMissingClassMember(
                 $calling_method_id,
                 strtolower((string) $method_id),
             );
-        } elseif ($source_file_path) {
+        } /** @psalm-fixme RiskyTruthyFalsyComparison */ elseif ($source_file_path) {
             $this->file_reference_provider->addFileReferenceToMissingClassMember(
                 $source_file_path,
                 strtolower((string) $method_id),
@@ -375,6 +386,9 @@ final class Methods
                 $function_callables = InternalCallMapHandler::getCallablesFromCallMap((string) $callmap_id);
 
                 if ($function_callables === null) {
+                    /**
+                     * @psalm-fixme ImplicitToStringCast
+                     */
                     throw new UnexpectedValueException(
                         'Not expecting $function_callables to be null for ' . $callmap_id,
                     );
@@ -481,6 +495,9 @@ final class Methods
             return $params;
         }
 
+        /**
+         * @psalm-fixme ImplicitToStringCast
+         */
         throw new UnexpectedValueException('Cannot get method params for ' . $method_id);
     }
 
@@ -493,6 +510,7 @@ final class Methods
         $class_storage = $codebase->classlike_storage_provider->get($appearing_fq_class_name);
         $extends = $class_storage->template_extended_params;
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (!$extends) {
             return $type;
         }
@@ -782,6 +800,7 @@ final class Methods
                         true,
                     );
 
+                    /** @psalm-fixme RiskyTruthyFalsyComparison */
                     if ($found_generic_params) {
                         $passed_template_result = $template_result;
                         $template_result = new TemplateResult(
@@ -1090,6 +1109,9 @@ final class Methods
                 return null;
             }
 
+            /**
+             * @psalm-fixme ImplicitToStringCast
+             */
             throw new UnexpectedValueException('$storage should not be null for ' . $method_id);
         }
 
@@ -1124,6 +1146,9 @@ final class Methods
             if (InternalCallMapHandler::inCallMap((string) $method_id)) {
                 $declaring_method_id = $method_id;
             } else {
+                /**
+                 * @psalm-fixme ImplicitToStringCast
+                 */
                 throw new UnexpectedValueException('$storage should not be null for ' . $method_id);
             }
         }
@@ -1151,6 +1176,9 @@ final class Methods
         }
 
         if ($method_storage === null) {
+            /**
+             * @psalm-fixme ImplicitToStringCast
+             */
             throw new UnexpectedValueException(
                 '$storage should not be null for ' . $method_id,
             );

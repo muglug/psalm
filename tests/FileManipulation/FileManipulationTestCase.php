@@ -85,6 +85,7 @@ abstract class FileManipulationTestCase extends TestCase
         $this->project_analyzer->getCodebase()->allow_backwards_incompatible_changes = $allow_backwards_incompatible_changes;
         $this->project_analyzer->getConfig()->check_for_throws_docblock = true;
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (strpos(static::class, 'Unused') || strpos(static::class, 'Unnecessary')) {
             $this->project_analyzer->getCodebase()->reportUnusedCode();
         }

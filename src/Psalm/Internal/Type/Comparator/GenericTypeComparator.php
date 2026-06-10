@@ -144,6 +144,7 @@ final class GenericTypeComparator
                         $atomic_comparison_result_type_params[$i] = $container_param;
                     }
                 } else {
+                    /** @psalm-fixme RiskyTruthyFalsyComparison */
                     if (!($container_type_params_covariant[$i] ?? false)
                         && !$container_param->had_template
                     ) {

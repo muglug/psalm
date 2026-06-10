@@ -169,6 +169,7 @@ final class AssignmentAnalyzer
             $removed_taints,
         );
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($extended_var_id) {
             unset($context->cond_referenced_var_ids[$extended_var_id]);
             $context->assigned_var_ids[$extended_var_id] = (int) $assign_var->getAttribute('startFilePos');
@@ -176,6 +177,7 @@ final class AssignmentAnalyzer
         }
 
         if ($assign_value) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($var_id && $assign_value instanceof PhpParser\Node\Expr\Closure) {
                 foreach ($assign_value->uses as $closure_use) {
                     if ($closure_use->byRef
@@ -207,7 +209,9 @@ final class AssignmentAnalyzer
             if (ExpressionAnalyzer::analyze($statements_analyzer, $assign_value, $context) === false) {
                 $context->inside_general_use = $was_inside_general_use;
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($var_id) {
+                    /** @psalm-fixme RiskyTruthyFalsyComparison */
                     if ($extended_var_id && isset($context->vars_in_scope[$extended_var_id])) {
                         $context->removeDescendents(
                             $extended_var_id,
@@ -230,6 +234,7 @@ final class AssignmentAnalyzer
             $temp_assign_value_type = $assign_value_type
                 ?? ($assign_value ? $statements_analyzer->node_data->getType($assign_value) : null);
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($codebase->find_unused_variables
                 && $temp_assign_value_type
                 && $extended_var_id
@@ -242,6 +247,9 @@ final class AssignmentAnalyzer
                 ) {
                     FileManipulationBuffer::addVarAnnotationToRemove($comment_type_location);
                 } else {
+                    /**
+                     * @psalm-fixme ImplicitToStringCast
+                     */
                     IssueBuffer::maybeAdd(
                         new UnnecessaryVarAnnotation(
                             'The @var ' . $comment_type . ' annotation for '
@@ -285,6 +293,7 @@ final class AssignmentAnalyzer
             );
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($extended_var_id && isset($context->vars_in_scope[$extended_var_id])) {
             if ($context->vars_in_scope[$extended_var_id]->by_ref) {
                 if ($context->mutation_free) {
@@ -318,6 +327,7 @@ final class AssignmentAnalyzer
                 $statements_analyzer,
             );
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($root_var_id && isset($context->vars_in_scope[$root_var_id])) {
                 $context->removeVarFromConflictingClauses(
                     $root_var_id,
@@ -344,6 +354,7 @@ final class AssignmentAnalyzer
                 $codebase->analyzer->incrementMixedCount($statements_analyzer->getFilePath());
             }
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if (!$assign_var instanceof PhpParser\Node\Expr\PropertyFetch
                 && !strpos($root_var_id ?? '', '->')
                 && !$comment_type
@@ -362,6 +373,7 @@ final class AssignmentAnalyzer
 
                 $origin_location = count($origin_locations) === 1 ? reset($origin_locations) : null;
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 $message = $var_id
                     ? 'Unable to determine the type that ' . $var_id . ' is being assigned to'
                     : 'Unable to determine the type of this assignment';
@@ -392,6 +404,7 @@ final class AssignmentAnalyzer
                 $codebase->analyzer->incrementNonMixedCount($statements_analyzer->getFilePath());
             }
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($var_id
                 && isset($context->byref_constraints[$var_id])
                 && ($outer_constraint_type = $context->byref_constraints[$var_id]->type)
@@ -404,6 +417,9 @@ final class AssignmentAnalyzer
                     $assign_value_type->ignore_falsable_issues,
                 )
                 ) {
+                    /**
+                     * @psalm-fixme ImplicitToStringCast
+                     */
                     IssueBuffer::maybeAdd(
                         new ReferenceConstraintViolation(
                             'Variable ' . $var_id . ' is limited to values of type '
@@ -457,6 +473,7 @@ final class AssignmentAnalyzer
             return null;
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($var_id && isset($context->vars_in_scope[$var_id])) {
             if ($context->vars_in_scope[$var_id]->isVoid()) {
                 IssueBuffer::maybeAdd(
@@ -589,6 +606,7 @@ final class AssignmentAnalyzer
                 return false;
             }
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($var_id) {
                 $context->vars_possibly_in_scope[$var_id] = true;
             }
@@ -721,6 +739,7 @@ final class AssignmentAnalyzer
 
             $type_location = null;
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($var_comment->type_start
                 && $var_comment->type_end
                 && $var_comment->line_number
@@ -743,6 +762,7 @@ final class AssignmentAnalyzer
                 }
             }
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if (!$var_comment->var_id || $var_comment->var_id === $var_id) {
                 $comment_type = $var_comment_type;
                 $comment_type_location = $type_location;
@@ -763,6 +783,9 @@ final class AssignmentAnalyzer
                 ) {
                     FileManipulationBuffer::addVarAnnotationToRemove($type_location);
                 } else {
+                    /**
+                     * @psalm-fixme ImplicitToStringCast
+                     */
                     IssueBuffer::maybeAdd(
                         new UnnecessaryVarAnnotation(
                             'The @var ' . $var_comment_type . ' annotation for '
@@ -967,6 +990,9 @@ final class AssignmentAnalyzer
         // old reference, so it's no longer potentially from a confusing scope.
         unset($context->references_possibly_from_confusing_scope[$lhs_var_id]);
 
+        /**
+         * @psalm-fixme UnsupportedPropertyReferenceUsage
+         */
         $context->vars_in_scope[$lhs_var_id] = &$context->vars_in_scope[$rhs_var_id];
         $context->hasVariable($lhs_var_id);
         $context->references_in_scope[$lhs_var_id] = $rhs_var_id;
@@ -1052,6 +1078,7 @@ final class AssignmentAnalyzer
             $statements_analyzer,
         );
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($var_id) {
             $var_not_in_scope = false;
 
@@ -1065,6 +1092,7 @@ final class AssignmentAnalyzer
                 $location = new CodeLocation($statements_analyzer->getSource(), $stmt);
 
                 if (!$statements_analyzer->hasVariable($var_id)) {
+                    /** @psalm-fixme RiskyTruthyFalsyComparison */
                     if ($constrain_type
                         && $prevent_null
                         && !$by_ref_type->isMixed()
@@ -1265,6 +1293,7 @@ final class AssignmentAnalyzer
 
                             $keyed_array_var_id = null;
 
+                            /** @psalm-fixme RiskyTruthyFalsyComparison */
                             if ($assign_value_id) {
                                 $keyed_array_var_id = $assign_value_id . '[\'' . $offset_value . '\']';
                             }
@@ -1366,6 +1395,7 @@ final class AssignmentAnalyzer
                     continue;
                 }
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($list_var_id) {
                     $context->vars_possibly_in_scope[$list_var_id] = true;
                     $context->assigned_var_ids[$list_var_id] = (int)$var->getAttribute('startFilePos');
@@ -1526,6 +1556,7 @@ final class AssignmentAnalyzer
                     }
                 }
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($list_var_id) {
                     $context->vars_in_scope[$list_var_id] = $new_assign_type ?: Type::getMixed();
 
@@ -1574,6 +1605,7 @@ final class AssignmentAnalyzer
                 }
             }
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($list_var_id) {
                 if (($context->error_suppressing && ($offset || $can_be_empty))
                     || $has_null
@@ -1627,6 +1659,7 @@ final class AssignmentAnalyzer
             $prop_name = null;
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($prop_name) {
             InstancePropertyAssignmentAnalyzer::analyze(
                 $statements_analyzer,
@@ -1649,6 +1682,7 @@ final class AssignmentAnalyzer
                 if ($stmt_var_type->hasObjectType()) {
                     foreach ($stmt_var_type->getAtomicTypes() as $type) {
                         if ($type instanceof TNamedObject) {
+                            /** @psalm-fixme RiskyTruthyFalsyComparison */
                             $codebase->analyzer->addMixedMemberName(
                                 strtolower($type->value) . '::$',
                                 $context->calling_method_id ?: $statements_analyzer->getFileName(),
@@ -1659,6 +1693,7 @@ final class AssignmentAnalyzer
             }
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($var_id) {
             $context->vars_possibly_in_scope[$var_id] = true;
         }
@@ -1702,6 +1737,7 @@ final class AssignmentAnalyzer
         Context $context,
     ): void {
         if (is_string($assign_var->name)) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($var_id) {
                 $original_type = $context->vars_in_scope[$var_id] ?? null;
                 $context->vars_in_scope[$var_id] = $assign_value_type;
@@ -1848,6 +1884,7 @@ final class AssignmentAnalyzer
         Union $assign_value_type,
         Context $context,
     ): Union {
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($extended_var_id) {
             $assignment_node = DataFlowNode::getForAssignment(
                 $extended_var_id,

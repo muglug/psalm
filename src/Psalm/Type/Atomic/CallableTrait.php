@@ -237,6 +237,7 @@ trait CallableTrait
     ): ?array {
         $replaced = false;
         $params = $this->params;
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($params) {
             foreach ($params as $offset => $param) {
                 if (!$param->type) {
@@ -251,6 +252,9 @@ trait CallableTrait
                     $input_param_type = $input_type->params[$offset]->type;
                 }
 
+                /**
+                 * @psalm-fixme ImpureMethodCall
+                 */
                 $new_param = $param->setType(TemplateStandinTypeReplacer::replace(
                     $param->type,
                     $template_result,
@@ -272,6 +276,9 @@ trait CallableTrait
 
         $return_type = $this->return_type;
         if ($return_type) {
+            /**
+             * @psalm-fixme ImpureMethodCall
+             */
             $return_type = TemplateStandinTypeReplacer::replace(
                 $return_type,
                 $template_result,
@@ -306,9 +313,13 @@ trait CallableTrait
         $replaced = false;
 
         $params = $this->params;
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($params) {
             foreach ($params as $k => $param) {
                 if ($param->type) {
+                    /**
+                     * @psalm-fixme ImpureMethodCall
+                     */
                     $new_param = $param->setType(TemplateInferredTypeReplacer::replace(
                         $param->type,
                         $template_result,
@@ -322,6 +333,9 @@ trait CallableTrait
 
         $return_type = $this->return_type;
         if ($return_type) {
+            /**
+             * @psalm-fixme ImpureMethodCall
+             */
             $return_type = TemplateInferredTypeReplacer::replace(
                 $return_type,
                 $template_result,

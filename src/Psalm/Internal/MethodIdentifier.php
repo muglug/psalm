@@ -62,6 +62,9 @@ final class MethodIdentifier implements Stringable
         // remove leading backslash if it exists
         $method_id = ltrim($method_id, '\\');
         $method_id_parts = explode('::', $method_id);
+        /**
+         * @psalm-fixme PossiblyUndefinedIntArrayOffset
+         */
         return new self($method_id_parts[0], strtolower($method_id_parts[1]));
     }
 

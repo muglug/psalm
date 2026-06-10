@@ -130,6 +130,7 @@ final class Creator
             }
 
             // exclude some directories that are probably ignorable
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if (strpos($issue->file_path, 'vendor') || strpos($issue->file_path, 'stub')) {
                 continue;
             }
@@ -138,6 +139,9 @@ final class Creator
                 $issues_at_level[$issue_level][$issue_type] = 0;
             }
 
+            /**
+             * @psalm-fixme InvalidOperand
+             */
             $issues_at_level[$issue_level][$issue_type] += 100 / $counted_types;
         }
 
@@ -175,6 +179,7 @@ final class Creator
     {
         $replacements = [];
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($suggested_dir) {
             if (is_dir($current_dir . DIRECTORY_SEPARATOR . $suggested_dir)) {
                 $replacements[] = '<directory name="' . $suggested_dir . '" />';
@@ -288,7 +293,10 @@ final class Creator
     {
         $nodes = [];
 
-        /** @var string[] */
+        /**
+         * @var string[]
+         * @psalm-fixme RiskyTruthyFalsyComparison
+         */
         $php_files = [
             ...glob($current_dir . DIRECTORY_SEPARATOR . '*.php', GLOB_NOSORT) ?: [],
             ...glob($current_dir . DIRECTORY_SEPARATOR . '**/*.php', GLOB_NOSORT) ?: [],

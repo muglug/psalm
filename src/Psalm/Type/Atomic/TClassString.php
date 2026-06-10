@@ -62,6 +62,9 @@ class TClassString extends TString
             $key = 'class-string';
         }
 
+        /**
+         * @psalm-fixme ImplicitToStringCast
+         */
         return $key . ($this->as === 'object' ? '' : '<' . $this->as_type . '>');
     }
 
@@ -76,6 +79,9 @@ class TClassString extends TString
             $key = 'class-string';
         }
 
+        /**
+         * @psalm-fixme ImplicitToStringCast
+         */
         return ($this->is_loaded ? 'loaded-' : '') . $key . ($this->as === 'object' ? '' : '<' . $this->as_type . '>');
     }
 
@@ -112,6 +118,7 @@ class TClassString extends TString
             return 'class-string';
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($namespace && stripos($this->as, $namespace . '\\') === 0) {
             return 'class-string<' . preg_replace(
                 '/^' . preg_quote($namespace . '\\') . '/i',
@@ -120,6 +127,7 @@ class TClassString extends TString
             ) . '>';
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (!$namespace && !str_contains($this->as, '\\')) {
             return 'class-string<' . $this->as . '>';
         }
@@ -171,6 +179,9 @@ class TClassString extends TString
             $input_object_type = new TObject();
         }
 
+        /**
+         * @psalm-fixme ImpureMethodCall
+         */
         $as_type = TemplateStandinTypeReplacer::replace(
             new Union([$this->as_type]),
             $template_result,

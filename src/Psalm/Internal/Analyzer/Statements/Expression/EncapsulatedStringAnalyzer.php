@@ -87,6 +87,9 @@ final class EncapsulatedStringAnalyzer
 
                 if ($literal_string !== null) {
                     if ($casted_part_type->isSingleLiteral()) {
+                        /**
+                         * @psalm-fixme PossiblyInvalidOperand
+                         */
                         $literal_string .= $casted_part_type->getSingleLiteral()->value;
                     } else {
                         $literal_string = null;

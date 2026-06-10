@@ -92,6 +92,7 @@ final class StaticPropertyAssignmentAnalyzer
                 $context->inside_general_use = $was_inside_general_use;
 
                 if (!$context->ignore_variable_property) {
+                    /** @psalm-fixme RiskyTruthyFalsyComparison */
                     $codebase->analyzer->addMixedMemberName(
                         strtolower($fq_class_name) . '::$',
                         $context->calling_method_id ?: $statements_analyzer->getFileName(),
@@ -101,6 +102,9 @@ final class StaticPropertyAssignmentAnalyzer
                 return null;
             }
 
+            /**
+             * @psalm-fixme ImplicitToStringCast
+             */
             $property_id = $fq_class_name . '::$' . $prop_name;
 
             if ($codebase->store_node_types
@@ -148,6 +152,9 @@ final class StaticPropertyAssignmentAnalyzer
                 false,
             );
 
+            /**
+             * @psalm-fixme ImplicitToStringCast
+             */
             $declaring_property_id = strtolower($declaring_property_class) . '::$' . $prop_name;
 
             if ($codebase->alter_code && $stmt->class instanceof PhpParser\Node\Name) {
@@ -163,6 +170,9 @@ final class StaticPropertyAssignmentAnalyzer
                     foreach ($codebase->property_transforms as $original_pattern => $transformation) {
                         if ($declaring_property_id === $original_pattern) {
                             [$old_declaring_fq_class_name] = explode('::$', $declaring_property_id);
+                            /**
+                             * @psalm-fixme PossiblyUndefinedIntArrayOffset
+                             */
                             [$new_fq_class_name, $new_property_name] = explode('::$', $transformation);
 
                             $file_manipulations = [];
@@ -194,6 +204,7 @@ final class StaticPropertyAssignmentAnalyzer
 
             $class_storage = $codebase->classlike_storage_provider->get($declaring_property_class);
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($var_id) {
                 $context->vars_in_scope[$var_id] = $assignment_value_type;
             }
@@ -292,6 +303,9 @@ final class StaticPropertyAssignmentAnalyzer
             }
 
             if ($union_comparison_results->to_string_cast) {
+                /**
+                 * @psalm-fixme ImplicitToStringCast
+                 */
                 IssueBuffer::maybeAdd(
                     new ImplicitToStringCast(
                         $var_id . ' expects \'' . $class_property_type . '\', '
@@ -342,6 +356,7 @@ final class StaticPropertyAssignmentAnalyzer
                 }
             }
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($var_id) {
                 $context->vars_in_scope[$var_id] = $assignment_value_type;
             }

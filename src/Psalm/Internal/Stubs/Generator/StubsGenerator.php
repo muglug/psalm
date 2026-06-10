@@ -102,6 +102,7 @@ final class StubsGenerator
                 continue;
             }
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if (!$function_storage->cased_name) {
                 throw new UnexpectedValueException('very bad');
             }
@@ -148,6 +149,7 @@ final class StubsGenerator
             }
 
             foreach ($file_storage->functions as $function_storage) {
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if (!$function_storage->cased_name) {
                     continue;
                 }
@@ -218,6 +220,7 @@ final class StubsGenerator
     ) : PhpParser\Node\Stmt\Function_ {
         $docblock = new ParsedDocblock('', []);
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         foreach ($function_storage->template_types ?: [] as $template_name => $map) {
             $type = array_values($map)[0];
 

@@ -23,24 +23,38 @@ final class Lz4Serializer implements Serializer
     public function serialize(mixed $data): string
     {
         $data = $this->serializer->serialize($data);
+        /**
+         * @psalm-fixme MixedAssignment
+         * @psalm-fixme UndefinedFunction
+         */
         $data = lz4_compress($data, 4);
         if ($data === false) {
             $error = error_get_last();
             throw new SerializationException('Could not compress data: ' . ($error['message'] ?? 'unknown error'));
         }
 
+        /**
+         * @psalm-fixme MixedReturnStatement
+         */
         return $data;
     }
 
     #[Override]
     public function unserialize(string $data): mixed
     {
+        /**
+         * @psalm-fixme MixedAssignment
+         * @psalm-fixme UndefinedFunction
+         */
         $data = lz4_uncompress($data);
         if ($data === false) {
             $error = error_get_last();
             throw new SerializationException('Could not decompress data: ' . ($error['message'] ?? 'unknown error'));
         }
 
+        /**
+         * @psalm-fixme MixedArgument
+         */
         return $this->serializer->unserialize($data);
     }
 }

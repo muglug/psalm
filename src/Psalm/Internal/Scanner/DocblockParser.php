@@ -110,6 +110,7 @@ final class DocblockParser
                     $data = rtrim((string) preg_replace('/^ *\*\s*$/m', '', $data));
                 }
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if (empty($special[$type])) {
                     $special[$type] = [];
                 }
@@ -158,6 +159,7 @@ final class DocblockParser
         $docblock = implode("\n", $lines);
         $docblock = rtrim($docblock);
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         $parsed = new ParsedDocblock($docblock, $special, $first_line_padding ?: '');
 
         self::resolveTags($parsed);

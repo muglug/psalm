@@ -51,6 +51,7 @@ final class ConsoleReport extends Report
             . ' - ' . $issue_data->message . $issue_reference . "\n";
 
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($issue_data->taint_trace) {
             $issue_string .= $this->getTaintSnippets($issue_data->taint_trace);
         } elseif ($this->show_snippet) {
@@ -68,6 +69,7 @@ final class ConsoleReport extends Report
             }
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($issue_data->other_references) {
             if ($this->show_snippet) {
                 $issue_string .= "\n";
@@ -136,11 +138,19 @@ final class ConsoleReport extends Report
 
         if (null === $this->link_format) {
             // if xdebug is not enabled, use `get_cfg_var` to get the value directly from php.ini
+            /**
+             * @psalm-fixme PossiblyInvalidPropertyAssignmentValue
+             * @psalm-fixme RiskyTruthyFalsyComparison
+             */
             $this->link_format = (
                 ini_get('xdebug.file_link_format') ?: get_cfg_var('xdebug.file_link_format')
             ) ?: 'file://%f#L%l';
         }
 
+        /**
+         * @psalm-fixme PossiblyInvalidArgument
+         * @psalm-fixme PossiblyInvalidCast
+         */
         $link = strtr($this->link_format, ['%f' => $data->file_path, '%l' => $data->line_from]);
         // $reference = $data->file_name . ':' . $data->line_from . ':' . $data->column_from;
 

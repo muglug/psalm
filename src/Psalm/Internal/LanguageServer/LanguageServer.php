@@ -162,6 +162,9 @@ final class LanguageServer extends Dispatcher
                 $error = null;
                 try {
                     // Invoke the method handler to get a result
+                    /**
+                     * @psalm-fixme MixedAssignment
+                     */
                     $result = $this->dispatch($msg->body);
                 } catch (Error $e) {
                     // If a ResponseError is thrown, send it back in the Response
@@ -268,6 +271,7 @@ final class LanguageServer extends Dispatcher
             $codebase,
         );
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($clientConfiguration->onchangeLineLimit) {
             $project_analyzer->onchange_line_limit = $clientConfiguration->onchangeLineLimit;
         }
@@ -277,6 +281,7 @@ final class LanguageServer extends Dispatcher
 
         @cli_set_process_title('Psalm ' . PSALM_VERSION . ' - PHP Language Server');
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (!$clientConfiguration->TCPServerMode && $clientConfiguration->TCPServerAddress) {
             // Connect to a TCP server
             $socket = stream_socket_client('tcp://' . $clientConfiguration->TCPServerAddress, $errno, $errstr);
@@ -295,7 +300,7 @@ final class LanguageServer extends Dispatcher
                 $path_mapper,
             );
             EventLoop::run();
-        } elseif ($clientConfiguration->TCPServerMode && $clientConfiguration->TCPServerAddress) {
+        } /** @psalm-fixme RiskyTruthyFalsyComparison */ elseif ($clientConfiguration->TCPServerMode && $clientConfiguration->TCPServerAddress) {
             // Run a TCP Server
             $tcpServer = stream_socket_server('tcp://' . $clientConfiguration->TCPServerAddress, $errno, $errstr);
             if ($tcpServer === false) {
@@ -934,6 +939,7 @@ final class LanguageServer extends Dispatcher
     private function clientStatus(string $status, ?string $additional_info = null): void
     {
         try {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             $this->client->event(
                 new LogMessage(
                     MessageType::INFO,

@@ -502,10 +502,14 @@ final class Analyzer
 
         foreach ($changed_members as $file_path => $members_by_file) {
             foreach ($members_by_file as $changed_member => $_) {
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if (!strpos($changed_member, '&')) {
                     continue;
                 }
 
+                /**
+                 * @psalm-fixme PossiblyUndefinedIntArrayOffset
+                 */
                 [$base_class, $trait] = explode('&', $changed_member);
 
                 foreach ($all_referencing_methods as $member_id => $_) {

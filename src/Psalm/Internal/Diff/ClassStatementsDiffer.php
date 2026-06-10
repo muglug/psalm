@@ -107,22 +107,36 @@ final class ClassStatementsDiffer extends AstDiffer
                         return false;
                     }
 
+                    /** @psalm-fixme RiskyTruthyFalsyComparison */
                     if ($a->stmts) {
+                        /**
+                         * @psalm-fixme PossiblyUndefinedIntArrayOffset
+                         */
                         $first_stmt = $a->stmts[0];
                         $a_stmts_start = (int) $first_stmt->getAttribute('startFilePos');
 
                         if ($a_stmt_comments = $first_stmt->getComments()) {
+                            /**
+                             * @psalm-fixme PossiblyUndefinedIntArrayOffset
+                             */
                             $a_stmts_start = $a_stmt_comments[0]->getStartFilePos();
                         }
                     } else {
                         $a_stmts_start = $a_end;
                     }
 
+                    /** @psalm-fixme RiskyTruthyFalsyComparison */
                     if ($b->stmts) {
+                        /**
+                         * @psalm-fixme PossiblyUndefinedIntArrayOffset
+                         */
                         $first_stmt = $b->stmts[0];
                         $b_stmts_start = (int) $first_stmt->getAttribute('startFilePos');
 
                         if ($b_stmt_comments = $first_stmt->getComments()) {
+                            /**
+                             * @psalm-fixme PossiblyUndefinedIntArrayOffset
+                             */
                             $b_stmts_start = $b_stmt_comments[0]->getStartFilePos();
                         }
                     } else {
@@ -156,6 +170,9 @@ final class ClassStatementsDiffer extends AstDiffer
                         return false;
                     }
 
+                    /**
+                     * @psalm-fixme PossiblyUndefinedIntArrayOffset
+                     */
                     if ((string) $a->props[0]->name !== (string) $b->props[0]->name || $a->flags !== $b->flags) {
                         return false;
                     }
@@ -208,10 +225,16 @@ final class ClassStatementsDiffer extends AstDiffer
                     $keep[] = $name_lc . '::' . strtolower((string) $diff_elem->old->name);
                 } elseif ($diff_elem->old instanceof PhpParser\Node\Stmt\Property) {
                     foreach ($diff_elem->old->props as $prop) {
+                        /**
+                         * @psalm-fixme ImplicitToStringCast
+                         */
                         $keep[] = $name_lc . '::$' . $prop->name;
                     }
                 } elseif ($diff_elem->old instanceof PhpParser\Node\Stmt\ClassConst) {
                     foreach ($diff_elem->old->consts as $const) {
+                        /**
+                         * @psalm-fixme ImplicitToStringCast
+                         */
                         $keep[] = $name_lc . '::' . $const->name;
                     }
                 } elseif ($diff_elem->old instanceof PhpParser\Node\Stmt\TraitUse) {
@@ -224,6 +247,9 @@ final class ClassStatementsDiffer extends AstDiffer
                     $keep_signature[] = $name_lc . '::' . strtolower((string) $diff_elem->old->name);
                 } elseif ($diff_elem->old instanceof PhpParser\Node\Stmt\Property) {
                     foreach ($diff_elem->old->props as $prop) {
+                        /**
+                         * @psalm-fixme ImplicitToStringCast
+                         */
                         $keep_signature[] = $name_lc . '::$' . $prop->name;
                     }
                 }
@@ -246,10 +272,16 @@ final class ClassStatementsDiffer extends AstDiffer
                     }
                 } elseif ($affected_elem instanceof PhpParser\Node\Stmt\Property) {
                     foreach ($affected_elem->props as $prop) {
+                        /**
+                         * @psalm-fixme ImplicitToStringCast
+                         */
                         $add_or_delete[] = $name_lc . '::$' . $prop->name;
                     }
                 } elseif ($affected_elem instanceof PhpParser\Node\Stmt\ClassConst) {
                     foreach ($affected_elem->consts as $const) {
+                        /**
+                         * @psalm-fixme ImplicitToStringCast
+                         */
                         $add_or_delete[] = $name_lc . '::' . $const->name;
                     }
                 } elseif ($affected_elem instanceof PhpParser\Node\Stmt\TraitUse) {

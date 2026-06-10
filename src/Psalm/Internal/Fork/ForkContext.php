@@ -68,6 +68,7 @@ final class ForkContext extends AbstractContext
      * @param positive-int $childConnectTimeout Number of seconds the child will attempt to connect to the parent
      *      before failing.
      * @throws ContextException If starting the process fails.
+     * @psalm-fixme UnusedVariable
      */
     public static function start(
         string|array $argv,
@@ -136,6 +137,9 @@ final class ForkContext extends AbstractContext
 
             try {
                 $argc = count($argv);
+                /**
+                 * @psalm-fixme MixedAssignment
+                 */
                 $callable = require $argv[0];
             } catch (TypeError $exception) {
                 throw new Error(sprintf(
@@ -151,9 +155,23 @@ final class ForkContext extends AbstractContext
                 ), 0, $exception);
             }
 
+            /**
+             * @psalm-fixme InternalClass
+             * @psalm-fixme InternalMethod
+             * @psalm-fixme MixedAssignment
+             * @psalm-fixme MixedFunctionCall
+             */
             $returnValue = $callable(new ContextChannel($ipcChannel));
+            /**
+             * @psalm-fixme InternalClass
+             * @psalm-fixme InternalMethod
+             */
             $result = new ExitSuccess($returnValue instanceof Future ? $returnValue->await() : $returnValue);
         } catch (Throwable $exception) {
+            /**
+             * @psalm-fixme InternalClass
+             * @psalm-fixme InternalMethod
+             */
             $result = new ExitFailure($exception);
         }
 
@@ -162,6 +180,10 @@ final class ForkContext extends AbstractContext
                 $resultChannel->send($result);
             } catch (SerializationException $exception) {
                 // Serializing the result failed. Send the reason why.
+                /**
+                 * @psalm-fixme InternalClass
+                 * @psalm-fixme InternalMethod
+                 */
                 $resultChannel->send(new ExitFailure($exception));
             }
         } catch (Throwable $exception) {
@@ -269,6 +291,10 @@ final class ForkContext extends AbstractContext
             $this->close();
         }
 
+        /**
+         * @psalm-fixme InternalMethod
+         * @psalm-fixme MixedReturnStatement
+         */
         return $data->getResult();
     }
 }

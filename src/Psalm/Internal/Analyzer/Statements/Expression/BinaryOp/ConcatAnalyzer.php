@@ -169,6 +169,9 @@ final class ConcatAnalyzer
 
                     foreach ($left_type->getAtomicTypes() as $left_type_part) {
                         foreach ($right_type->getAtomicTypes() as $right_type_part) {
+                            /**
+                             * @psalm-fixme InvalidOperand
+                             */
                             $literal = $left_type_part->value . $right_type_part->value;
                             if (strlen($literal) >= $config->max_string_length) {
                                 // Literal too long, use non-literal type instead
@@ -331,6 +334,9 @@ final class ConcatAnalyzer
         $config = Config::getInstance();
 
         if ($operand_type->isNull()) {
+            /**
+             * @psalm-fixme ImplicitToStringCast
+             */
             IssueBuffer::maybeAdd(
                 new NullOperand(
                     'Cannot concatenate with a ' . $operand_type,
@@ -343,6 +349,9 @@ final class ConcatAnalyzer
         }
 
         if ($operand_type->isFalse()) {
+            /**
+             * @psalm-fixme ImplicitToStringCast
+             */
             IssueBuffer::maybeAdd(
                 new FalseOperand(
                     'Cannot concatenate with a ' . $operand_type,
@@ -355,6 +364,9 @@ final class ConcatAnalyzer
         }
 
         if ($operand_type->isNullable() && !$operand_type->ignore_nullable_issues) {
+            /**
+             * @psalm-fixme ImplicitToStringCast
+             */
             IssueBuffer::maybeAdd(
                 new PossiblyNullOperand(
                     'Cannot concatenate with a possibly null ' . $operand_type,
@@ -365,6 +377,9 @@ final class ConcatAnalyzer
         }
 
         if ($operand_type->isFalsable() && !$operand_type->ignore_falsable_issues) {
+            /**
+             * @psalm-fixme ImplicitToStringCast
+             */
             IssueBuffer::maybeAdd(
                 new PossiblyFalseOperand(
                     'Cannot concatenate with a possibly false ' . $operand_type,
@@ -470,6 +485,9 @@ final class ConcatAnalyzer
             )
         ) {
             if ($has_valid_operand) {
+                /**
+                 * @psalm-fixme ImplicitToStringCast
+                 */
                 IssueBuffer::maybeAdd(
                     new PossiblyInvalidOperand(
                         'Cannot concatenate with a ' . $operand_type,
@@ -478,6 +496,9 @@ final class ConcatAnalyzer
                     $statements_analyzer->getSuppressedIssues(),
                 );
             } else {
+                /**
+                 * @psalm-fixme ImplicitToStringCast
+                 */
                 IssueBuffer::maybeAdd(
                     new InvalidOperand(
                         'Cannot concatenate with a ' . $operand_type,

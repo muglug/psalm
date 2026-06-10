@@ -34,6 +34,9 @@ final class IsAClass extends Assertion
 
     public function __toString(): string
     {
+        /**
+         * @psalm-fixme ImplicitToStringCast
+         */
         return 'isa-' . ($this->allow_string ? 'string-' : '') . $this->type;
     }
 

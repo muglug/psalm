@@ -110,12 +110,18 @@ final class CodebaseTest extends TestCase
 
         $actual = $this->codebase->getKeyValueParamsForTraversableObject($input);
 
+        /**
+         * @psalm-fixme ImplicitToStringCast
+         */
         $this->assertTrue(
             $expected_key_type->equals($actual[0]),
             'Expected ' . $input->getId() . ' to have ' . $expected_key_type
             . ' but got ' . $actual[0]->getId(),
         );
 
+        /**
+         * @psalm-fixme ImplicitToStringCast
+         */
         $this->assertTrue(
             $expected_value_type->equals($actual[1]),
             'Expected ' . $input->getId() . ' to have ' . $expected_value_type

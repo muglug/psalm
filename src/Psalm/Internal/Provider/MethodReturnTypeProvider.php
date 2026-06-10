@@ -87,6 +87,7 @@ final class MethodReturnTypeProvider
         ?string $called_method_name = null,
     ): ?Union {
         foreach (self::$handlers[strtolower($fq_classlike_name)] ?? [] as $class_handler) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             $event = new MethodReturnTypeProviderEvent(
                 $statements_source,
                 $fq_classlike_name,

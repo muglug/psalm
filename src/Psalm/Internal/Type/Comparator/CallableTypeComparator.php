@@ -38,6 +38,7 @@ use function substr;
 
 /**
  * @internal
+ * @psalm-fixme MoreSpecificReturnType
  */
 final class CallableTypeComparator
 {
@@ -131,6 +132,7 @@ final class CallableTypeComparator
             }
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($input_variadic_param_idx && isset($input_type_part->params[$input_variadic_param_idx])) {
             $input_param = $input_type_part->params[$input_variadic_param_idx];
 
@@ -328,6 +330,7 @@ final class CallableTypeComparator
 
                     $nodes = new NodeDataProvider();
 
+                    /** @psalm-fixme RiskyTruthyFalsyComparison */
                     if ($container_type_part && $container_type_part->params) {
                         foreach ($container_type_part->params as $i => $param) {
                             $arg = new Arg(
@@ -464,6 +467,9 @@ final class CallableTypeComparator
                         )->getSingleAtomic();
                     }
 
+                    /**
+                     * @psalm-fixme LessSpecificReturnStatement
+                     */
                     return $callable;
                 }
             }
@@ -495,9 +501,11 @@ final class CallableTypeComparator
                 return 'not-callable';
             }
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($codebase && ($calling_method_id || $file_name)) {
                 foreach ($lhs->getAtomicTypes() as $lhs_atomic_type) {
                     if ($lhs_atomic_type instanceof TNamedObject) {
+                        /** @psalm-fixme RiskyTruthyFalsyComparison */
                         $codebase->analyzer->addMixedMemberName(
                             strtolower($lhs_atomic_type->value) . '::',
                             $calling_method_id ?: $file_name,
@@ -513,8 +521,12 @@ final class CallableTypeComparator
                                 $member_id = $lhs_template_atomic_type->as;
                             }
 
+                            /** @psalm-fixme RiskyTruthyFalsyComparison */
                             if ($member_id) {
-                                /** @psalm-suppress PossiblyNullArgument Psalm bug */
+                                /**
+                                 * @psalm-suppress PossiblyNullArgument Psalm bug
+                                 * @psalm-fixme RiskyTruthyFalsyComparison
+                                 */
                                 $codebase->analyzer->addMixedMemberName(
                                     strtolower($member_id) . '::',
                                     $calling_method_id ?: $file_name,
@@ -566,8 +578,11 @@ final class CallableTypeComparator
             return null;
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (!$class_name) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($codebase && ($calling_method_id || $file_name)) {
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 $codebase->analyzer->addMixedMemberName(
                     strtolower($method_name),
                     $calling_method_id ?: $file_name,

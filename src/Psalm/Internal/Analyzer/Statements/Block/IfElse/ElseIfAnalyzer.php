@@ -221,6 +221,7 @@ final class ElseIfAnalyzer
 
         // if the elseif has an || in the conditional, we cannot easily reason about it
         if ($reconcilable_elseif_types) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             [$elseif_context->vars_in_scope, $elseif_context->references_in_scope] = Reconciler::reconcileKeyedTypes(
                 $reconcilable_elseif_types,
                 $active_elseif_types,
@@ -354,6 +355,7 @@ final class ElseIfAnalyzer
                 $newly_reconciled_var_ids = [];
 
                 $implied_outer_context = clone $elseif_context;
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 [$implied_outer_context->vars_in_scope, $implied_outer_context->references_in_scope] =
                     Reconciler::reconcileKeyedTypes(
                         $negated_elseif_types,

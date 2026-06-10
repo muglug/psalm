@@ -87,6 +87,7 @@ final class InstancePropertyFetchAnalyzer
             $statements_analyzer,
         );
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($var_id && $context->hasVariable($var_id)) {
             self::handleScopedProperty(
                 $context,
@@ -101,6 +102,7 @@ final class InstancePropertyFetchAnalyzer
             return true;
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($stmt_var_id && $context->hasVariable($stmt_var_id)) {
             $stmt_var_type = $context->vars_in_scope[$stmt_var_id];
         } else {
@@ -143,6 +145,7 @@ final class InstancePropertyFetchAnalyzer
             }
 
             if ($stmt->name instanceof PhpParser\Node\Identifier) {
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 $codebase->analyzer->addMixedMemberName(
                     '$' . $stmt->name->name,
                     $context->calling_method_id ?: $statements_analyzer->getFileName(),
@@ -187,6 +190,9 @@ final class InstancePropertyFetchAnalyzer
                 && $stmt->name instanceof PhpParser\Node\Identifier
                 && !MethodCallAnalyzer::hasNullsafe($stmt->var)
             ) {
+                /**
+                 * @psalm-fixme ImplicitToStringCast
+                 */
                 IssueBuffer::maybeAdd(
                     new PossiblyNullPropertyFetch(
                         rtrim('Cannot get property on possibly null variable ' . $stmt_var_id)
@@ -200,10 +206,12 @@ final class InstancePropertyFetchAnalyzer
             }
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (!$prop_name) {
             if ($stmt_var_type->hasObjectType() && !$context->ignore_variable_property) {
                 foreach ($stmt_var_type->getAtomicTypes() as $type) {
                     if ($type instanceof TNamedObject) {
+                        /** @psalm-fixme RiskyTruthyFalsyComparison */
                         $codebase->analyzer->addMixedMemberName(
                             strtolower($type->value) . '::$',
                             $context->calling_method_id ?: $statements_analyzer->getFileName(),
@@ -280,6 +288,9 @@ final class InstancePropertyFetchAnalyzer
         }
 
         if ($invalid_fetch_types) {
+            /**
+             * @psalm-fixme PossiblyUndefinedIntArrayOffset
+             */
             $lhs_type_part = $invalid_fetch_types[0];
 
             if ($has_valid_fetch_type) {
@@ -301,6 +312,7 @@ final class InstancePropertyFetchAnalyzer
             }
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($var_id) {
             $context->vars_in_scope[$var_id] = $statements_analyzer->node_data->getType($stmt) ?? Type::getMixed();
         }
@@ -431,6 +443,7 @@ final class InstancePropertyFetchAnalyzer
                         $statements_analyzer,
                     );
 
+                    /** @psalm-fixme RiskyTruthyFalsyComparison */
                     if ($declaring_property_class) {
                         AtomicPropertyFetchAnalyzer::checkPropertyDeprecation(
                             $stmt->name->name,

@@ -16,6 +16,7 @@ use Psalm\Type\Union;
  * Represents the type used when using TKeyOf when the type of the array is a template
  *
  * @psalm-immutable
+ * @psalm-fixme ImplementedReturnTypeMismatch
  */
 final class TTemplateKeyOf extends Atomic
 {
@@ -85,6 +86,9 @@ final class TTemplateKeyOf extends Atomic
         TemplateResult $template_result,
         ?Codebase $codebase,
     ): Atomic {
+        /**
+         * @psalm-fixme ImpureMethodCall
+         */
         $as = TemplateInferredTypeReplacer::replace(
             $this->as,
             $template_result,

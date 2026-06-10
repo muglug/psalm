@@ -37,6 +37,9 @@ final class TemplateScanner extends Psalm\Internal\Scanner\FileScanner
             $comment_block = DocComment::parsePreservingLength($doc_comment);
 
             if (isset($comment_block->tags['variablesfrom'])) {
+                /**
+                 * @psalm-fixme PossiblyUndefinedIntArrayOffset
+                 */
                 $variables_from = trim($comment_block->tags['variablesfrom'][0]);
 
                 $first_line_regex = '/([A-Za-z\\\0-9]+::[a-z_A-Z]+)(\s+weak)?/';
@@ -47,6 +50,9 @@ final class TemplateScanner extends Psalm\Internal\Scanner\FileScanner
                     throw new InvalidArgumentException('Could not interpret doc comment correctly');
                 }
 
+                /**
+                 * @psalm-fixme PossiblyUndefinedIntArrayOffset
+                 */
                 [$fq_class_name] = explode('::', $matches[1]);
 
                 $codebase->scanner->queueClassLikeForScanning(

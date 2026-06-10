@@ -16,6 +16,9 @@ use Psalm\Internal\Analyzer\ProjectAnalyzer;
  */
 final class ScannerTask implements Task
 {
+    /**
+     * @psalm-fixme PossiblyUnusedMethod
+     */
     public function __construct(private string $file)
     {
     }

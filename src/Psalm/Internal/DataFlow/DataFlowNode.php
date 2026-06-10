@@ -41,6 +41,7 @@ class DataFlowNode implements Stringable
         ?string $specialization_key = null,
         public array $taints = [],
     ) {
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($specialization_key) {
             $this->unspecialized_id = $id;
             $this->id .= '-' . $specialization_key;

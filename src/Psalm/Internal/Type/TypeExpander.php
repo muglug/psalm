@@ -227,12 +227,14 @@ final class TypeExpander
         }
 
         if ($return_type instanceof TClassConstant) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($self_class) {
                 $return_type = $return_type->replaceClassLike(
                     'self',
                     $self_class,
                 );
             }
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if (is_string($static_class_type) || $self_class) {
                 $return_type = $return_type->replaceClassLike(
                     'static',
@@ -275,6 +277,7 @@ final class TypeExpander
         if ($return_type instanceof TTypeAlias) {
             $declaring_fq_classlike_name = $return_type->declaring_fq_classlike_name;
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($declaring_fq_classlike_name === 'self' && $self_class) {
                 $declaring_fq_classlike_name = $self_class;
             }
@@ -498,6 +501,9 @@ final class TypeExpander
                 unset($property_type);
             }
             if ($changed) {
+                /**
+                 * @psalm-fixme InvalidArgument
+                 */
                 $return_type = new TKeyedArray(
                     $properties,
                     $return_type->class_strings,
@@ -533,6 +539,7 @@ final class TypeExpander
             || $return_type instanceof TClosure
         ) {
             $params = $return_type->params;
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($params) {
                 foreach ($params as &$param) {
                     if ($param->type) {
@@ -601,6 +608,7 @@ final class TypeExpander
                 $value,
             );
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($container_class_storage->template_types
                 && array_any(
                     $container_class_storage->template_types,
@@ -624,6 +632,7 @@ final class TypeExpander
 
         $return_type_lc = strtolower($return_type->value);
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($static_class_type && ($return_type_lc === 'static' || $return_type_lc === '$this')) {
             $is_static = $return_type->is_static;
             $is_static_resolved = null;
@@ -690,9 +699,9 @@ final class TypeExpander
                 $static_class_type,
                 false,
             );
-        } elseif ($self_class && $return_type_lc === 'self') {
+        } /** @psalm-fixme RiskyTruthyFalsyComparison */ elseif ($self_class && $return_type_lc === 'self') {
             $return_type = $return_type->setValue($self_class);
-        } elseif ($parent_class && $return_type_lc === 'parent') {
+        } /** @psalm-fixme RiskyTruthyFalsyComparison */ elseif ($parent_class && $return_type_lc === 'parent') {
             $return_type = $return_type->setValue($parent_class);
         } else {
             $new_value = $codebase->classlikes->getUnAliasedName($return_type->value);
@@ -922,6 +931,7 @@ final class TypeExpander
         ?string $self_class,
         string|TNamedObject|TTemplateParam|null $static_class_type,
     ): array {
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($self_class) {
             $return_type = $return_type->replaceClassLike(
                 'self',
@@ -1033,6 +1043,7 @@ final class TypeExpander
                 continue;
             }
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($self_class) {
                 $type_param = $type_param->replaceClassLike('self', $self_class);
             }

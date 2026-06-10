@@ -95,6 +95,7 @@ final class ForeachAnalyzer
 
         if ($doc_comment) {
             try {
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 $var_comments = CommentAnalyzer::getTypeFromComment(
                     $doc_comment,
                     $statements_analyzer->getSource(),
@@ -144,6 +145,7 @@ final class ForeachAnalyzer
         }
 
         foreach ($var_comments as $var_comment) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if (!$var_comment->var_id || !$var_comment->type) {
                 continue;
             }
@@ -162,6 +164,7 @@ final class ForeachAnalyzer
 
             $type_location = null;
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($var_comment->type_start
                 && $var_comment->type_end
                 && $var_comment->line_number
@@ -201,6 +204,9 @@ final class ForeachAnalyzer
                     ) {
                         FileManipulationBuffer::addVarAnnotationToRemove($type_location);
                     } else {
+                        /**
+                         * @psalm-fixme ImplicitToStringCast
+                         */
                         IssueBuffer::maybeAdd(
                             new UnnecessaryVarAnnotation(
                                 'The @var ' . $comment_type . ' annotation for '
@@ -241,9 +247,10 @@ final class ForeachAnalyzer
             $statements_analyzer,
         );
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($stmt_expr_type = $statements_analyzer->node_data->getType($stmt->expr)) {
             $iterator_type = $stmt_expr_type;
-        } elseif ($var_id && $context->hasVariable($var_id)) {
+        } /** @psalm-fixme RiskyTruthyFalsyComparison */ elseif ($var_id && $context->hasVariable($var_id)) {
             $iterator_type = $context->vars_in_scope[$var_id];
         } else {
             $iterator_type = null;
@@ -268,6 +275,7 @@ final class ForeachAnalyzer
 
         $foreach_context = clone $context;
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($var_id && $foreach_context->hasVariable($var_id)) {
             // refine the type of the array variable we iterate over
             // if we entered loop body, the array cannot be empty
@@ -339,6 +347,7 @@ final class ForeachAnalyzer
         }
 
         foreach ($var_comments as $var_comment) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if (!$var_comment->var_id || !$var_comment->type) {
                 continue;
             }
@@ -424,6 +433,9 @@ final class ForeachAnalyzer
         }
 
         if ($iterator_type->isNullable() && !$iterator_type->ignore_nullable_issues) {
+            /**
+             * @psalm-fixme ImplicitToStringCast
+             */
             IssueBuffer::maybeAdd(
                 new PossiblyNullIterator(
                     'Cannot iterate over nullable var ' . $iterator_type,
@@ -436,6 +448,9 @@ final class ForeachAnalyzer
         }
 
         if ($iterator_type->isFalsable() && !$iterator_type->ignore_falsable_issues) {
+            /**
+             * @psalm-fixme ImplicitToStringCast
+             */
             IssueBuffer::maybeAdd(
                 new PossiblyFalseIterator(
                     'Cannot iterate over falsable var ' . $iterator_type,
@@ -638,6 +653,9 @@ final class ForeachAnalyzer
                     }
                 }
 
+                /**
+                 * @psalm-fixme ConflictingReferenceConstraint
+                 */
                 if (AtomicTypeComparator::isContainedBy(
                     $codebase,
                     $iterator_atomic_type,
@@ -1041,6 +1059,7 @@ final class ForeachAnalyzer
                 return;
             }
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($generic_storage->template_types
                 || $iterator_atomic_type instanceof TGenericObject
             ) {
@@ -1147,6 +1166,7 @@ final class ForeachAnalyzer
         ?array $calling_type_params = null,
     ): ?Union {
         if ($calling_class === $template_class) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if (isset($class_template_types[$template_name]) && $calling_type_params) {
                 $offset = array_search($template_name, array_keys($class_template_types), true);
 

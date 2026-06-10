@@ -414,6 +414,7 @@ final class LanguageServer
         }
 
         if (isset($options['verbose'])) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             $clientConfiguration->logLevel = $options['verbose'] ? MessageType::LOG : MessageType::INFO;
         } else {
             $clientConfiguration->logLevel = MessageType::INFO;

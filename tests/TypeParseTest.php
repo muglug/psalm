@@ -1283,6 +1283,7 @@ final class TypeParseTest extends TestCase
             $param_type_3 = $signature[3] ?? null;
             $param_type_4 = $signature[4] ?? null;
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($return_type && $return_type !== 'void') {
                 if (stripos($return_type, 'oci-') !== false) {
                     continue;
@@ -1291,10 +1292,14 @@ final class TypeParseTest extends TestCase
                 try {
                     Type::parseString($return_type);
                 } catch (TypeParseTreeException $e) {
+                    /**
+                     * @psalm-fixme ImplicitToStringCast
+                     */
                     self::assertTrue(false, $e . ' | ' . print_r($signature, true));
                 }
             }
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($param_type_1 && $param_type_1 !== 'mixed') {
                 if (stripos($param_type_1, 'oci-') !== false) {
                     continue;
@@ -1303,30 +1308,45 @@ final class TypeParseTest extends TestCase
                 try {
                     Type::parseString($param_type_1);
                 } catch (TypeParseTreeException $e) {
+                    /**
+                     * @psalm-fixme ImplicitToStringCast
+                     */
                     self::assertTrue(false, $e . ' | ' . print_r($signature, true));
                 }
             }
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($param_type_2 && $param_type_2 !== 'mixed') {
                 try {
                     Type::parseString($param_type_2);
                 } catch (TypeParseTreeException $e) {
+                    /**
+                     * @psalm-fixme ImplicitToStringCast
+                     */
                     self::assertTrue(false, $e . ' | ' . print_r($signature, true));
                 }
             }
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($param_type_3 && $param_type_3 !== 'mixed') {
                 try {
                     Type::parseString($param_type_3);
                 } catch (TypeParseTreeException $e) {
+                    /**
+                     * @psalm-fixme ImplicitToStringCast
+                     */
                     self::assertTrue(false, $e . ' | ' . print_r($signature, true));
                 }
             }
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($param_type_4 && $param_type_4 !== 'mixed') {
                 try {
                     Type::parseString($param_type_4);
                 } catch (TypeParseTreeException $e) {
+                    /**
+                     * @psalm-fixme ImplicitToStringCast
+                     */
                     self::assertTrue(false, $e . ' | ' . print_r($signature, true));
                 }
             }

@@ -44,6 +44,9 @@ final class Providers
         $this->file_reference_provider = new FileReferenceProvider($file_provider, $file_reference_cache_provider);
     }
 
+    /**
+     * @psalm-fixme InvalidFalsableReturnType
+     */
     public static function safeFileGetContents(string $path): string
     {
         // no readable validation as that must be done in the caller
@@ -71,6 +74,9 @@ final class Providers
 
         fclose($fp);
 
+        /**
+         * @psalm-fixme FalsableReturnStatement
+         */
         return $content;
     }
 }

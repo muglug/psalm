@@ -504,6 +504,7 @@ final class ProjectAnalyzer
 
         // interpret wildcards
         foreach ($this->to_refactor as $source => $destination) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if (($source_pos = strpos($source, '*'))
                 && ($destination_pos = strpos($destination, '*'))
                 && $source_pos === (strlen($source) - 1)
@@ -562,12 +563,18 @@ final class ProjectAnalyzer
                 continue;
             }
 
+            /**
+             * @psalm-fixme PossiblyUndefinedIntArrayOffset
+             */
             $source_method_id = new MethodIdentifier(
                 $source_parts[0],
                 strtolower($source_parts[1]),
             );
 
             if ($this->codebase->methods->methodExists($source_method_id)) {
+                /**
+                 * @psalm-fixme PossiblyUndefinedIntArrayOffset
+                 */
                 if ($this->codebase->methods->methodExists(
                     new MethodIdentifier(
                         $destination_parts[0],
@@ -612,6 +619,9 @@ final class ProjectAnalyzer
             }
 
             if ($source_parts[1][0] === '$') {
+                /**
+                 * @psalm-fixme PossiblyUndefinedIntArrayOffset
+                 */
                 if ($destination_parts[1][0] !== '$') {
                     throw new RefactorException(
                         'Destination property must be of the form Foo::$bar',
@@ -673,6 +683,9 @@ final class ProjectAnalyzer
                     ReflectionProperty::IS_PRIVATE,
                 );
 
+                /**
+                 * @psalm-fixme PossiblyUndefinedIntArrayOffset
+                 */
                 if (isset($destination_class_constants[$destination_parts[1]])) {
                     throw new RefactorException(
                         'Destination constant ' . $destination . ' already exists',
@@ -765,6 +778,7 @@ final class ProjectAnalyzer
 
                 $potential_file_path = $this->config->getPotentialComposerFilePathForClassLike($destination);
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($potential_file_path && !file_exists($potential_file_path)) {
                     $containing_dir = dirname($potential_file_path);
 
@@ -1087,6 +1101,9 @@ final class ProjectAnalyzer
             );
         }
 
+        /**
+         * @psalm-fixme PossiblyUndefinedIntArrayOffset
+         */
         [$php_major_version, $php_minor_version] = explode('.', $version);
 
         $php_major_version = (int) $php_major_version;
@@ -1197,6 +1214,7 @@ final class ProjectAnalyzer
 
         $file_analyzer->populateCheckers($stmts);
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (!$this_context->self) {
             $this_context->self = $fq_class_name;
             $this_context->vars_in_scope['$this'] = Type::parseString($fq_class_name);

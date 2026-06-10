@@ -325,11 +325,13 @@ final class MethodCallReturnTypeFetcher
         if ($method_storage->specialize_call
             && $statements_analyzer->data_flow_graph instanceof TaintFlowGraph
         ) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($var_id && isset($context->vars_in_scope[$var_id])) {
                 $var_nodes = [];
 
                 $parent_nodes = $context->vars_in_scope[$var_id]->parent_nodes;
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 $unspecialized_parent_nodes = array_filter(
                     $parent_nodes,
                     static fn(DataFlowNode $parent_node): bool => !$parent_node->specialization_key,
@@ -346,6 +348,9 @@ final class MethodCallReturnTypeFetcher
                 );
 
                 if ($method_storage->location) {
+                    /**
+                     * @psalm-fixme ImplicitToStringCast
+                     */
                     $this_parent_node = DataFlowNode::getForAssignment(
                         '$this in ' . $method_id,
                         $method_storage->location,

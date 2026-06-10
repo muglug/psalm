@@ -27,6 +27,9 @@ abstract class TypeVisitor
             return false;
         }
 
+        /**
+         * @psalm-fixme ImpureMethodCall
+         */
         return $node->visit($this);
     }
 

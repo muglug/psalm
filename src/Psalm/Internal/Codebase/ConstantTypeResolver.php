@@ -100,6 +100,9 @@ final class ConstantTypeResolver
                         || $right instanceof TLiteralFloat
                         || $right instanceof TLiteralInt)
                 ) {
+                    /**
+                     * @psalm-fixme PossiblyInvalidOperand
+                     */
                     return Type::getAtomicStringFromLiteral($left->value . $right->value);
                 }
 
@@ -118,29 +121,50 @@ final class ConstantTypeResolver
                     && ($right instanceof TLiteralFloat || $right instanceof TLiteralInt)
                 ) {
                     if ($c instanceof UnresolvedAdditionOp) {
+                        /**
+                         * @psalm-fixme InvalidOperand
+                         */
                         return self::getLiteralTypeFromScalarValue($left->value + $right->value);
                     }
 
                     if ($c instanceof UnresolvedSubtractionOp) {
+                        /**
+                         * @psalm-fixme InvalidOperand
+                         */
                         return self::getLiteralTypeFromScalarValue($left->value - $right->value);
                     }
 
                     if ($c instanceof UnresolvedDivisionOp) {
+                        /**
+                         * @psalm-fixme InvalidOperand
+                         */
                         return self::getLiteralTypeFromScalarValue($left->value / $right->value);
                     }
 
                     if ($c instanceof UnresolvedBitwiseOr) {
+                        /**
+                         * @psalm-fixme InvalidOperand
+                         */
                         return self::getLiteralTypeFromScalarValue($left->value | $right->value);
                     }
 
                     if ($c instanceof UnresolvedBitwiseXor) {
+                        /**
+                         * @psalm-fixme InvalidOperand
+                         */
                         return self::getLiteralTypeFromScalarValue($left->value ^ $right->value);
                     }
 
                     if ($c instanceof UnresolvedBitwiseAnd) {
+                        /**
+                         * @psalm-fixme InvalidOperand
+                         */
                         return self::getLiteralTypeFromScalarValue($left->value & $right->value);
                     }
 
+                    /**
+                     * @psalm-fixme InvalidOperand
+                     */
                     return self::getLiteralTypeFromScalarValue($left->value * $right->value);
                 }
 

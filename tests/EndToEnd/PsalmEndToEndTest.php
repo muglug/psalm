@@ -284,6 +284,7 @@ final class PsalmEndToEndTest extends TestCase
     {
         $args = ['--init'];
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($level) {
             $args[] = 'src';
             $args[] = (string)$level;
@@ -293,6 +294,7 @@ final class PsalmEndToEndTest extends TestCase
 
         $psalm_config_contents = file_get_contents(self::$tmpDir . '/psalm.xml');
         assert($psalm_config_contents !== false);
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         $psalm_config_contents = str_replace(
             'errorLevel="1"',
             'errorLevel="1" '

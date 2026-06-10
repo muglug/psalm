@@ -70,6 +70,7 @@ final class MethodComparator
         bool $prevent_abstract_override = true,
         bool $prevent_method_signature_mismatch = true,
     ): ?bool {
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         $implementer_method_id = new MethodIdentifier(
             $implementer_classlike_storage->name,
             strtolower($guide_method_storage->cased_name ?: ''),
@@ -142,6 +143,7 @@ final class MethodComparator
             );
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($guide_method_storage->return_type
             && $implementer_method_storage->return_type
             && !$implementer_method_storage->inherited_return_type
@@ -382,6 +384,7 @@ final class MethodComparator
             && !$guide_method_storage->mutation_free_inferred
             && $prevent_method_signature_mismatch
         ) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             IssueBuffer::maybeAdd(
                 new MissingImmutableAnnotation(
                     $cased_guide_method_id . ' is marked @psalm-external-mutation-free, but '
@@ -459,6 +462,9 @@ final class MethodComparator
                                 !== strtolower($or_null_guide_param_signature_type->getId()))
                     ) {
                         if ($implementer_method_storage->cased_name === '__construct') {
+                            /**
+                             * @psalm-fixme ImplicitToStringCast
+                             */
                             IssueBuffer::maybeAdd(
                                 new ConstructorSignatureMismatch(
                                     'Argument ' . ($i + 1) . ' of '
@@ -476,6 +482,9 @@ final class MethodComparator
                                 $suppressed_issues + $implementer_classlike_storage->suppressed_issues,
                             );
                         } else {
+                            /**
+                             * @psalm-fixme ImplicitToStringCast
+                             */
                             IssueBuffer::maybeAdd(
                                 new MethodSignatureMismatch(
                                     'Argument ' . ($i + 1) . ' of '
@@ -500,6 +509,7 @@ final class MethodComparator
                 }
             }
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($guide_param->name !== $implementer_param->name
                 && $guide_method_storage->allow_named_arg_calls
                 && $implementer_classlike_storage->user_defined
@@ -720,6 +730,9 @@ final class MethodComparator
                     && !$guide_method_storage->abstract)
             ) {
                 if ($implementer_method_storage->cased_name === '__construct') {
+                    /**
+                     * @psalm-fixme ImplicitToStringCast
+                     */
                     IssueBuffer::maybeAdd(
                         new ConstructorSignatureMismatch(
                             'Argument ' . ($i + 1) . ' of '
@@ -738,6 +751,9 @@ final class MethodComparator
                         $suppressed_issues + $implementer_classlike_storage->suppressed_issues,
                     );
                 } else {
+                    /**
+                     * @psalm-fixme ImplicitToStringCast
+                     */
                     IssueBuffer::maybeAdd(
                         new MethodSignatureMismatch(
                             'Argument ' . ($i + 1) . ' of '
@@ -757,6 +773,9 @@ final class MethodComparator
                     );
                 }
             } else {
+                /**
+                 * @psalm-fixme ImplicitToStringCast
+                 */
                 IssueBuffer::maybeAdd(
                     new TraitMethodSignatureMismatch(
                         'Argument ' . ($i + 1) . ' of ' . $cased_implementer_method_id . ' has wrong type \'' .
@@ -871,6 +890,7 @@ final class MethodComparator
         $guide_method_storage_param_type = $builder->freeze();
         unset($builder);
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($implementer_classlike_storage->template_extended_params) {
             self::transformTemplates(
                 $implementer_classlike_storage->template_extended_params,
@@ -1026,6 +1046,9 @@ final class MethodComparator
                       || (!$implementer_method_storage->abstract
                           && !$guide_method_storage->abstract)
             ) {
+                /**
+                 * @psalm-fixme ImplicitToStringCast
+                 */
                 IssueBuffer::maybeAdd(
                     new MethodSignatureMismatch(
                         'Method ' . $cased_implementer_method_id . ' with return type \''
@@ -1036,6 +1059,9 @@ final class MethodComparator
                     $suppressed_issues + $implementer_classlike_storage->suppressed_issues,
                 );
             } else {
+                /**
+                 * @psalm-fixme ImplicitToStringCast
+                 */
                 IssueBuffer::maybeAdd(
                     new TraitMethodSignatureMismatch(
                         'Method ' . $cased_implementer_method_id . ' with return type \''
@@ -1093,6 +1119,7 @@ final class MethodComparator
 
         $guide_class_name = $guide_classlike_storage->name;
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($implementer_classlike_storage->template_extended_params) {
             self::transformTemplates(
                 $implementer_classlike_storage->template_extended_params,
@@ -1101,6 +1128,7 @@ final class MethodComparator
                 $codebase,
             );
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($implementer_method_storage->defining_fqcln) {
                 self::transformTemplates(
                     $implementer_classlike_storage->template_extended_params,
@@ -1116,6 +1144,7 @@ final class MethodComparator
                 $implementer_called_class_name,
             );
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($implementer_called_class_storage->template_extended_params) {
                 self::transformTemplates(
                     $implementer_called_class_storage->template_extended_params,
@@ -1154,6 +1183,9 @@ final class MethodComparator
         )) {
             // is the declared return type more specific than the inferred one?
             if ($union_comparison_results->type_coerced) {
+                /**
+                 * @psalm-fixme ImplicitToStringCast
+                 */
                 IssueBuffer::maybeAdd(
                     new LessSpecificImplementedReturnType(
                         'The inherited return type \'' . $guide_method_storage_return_type->getId()
@@ -1177,6 +1209,9 @@ final class MethodComparator
                     $suppressed_issues + $implementer_classlike_storage->suppressed_issues,
                 );
             } else {
+                /**
+                 * @psalm-fixme ImplicitToStringCast
+                 */
                 IssueBuffer::maybeAdd(
                     new ImplementedReturnTypeMismatch(
                         'The inherited return type \'' . $guide_method_storage_return_type->getId()

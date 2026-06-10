@@ -40,7 +40,9 @@ final class AssignmentMapVisitor extends PhpParser\NodeVisitorAbstract
                     if ($assign_item) {
                         $left_var_id = ExpressionIdentifier::getRootVarId($assign_item->value, $this->this_class_name);
 
+                        /** @psalm-fixme RiskyTruthyFalsyComparison */
                         if ($left_var_id) {
+                            /** @psalm-fixme RiskyTruthyFalsyComparison */
                             $this->assignment_map[$left_var_id][$right_var_id ?: 'isset'] = true;
                         }
                     }
@@ -48,7 +50,9 @@ final class AssignmentMapVisitor extends PhpParser\NodeVisitorAbstract
             } else {
                 $left_var_id = ExpressionIdentifier::getRootVarId($node->var, $this->this_class_name);
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($left_var_id) {
+                    /** @psalm-fixme RiskyTruthyFalsyComparison */
                     $this->assignment_map[$left_var_id][$right_var_id ?: 'isset'] = true;
                 }
             }
@@ -64,6 +68,7 @@ final class AssignmentMapVisitor extends PhpParser\NodeVisitorAbstract
         ) {
             $var_id = ExpressionIdentifier::getRootVarId($node->var, $this->this_class_name);
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($var_id) {
                 $this->assignment_map[$var_id][$var_id] = true;
             }
@@ -79,6 +84,7 @@ final class AssignmentMapVisitor extends PhpParser\NodeVisitorAbstract
                 foreach ($node->getArgs() as $arg) {
                     $arg_var_id = ExpressionIdentifier::getRootVarId($arg->value, $this->this_class_name);
 
+                    /** @psalm-fixme RiskyTruthyFalsyComparison */
                     if ($arg_var_id) {
                         $this->assignment_map[$arg_var_id][$arg_var_id] = true;
                     }
@@ -88,6 +94,7 @@ final class AssignmentMapVisitor extends PhpParser\NodeVisitorAbstract
             if ($node instanceof PhpParser\Node\Expr\MethodCall) {
                 $var_id = ExpressionIdentifier::getRootVarId($node->var, $this->this_class_name);
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($var_id) {
                     $this->assignment_map[$var_id]['isset'] = true;
                 }
@@ -96,6 +103,7 @@ final class AssignmentMapVisitor extends PhpParser\NodeVisitorAbstract
             foreach ($node->vars as $arg) {
                 $arg_var_id = ExpressionIdentifier::getRootVarId($arg, $this->this_class_name);
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($arg_var_id) {
                     $this->assignment_map[$arg_var_id][$arg_var_id] = true;
                 }

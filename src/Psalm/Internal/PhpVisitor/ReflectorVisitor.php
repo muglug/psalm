@@ -132,6 +132,7 @@ final class ReflectorVisitor extends PhpParser\NodeVisitorAbstract implements Fi
             }
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($node instanceof PhpParser\Node\Stmt\Namespace_) {
             $this->handleNamespace($node);
         } elseif ($node instanceof PhpParser\Node\Stmt\Use_) {
@@ -139,6 +140,7 @@ final class ReflectorVisitor extends PhpParser\NodeVisitorAbstract implements Fi
         } elseif ($node instanceof PhpParser\Node\Stmt\GroupUse) {
             $this->handleGroupUse($node);
         } elseif ($node instanceof PhpParser\Node\Stmt\ClassLike) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($this->skip_if_descendants) {
                 return null;
             }
@@ -185,6 +187,7 @@ final class ReflectorVisitor extends PhpParser\NodeVisitorAbstract implements Fi
             if ($node instanceof PhpParser\Node\Stmt\Function_
                 || $node instanceof PhpParser\Node\Stmt\ClassMethod
             ) {
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($this->skip_if_descendants) {
                     return null;
                 }
@@ -269,6 +272,7 @@ final class ReflectorVisitor extends PhpParser\NodeVisitorAbstract implements Fi
                 }
             }
         } elseif ($node instanceof PhpParser\Node\Stmt\TraitUse) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($this->skip_if_descendants) {
                 return null;
             }
@@ -302,7 +306,7 @@ final class ReflectorVisitor extends PhpParser\NodeVisitorAbstract implements Fi
                 $this->file_storage->constants[$fq_const_name] = $const_type;
                 $this->file_storage->declaring_constants[$fq_const_name] = $this->file_path;
             }
-        } elseif ($node instanceof PhpParser\Node\Stmt\If_ && !$this->skip_if_descendants) {
+        } /** @psalm-fixme RiskyTruthyFalsyComparison */ elseif ($node instanceof PhpParser\Node\Stmt\If_ && !$this->skip_if_descendants) {
             if (!$this->functionlike_node_scanners) {
                 $this->exists_cond_expr = $node->cond;
 
@@ -317,10 +321,11 @@ final class ReflectorVisitor extends PhpParser\NodeVisitorAbstract implements Fi
                 }
             }
         } elseif ($node instanceof PhpParser\Node\Stmt\Else_) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($this->skip_if_descendants === $node->getLine()) {
                 $this->skip_if_descendants = null;
                 $this->exists_cond_expr = null;
-            } elseif (!$this->skip_if_descendants) {
+            } /** @psalm-fixme RiskyTruthyFalsyComparison */ elseif (!$this->skip_if_descendants) {
                 if ($this->exists_cond_expr
                     && ExpressionResolver::enterConditional(
                         $this->codebase,
@@ -460,6 +465,7 @@ final class ReflectorVisitor extends PhpParser\NodeVisitorAbstract implements Fi
             }
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (!$this->aliases->uses_start) {
             $this->aliases->uses_start = (int) $node->getAttribute('startFilePos');
         }
@@ -493,6 +499,7 @@ final class ReflectorVisitor extends PhpParser\NodeVisitorAbstract implements Fi
             }
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (!$this->aliases->uses_start) {
             $this->aliases->uses_start = (int) $node->getAttribute('startFilePos');
         }
@@ -528,6 +535,7 @@ final class ReflectorVisitor extends PhpParser\NodeVisitorAbstract implements Fi
                 }
             }
         } elseif ($node instanceof PhpParser\Node\Stmt\ClassLike) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($this->skip_if_descendants) {
                 return null;
             }
@@ -562,6 +570,7 @@ final class ReflectorVisitor extends PhpParser\NodeVisitorAbstract implements Fi
                 $this->codebase->cacheClassLikeStorage($classlike_storage, $this->file_path);
             }
         } elseif ($node instanceof PhpParser\Node\FunctionLike) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($this->skip_if_descendants) {
                 return null;
             }
@@ -580,6 +589,7 @@ final class ReflectorVisitor extends PhpParser\NodeVisitorAbstract implements Fi
 
             if ($functionlike_node_scanner->storage) {
                 foreach ($functionlike_node_scanner->storage->docblock_issues as $docblock_issue) {
+                    /** @psalm-fixme RiskyTruthyFalsyComparison */
                     if (strpos($docblock_issue->code_location->file_path, 'CoreGenericFunctions.phpstub')
                         || strpos($docblock_issue->code_location->file_path, 'CoreGenericClasses.phpstub')
                         || strpos($this->file_path, 'CoreGenericIterators.phpstub')

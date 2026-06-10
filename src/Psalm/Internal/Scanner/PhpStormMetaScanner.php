@@ -72,6 +72,7 @@ final class PhpStormMetaScanner
                 ) {
                     /** @var string|null $resolved_name */
                     $resolved_name =  $array_item->key->class->getAttribute('resolvedName');
+                    /** @psalm-fixme RiskyTruthyFalsyComparison */
                     if (!$resolved_name) {
                         continue;
                     }
@@ -171,12 +172,14 @@ final class PhpStormMetaScanner
                         ) {
                             $offset_arg_value = $call_arg_type->getSingleStringLiteral()->value;
 
+                            /** @psalm-fixme RiskyTruthyFalsyComparison */
                             if ($mapped_type = $map[$offset_arg_value] ?? null) {
                                 if ($mapped_type instanceof Union) {
                                     return $mapped_type;
                                 }
                             }
 
+                            /** @psalm-fixme RiskyTruthyFalsyComparison */
                             if (($mapped_type = $map[''] ?? null) && is_string($mapped_type)) {
                                 if (str_contains($mapped_type, '@')) {
                                     $mapped_type = str_replace('@', $offset_arg_value, $mapped_type);
@@ -313,12 +316,14 @@ final class PhpStormMetaScanner
                         ) {
                             $offset_arg_value = $call_arg_type->getSingleStringLiteral()->value;
 
+                            /** @psalm-fixme RiskyTruthyFalsyComparison */
                             if ($mapped_type = $map[$offset_arg_value] ?? null) {
                                 if ($mapped_type instanceof Union) {
                                     return $mapped_type;
                                 }
                             }
 
+                            /** @psalm-fixme RiskyTruthyFalsyComparison */
                             if (($mapped_type = $map[''] ?? null) && is_string($mapped_type)) {
                                 if (str_contains($mapped_type, '@')) {
                                     $mapped_type = str_replace('@', $offset_arg_value, $mapped_type);

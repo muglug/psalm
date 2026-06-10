@@ -46,6 +46,7 @@ final class ClassLikeStubGenerator
 
         $template_offset = 0;
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         foreach ($storage->template_types ?: [] as $template_name => $map) {
             $type = array_values($map)[0];
 
@@ -95,6 +96,7 @@ final class ClassLikeStubGenerator
             );
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($storage->parent_class) {
             $subnodes['extends'] = new VirtualFullyQualified($storage->parent_class);
         } else
@@ -217,6 +219,7 @@ final class ClassLikeStubGenerator
         $method_nodes = [];
 
         foreach ($storage->methods as $method_storage) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if (!$method_storage->cased_name) {
                 throw new UnexpectedValueException('very bad');
             }
@@ -229,6 +232,7 @@ final class ClassLikeStubGenerator
 
             $docblock = new ParsedDocblock('', []);
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             foreach ($method_storage->template_types ?: [] as $template_name => $map) {
                 $type = array_values($map)[0];
 

@@ -441,6 +441,7 @@ final class Psalter
         $start_time = microtime(true);
 
         if ($paths_to_check === null || count($paths_to_check) > 1 || $find_unused_code) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($paths_to_check) {
                 $files_to_update = [];
 

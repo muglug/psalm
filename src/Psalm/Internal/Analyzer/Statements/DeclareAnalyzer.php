@@ -44,6 +44,9 @@ final class DeclareAnalyzer
             } elseif ($declaration_key === 'encoding') {
                 self::analyzeEncodingDeclaration($statements_analyzer, $declaration);
             } else {
+                /**
+                 * @psalm-fixme ImplicitToStringCast
+                 */
                 IssueBuffer::maybeAdd(
                     new UnrecognizedStatement(
                         'Psalm does not understand the declare statement ' . $declaration->key,

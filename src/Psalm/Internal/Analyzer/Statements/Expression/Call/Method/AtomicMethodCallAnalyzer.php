@@ -201,6 +201,7 @@ final class AtomicMethodCallAnalyzer extends CallAnalyzer
 
         if (!$stmt->name instanceof PhpParser\Node\Identifier) {
             if (!$context->ignore_variable_method) {
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 $codebase->analyzer->addMixedMemberName(
                     strtolower($fq_class_name) . '::',
                     $context->calling_method_id ?: $statements_analyzer->getFileName(),
@@ -300,6 +301,7 @@ final class AtomicMethodCallAnalyzer extends CallAnalyzer
 
             // @mixin attributes are an absolute pain! Lots of complexity here,
             // as they can redefine the called class, method id etc.
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($class_storage->templatedMixins
                 && $lhs_type_part instanceof TGenericObject
                 && $class_storage->template_types
@@ -317,7 +319,7 @@ final class AtomicMethodCallAnalyzer extends CallAnalyzer
                         $statements_analyzer,
                         $fq_class_name,
                     );
-            } elseif ($class_storage->mixin_declaring_fqcln
+            } /** @psalm-fixme RiskyTruthyFalsyComparison */ elseif ($class_storage->mixin_declaring_fqcln
                 && $class_storage->namedMixins
             ) {
                 [$lhs_type_part, $class_storage, $naive_method_exists, $method_id, $fq_class_name]
@@ -425,11 +427,15 @@ final class AtomicMethodCallAnalyzer extends CallAnalyzer
             }
         }
 
+        /**
+         * @psalm-fixme ImplicitToStringCast
+         */
         $intersection_method_id = $intersection_types
             ? '(' . $lhs_type_part . ')'  . '::' . $stmt->name->name
             : null;
         $cased_method_id = $fq_class_name . '::' . $stmt->name->name;
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($lhs_var_id === '$this'
             && $context->self
             && $fq_class_name !== $context->self
@@ -652,6 +658,7 @@ final class AtomicMethodCallAnalyzer extends CallAnalyzer
                     $result->existent_method_ids[$method_id] = true;
                 } elseif (!$is_intersection) {
                     if ($stmt->name instanceof PhpParser\Node\Identifier) {
+                        /** @psalm-fixme RiskyTruthyFalsyComparison */
                         $codebase->analyzer->addMixedMemberName(
                             strtolower($stmt->name->name),
                             $context->calling_method_id ?: $statements_analyzer->getFileName(),
@@ -662,6 +669,7 @@ final class AtomicMethodCallAnalyzer extends CallAnalyzer
                         $message = 'Cannot determine the type of the object'
                             . ' on the left hand side of this expression';
 
+                        /** @psalm-fixme RiskyTruthyFalsyComparison */
                         if ($lhs_var_id) {
                             $message = 'Cannot determine the type of ' . $lhs_var_id;
 
@@ -742,6 +750,7 @@ final class AtomicMethodCallAnalyzer extends CallAnalyzer
     ): array {
         $naive_method_exists = false;
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($class_storage->templatedMixins
             && $lhs_type_part instanceof TGenericObject
             && $class_storage->template_types
@@ -833,6 +842,7 @@ final class AtomicMethodCallAnalyzer extends CallAnalyzer
         $naive_method_exists = false;
 
         foreach ($class_storage->namedMixins as $mixin) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if (!$class_storage->mixin_declaring_fqcln) {
                 continue;
             }
@@ -869,6 +879,7 @@ final class AtomicMethodCallAnalyzer extends CallAnalyzer
                     $lhs_var_id === '$this',
                 );
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 $lhs_type_part = $mixin->replaceTemplateTypesWithArgTypes(
                     new TemplateResult([], $mixin_class_template_params ?: []),
                     $codebase,

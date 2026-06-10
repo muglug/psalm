@@ -116,6 +116,7 @@ final class MethodVisibilityAnalyzer
         $storage = $codebase->methods->getStorage($declaring_method_id, $with_pseudo);
         $visibility = $storage->visibility;
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($appearing_method_name
             && isset($appearing_class_storage->trait_visibility_map[$appearing_method_name])
         ) {
@@ -144,6 +145,7 @@ final class MethodVisibilityAnalyzer
                 return null;
 
             case ClassLikeAnalyzer::VISIBILITY_PRIVATE:
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if (!$context->self || $appearing_method_class !== $context->self) {
                     if (IssueBuffer::accepts(
                         new InaccessibleMethod(
@@ -160,7 +162,11 @@ final class MethodVisibilityAnalyzer
                 return null;
 
             case ClassLikeAnalyzer::VISIBILITY_PROTECTED:
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if (!$context->self) {
+                    /**
+                     * @psalm-fixme ImplicitToStringCast
+                     */
                     if (IssueBuffer::accepts(
                         new InaccessibleMethod(
                             'Cannot access protected method ' . $method_id,

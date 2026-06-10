@@ -10,12 +10,10 @@
     ensureArrayIntOffsetsExist="true"
     xsi:schemaLocation="https://getpsalm.org/schema/config config.xsd"
     limitMethodComplexity="true"
-    errorBaseline="psalm-baseline.xml"
     allFunctionsGlobal="true"
     ensureOverrideAttribute="true"
     allConstantsGlobal="true"
     findUnusedPsalmSuppress="true"
-    findUnusedBaselineEntry="true"
     findUnusedIssueHandlerSuppression="true"
 >
     <stubs>
@@ -67,6 +65,25 @@
                 <directory name="tests" />
             </errorLevel>
         </DeprecatedMethod>
+
+        <!-- final-method overrides in test doubles: Psalm deliberately ignores
+             inline suppressions when the parent's `final` is real, so these
+             can only be suppressed here. -->
+        <MethodSignatureMismatch>
+            <errorLevel type="suppress">
+                <file name="tests/TestConfig.php" />
+                <file name="tests/Internal/Provider/FakeParserCacheProvider.php" />
+            </errorLevel>
+        </MethodSignatureMismatch>
+
+        <!-- promoted constructor params never populate the property's
+             suppressed_issues, so this variance complaint can only be
+             suppressed here. -->
+        <NonInvariantDocblockPropertyType>
+            <errorLevel type="suppress">
+                <file name="src/Psalm/Internal/Analyzer/NamespaceAnalyzer.php" />
+            </errorLevel>
+        </NonInvariantDocblockPropertyType>
 
         <UnusedClass>
             <errorLevel type="suppress">

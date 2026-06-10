@@ -152,8 +152,12 @@ final class ClassLikeNodeScanner
         } else {
             $name_location = new CodeLocation($this->file_scanner, $node->name);
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             $fq_classlike_name =
                 ($this->aliases->namespace ? $this->aliases->namespace . '\\' : '') . $node->name->name;
+            /**
+             * @psalm-fixme RedundantCondition
+             */
             assert($fq_classlike_name !== "");
 
             $fq_classlike_name_lc = strtolower($fq_classlike_name);
@@ -228,6 +232,7 @@ final class ClassLikeNodeScanner
             $this->storage = $storage = $this->codebase->classlike_storage_provider->create($fq_classlike_name);
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($class_name
             && isset($this->aliases->uses[strtolower($class_name)])
             && $this->aliases->uses[strtolower($class_name)] !== $fq_classlike_name
@@ -407,6 +412,9 @@ final class ClassLikeNodeScanner
             if ($docblock_info->templates) {
                 $storage->template_types = [];
 
+                /**
+                 * @psalm-fixme PossiblyUndefinedIntArrayOffset
+                 */
                 usort(
                     $docblock_info->templates,
                     static fn(array $l, array $r): int => $l[4] > $r[4] ? 1 : -1,
@@ -477,6 +485,7 @@ final class ClassLikeNodeScanner
                 $this->implementTemplatedType($storage, $node, $implemented_class_name);
             }
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($docblock_info->yield) {
                 try {
                     $yield_type_tokens = TypeTokenizer::getFullyQualifiedTokens(
@@ -486,6 +495,7 @@ final class ClassLikeNodeScanner
                         $this->type_aliases,
                     );
 
+                    /** @psalm-fixme RiskyTruthyFalsyComparison */
                     $yield_type = TypeParser::parseTokens(
                         $yield_type_tokens,
                         null,
@@ -493,7 +503,10 @@ final class ClassLikeNodeScanner
                         $this->type_aliases,
                         true,
                     );
-                    /** @psalm-suppress UnusedMethodCall */
+                    /**
+                     * @psalm-suppress UnusedMethodCall
+                     * @psalm-fixme RiskyTruthyFalsyComparison
+                     */
                     $yield_type->queueClassLikesForScanning(
                         $this->codebase,
                         $this->file_storage,
@@ -538,6 +551,7 @@ final class ClassLikeNodeScanner
             $storage->sealed_methods = $docblock_info->sealed_methods;
 
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($docblock_info->inheritors) {
                 try {
                     $storage->inheritors = TypeParser::parseTokens(
@@ -579,7 +593,10 @@ final class ClassLikeNodeScanner
                             $this->type_aliases,
                             true,
                         );
-                        /** @psalm-suppress UnusedMethodCall */
+                        /**
+                         * @psalm-suppress UnusedMethodCall
+                         * @psalm-fixme RiskyTruthyFalsyComparison
+                         */
                         $pseudo_property_type->queueClassLikesForScanning(
                             $this->codebase,
                             $this->file_storage,
@@ -631,9 +648,10 @@ final class ClassLikeNodeScanner
 
             $storage->deprecated = $docblock_info->deprecated;
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if (count($docblock_info->psalm_internal) !== 0) {
                 $storage->internal = $docblock_info->psalm_internal;
-            } elseif ($docblock_info->internal && $this->aliases->namespace) {
+            } /** @psalm-fixme RiskyTruthyFalsyComparison */ elseif ($docblock_info->internal && $this->aliases->namespace) {
                 $storage->internal = [NamespaceAnalyzer::getNameSpaceRoot($this->aliases->namespace)];
             }
 
@@ -678,7 +696,10 @@ final class ClassLikeNodeScanner
                     true,
                 );
 
-                /** @psalm-suppress UnusedMethodCall */
+                /**
+                 * @psalm-suppress UnusedMethodCall
+                 * @psalm-fixme RiskyTruthyFalsyComparison
+                 */
                 $mixin_type->queueClassLikesForScanning(
                     $this->codebase,
                     $this->file_storage,
@@ -711,6 +732,7 @@ final class ClassLikeNodeScanner
 
             $storage->suppressed_issues = $docblock_info->suppressed_issues;
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($docblock_info->description) {
                 $storage->description = $docblock_info->description;
             }
@@ -906,6 +928,7 @@ final class ClassLikeNodeScanner
                     }
                 }
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($adaptation->newModifier) {
                     switch ($adaptation->newModifier) {
                         case 1:
@@ -1004,7 +1027,10 @@ final class ClassLikeNodeScanner
             );
         }
 
-        /** @psalm-suppress UnusedMethodCall */
+        /**
+         * @psalm-suppress UnusedMethodCall
+         * @psalm-fixme RiskyTruthyFalsyComparison
+         */
         $extended_union_type->queueClassLikesForScanning(
             $this->codebase,
             $this->file_storage,
@@ -1090,7 +1116,10 @@ final class ClassLikeNodeScanner
             return;
         }
 
-        /** @psalm-suppress UnusedMethodCall */
+        /**
+         * @psalm-suppress UnusedMethodCall
+         * @psalm-fixme RiskyTruthyFalsyComparison
+         */
         $implemented_union_type->queueClassLikesForScanning(
             $this->codebase,
             $this->file_storage,
@@ -1176,7 +1205,10 @@ final class ClassLikeNodeScanner
             return;
         }
 
-        /** @psalm-suppress UnusedMethodCall */
+        /**
+         * @psalm-suppress UnusedMethodCall
+         * @psalm-fixme RiskyTruthyFalsyComparison
+         */
         $used_union_type->queueClassLikesForScanning(
             $this->codebase,
             $this->file_storage,
@@ -1704,6 +1736,7 @@ final class ClassLikeNodeScanner
 
                 $property_storage->type = null;
             } else {
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($var_comment
                     && $var_comment->type_start
                     && $var_comment->type_end
@@ -1894,6 +1927,7 @@ final class ClassLikeNodeScanner
                 continue;
             }
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($imported_type_data[1] === 'from'
                 && !empty($imported_type_data[0])
                 && !empty($imported_type_data[2])
@@ -1915,6 +1949,7 @@ final class ClassLikeNodeScanner
 
             if (count($imported_type_data) >= 4 && $imported_type_data[3] === 'as') {
                 // long form
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if (empty($imported_type_data[4])) {
                     $this->file_storage->docblock_issues[] = new InvalidTypeImport(
                         'Invalid import in docblock for ' . $fq_classlike_name
@@ -2002,6 +2037,7 @@ final class ClassLikeNodeScanner
 
             $var_line_parts = preg_split('/( |=)/', $var_line, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if (!$var_line_parts) {
                 continue;
             }

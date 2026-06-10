@@ -133,6 +133,7 @@ final class ArrayMultisortParamsProvider implements FunctionParamsProviderInterf
                 return null;
             }
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($param_type->isArray() && $extended_var_id) {
                 $last_by_ref_index = $key;
                 $last_array_index = $key;

@@ -41,6 +41,9 @@ final class FileReferenceCacheProvider
 
     public function __construct(Config $config, string $composerLock, public readonly bool $persistent = true)
     {
+        /**
+         * @psalm-fixme InvalidPropertyAssignmentValue
+         */
         $this->cache = new Cache($config, 'file_reference', [$composerLock], $persistent);
     }
 

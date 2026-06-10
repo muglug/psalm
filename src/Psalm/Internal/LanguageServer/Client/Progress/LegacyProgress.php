@@ -76,6 +76,7 @@ final class LegacyProgress implements ProgressInterface
 
     private function notify(?string $message): void
     {
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         $this->handler->notify(
             'telemetry/event',
             new LogMessage(

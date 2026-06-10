@@ -50,6 +50,7 @@ final class ExpressionScanner
         ?FunctionLikeStorage $functionlike_storage,
         ?int $skip_if_descendants,
     ): void {
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($node instanceof PhpParser\Node\Expr\Include_ && !$skip_if_descendants) {
             self::visitInclude(
                 $codebase,
@@ -205,6 +206,9 @@ final class ExpressionScanner
         if (($function_id === 'array_map' && isset($node->getArgs()[0]))
             || (in_array($function_id, ArgumentsAnalyzer::ARRAY_FILTERLIKE, true) && isset($node->getArgs()[1]))
         ) {
+            /**
+             * @psalm-fixme PossiblyUndefinedIntArrayOffset
+             */
             $node_arg_value = $function_id === 'array_map' ? $node->getArgs()[0]->value : $node->getArgs()[1]->value;
 
             if ($node_arg_value instanceof PhpParser\Node\Scalar\String_
@@ -251,6 +255,7 @@ final class ExpressionScanner
             }
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($function_id === 'class_alias' && !$skip_if_descendants) {
             $first_arg = $node->getArgs()[0]->value ?? null;
             $second_arg = $node->getArgs()[1]->value ?? null;
@@ -319,6 +324,7 @@ final class ExpressionScanner
 
             // attempts to resolve using get_include_path dirs
             $include_path = IncludeAnalyzer::resolveIncludePath($path_to_file, dirname($file_storage->file_path));
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             $path_to_file = $include_path ?: $path_to_file;
 
             if (Path::isRelative($path_to_file)) {
@@ -334,6 +340,7 @@ final class ExpressionScanner
             );
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($path_to_file) {
             $path_to_file = IncludeAnalyzer::normalizeFilePath($path_to_file);
 

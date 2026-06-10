@@ -85,6 +85,9 @@ final class TPropertiesOf extends Atomic
     #[Override]
     public function getKey(bool $include_extra = true): string
     {
+        /**
+         * @psalm-fixme ImplicitToStringCast
+         */
         return self::tokenNameForFilter($this->visibility_filter) . '<' . $this->classlike_type . '>';
     }
 

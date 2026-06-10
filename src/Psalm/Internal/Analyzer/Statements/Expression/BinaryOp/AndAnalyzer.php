@@ -136,6 +136,7 @@ final class AndAnalyzer
             $right_context = clone $context;
             // while in an and, we allow scope to boil over to support
             // statements of the form if ($x && $x->foo())
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             [$right_context->vars_in_scope, $right_context->references_in_scope] = Reconciler::reconcileKeyedTypes(
                 $left_type_assertions,
                 $active_left_assertions,

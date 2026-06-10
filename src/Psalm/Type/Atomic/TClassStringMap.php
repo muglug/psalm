@@ -60,6 +60,9 @@ final class TClassStringMap extends Atomic
         bool $use_phpdoc_format,
     ): string {
         if ($use_phpdoc_format) {
+            /**
+             * @psalm-fixme ImpureMethodCall
+             */
             return (new TArray([Type::getString(), $this->value_param]))
                 ->toNamespacedString(
                     $namespace,
@@ -69,6 +72,9 @@ final class TClassStringMap extends Atomic
                 );
         }
 
+        /**
+         * @psalm-fixme ImplicitToStringCast
+         */
         return 'class-string-map'
             . '<'
             . $this->param_name
@@ -127,6 +133,9 @@ final class TClassStringMap extends Atomic
     ): self {
         $cloned = null;
 
+        /**
+         * @psalm-fixme ImpureMethodCall
+         */
         foreach ([Type::getString(), $this->value_param] as $offset => $type_param) {
             $input_type_param = null;
 
@@ -148,6 +157,9 @@ final class TClassStringMap extends Atomic
                 }
             }
 
+            /**
+             * @psalm-fixme ImpureMethodCall
+             */
             $value_param = TemplateStandinTypeReplacer::replace(
                 $type_param,
                 $template_result,
@@ -165,6 +177,9 @@ final class TClassStringMap extends Atomic
 
             if ($offset === 1 && ($cloned || $this->value_param !== $value_param)) {
                 $cloned ??= clone $this;
+                /**
+                 * @psalm-fixme ImpurePropertyAssignment
+                 */
                 $cloned->value_param = $value_param;
             }
         }
@@ -180,6 +195,9 @@ final class TClassStringMap extends Atomic
         TemplateResult $template_result,
         ?Codebase $codebase,
     ): self {
+        /**
+         * @psalm-fixme ImpureMethodCall
+         */
         $value_param = TemplateInferredTypeReplacer::replace(
             $this->value_param,
             $template_result,

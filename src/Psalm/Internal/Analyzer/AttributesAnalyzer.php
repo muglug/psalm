@@ -344,6 +344,7 @@ final class AttributesAnalyzer
         $arg = $args[0];
         if ($arg->name !== null) {
             for (; !empty($args) && ($arg->name->name ?? null) !== "name"; $arg = array_shift($args));
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($arg->name->name ?? null !== "name") {
                 // No named argument for "name" parameter
                 return;

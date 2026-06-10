@@ -166,6 +166,7 @@ class Reconciler
         $codebase = $statements_analyzer->getCodebase();
 
         foreach ($new_types as $key => $new_type_parts) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if (strpos($key, '::')
                 && !strpos($key, '$')
                 && !strpos($key, '[')
@@ -340,6 +341,7 @@ class Reconciler
                 || $before_adjustment->different;
 
             $key_parts = self::breakUpPathIntoParts($key);
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($type_changed || $failed_reconciliation) {
                 $changed_var_ids[$key] = true;
 
@@ -442,6 +444,7 @@ class Reconciler
     private static function addNestedAssertions(array $new_types, array $existing_types): array
     {
         foreach ($new_types as $nk => $type) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if (strpos($nk, '[') || strpos($nk, '->')) {
                 $type = array_values($type);
                 if (!isset($type[0][0])) {
@@ -687,7 +690,11 @@ class Reconciler
         }
 
         if (!isset($existing_keys[$base_key])) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if (strpos($base_key, '::')) {
+                /**
+                 * @psalm-fixme PossiblyUndefinedIntArrayOffset
+                 */
                 [$fq_class_name, $const_name] = explode('::', $base_key);
 
                 if (!$codebase->classlikes->classOrInterfaceExists($fq_class_name)) {
@@ -1101,6 +1108,9 @@ class Reconciler
                         $old_var_type_string . ' ' . $assertion_string,
                     );
                 } else {
+                    /**
+                     * @psalm-fixme ImplicitToStringCast
+                     */
                     $issue = new TypeDoesNotContainType(
                         'Type ' . $old_var_type_string
                             . ' for ' . $key
@@ -1189,6 +1199,9 @@ class Reconciler
                         } else {
                             $properties = $base_atomic_type->properties;
                             $properties[$array_key_offset] = $result_type;
+                            /**
+                             * @psalm-fixme InvalidOperand
+                             */
                             if ($base_atomic_type->is_list
                             && (ArrayAnalyzer::getLiteralArrayKeyInt($array_key_offset) === false
                                 || ($array_key_offset

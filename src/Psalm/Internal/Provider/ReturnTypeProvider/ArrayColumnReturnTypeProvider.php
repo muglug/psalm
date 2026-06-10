@@ -87,6 +87,7 @@ final class ArrayColumnReturnTypeProvider implements FunctionReturnTypeProviderI
             && $first_arg_type->hasArray()
         ) {
             $input_array = $first_arg_type->getArray();
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($input_array instanceof TKeyedArray && !$input_array->fallback_params
                 && ($value_column_name !== null || $value_column_name_is_null)
                 && !($third_arg_type && !$key_column_name)

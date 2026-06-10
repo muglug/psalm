@@ -414,6 +414,7 @@ final class AssertionReconciler extends Reconciler
         } elseif (!$new_type_part instanceof TMixed) {
             $any_scalar_type_match_found = false;
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($code_location
                 && $key
                 && !$assertion->hasEquality()
@@ -457,6 +458,9 @@ final class AssertionReconciler extends Reconciler
             ) {
                 if ($new_type_part instanceof TNull) {
                     if ($existing_var_type->from_docblock) {
+                        /**
+                         * @psalm-fixme ImplicitToStringCast
+                         */
                         IssueBuffer::maybeAdd(
                             new DocblockTypeContradiction(
                                 'Cannot resolve types for ' . $key . ' - docblock-defined type '
@@ -467,6 +471,9 @@ final class AssertionReconciler extends Reconciler
                             $suppressed_issues,
                         );
                     } else {
+                        /**
+                         * @psalm-fixme ImplicitToStringCast
+                         */
                         IssueBuffer::maybeAdd(
                             new TypeDoesNotContainNull(
                                 'Cannot resolve types for ' . $key . ' - ' . $existing_var_type
@@ -985,6 +992,7 @@ final class AssertionReconciler extends Reconciler
             }
             $existing_var_type = $existing_var_type->freeze();
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($var_id
                 && $code_location
                 && (!$can_be_equal || ($redundant && count($existing_var_atomic_types) === 1))
@@ -1047,6 +1055,7 @@ final class AssertionReconciler extends Reconciler
                 //if we're here, we check that we had at least another type in the union, otherwise it's redundant
 
                 if ($existing_var_type->isSingleIntLiteral()) {
+                    /** @psalm-fixme RiskyTruthyFalsyComparison */
                     if ($var_id && $code_location) {
                         self::triggerIssueForImpossible(
                             $existing_var_type,
@@ -1130,6 +1139,7 @@ final class AssertionReconciler extends Reconciler
         }
 
         //if we're here, no type was eligible for the given literal. We'll emit an impossible error for this assertion
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($var_id && $code_location) {
             self::triggerIssueForImpossible(
                 $existing_var_type,
@@ -1185,6 +1195,7 @@ final class AssertionReconciler extends Reconciler
                 //if we're here, we check that we had at least another type in the union, otherwise it's redundant
 
                 if ($existing_var_type->isSingleStringLiteral()) {
+                    /** @psalm-fixme RiskyTruthyFalsyComparison */
                     if ($var_id && $code_location) {
                         self::triggerIssueForImpossible(
                             $existing_var_type,
@@ -1273,6 +1284,7 @@ final class AssertionReconciler extends Reconciler
         }
 
         //if we're here, no type was eligible for the given literal. We'll emit an impossible error for this assertion
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($var_id && $code_location) {
             self::triggerIssueForImpossible(
                 $existing_var_type,
@@ -1328,6 +1340,7 @@ final class AssertionReconciler extends Reconciler
                 //if we're here, we check that we had at least another type in the union, otherwise it's redundant
 
                 if ($existing_var_type->isSingleFloatLiteral()) {
+                    /** @psalm-fixme RiskyTruthyFalsyComparison */
                     if ($var_id && $code_location) {
                         self::triggerIssueForImpossible(
                             $existing_var_type,
@@ -1415,6 +1428,7 @@ final class AssertionReconciler extends Reconciler
         }
 
         //if we're here, no type was eligible for the given literal. We'll emit an impossible error for this assertion
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($var_id && $code_location) {
             self::triggerIssueForImpossible(
                 $existing_var_type,

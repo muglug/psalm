@@ -83,6 +83,7 @@ final class IncDecExpressionAnalyzer
 
             $codebase = $statements_analyzer->getCodebase();
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($var_id && isset($context->vars_in_scope[$var_id])) {
                 $context->vars_in_scope[$var_id] = $result_type;
 

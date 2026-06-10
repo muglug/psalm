@@ -151,6 +151,9 @@ final class ArrayReduceReturnTypeProvider implements FunctionReturnTypeProviderI
                             )
                         )
                 ) {
+                    /**
+                     * @psalm-fixme ImplicitToStringCast
+                     */
                     IssueBuffer::maybeAdd(
                         new InvalidArgument(
                             'The first param of the closure passed to array_reduce must take '
@@ -174,6 +177,9 @@ final class ArrayReduceReturnTypeProvider implements FunctionReturnTypeProviderI
                         $item_param->type,
                     )
                 ) {
+                    /**
+                     * @psalm-fixme ImplicitToStringCast
+                     */
                     IssueBuffer::maybeAdd(
                         new InvalidArgument(
                             'The second param of the closure passed to array_reduce must take '
@@ -226,6 +232,9 @@ final class ArrayReduceReturnTypeProvider implements FunctionReturnTypeProviderI
                                 $mapping_function_id_part = substr($mapping_function_id_part, 1);
                             }
 
+                            /**
+                             * @psalm-fixme PossiblyUndefinedIntArrayOffset
+                             */
                             [$callable_fq_class_name, $method_name] = explode('::', $mapping_function_id_part);
 
                             if (in_array($callable_fq_class_name, ['self', 'static'], true)) {

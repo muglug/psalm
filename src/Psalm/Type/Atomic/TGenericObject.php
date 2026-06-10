@@ -175,6 +175,7 @@ final class TGenericObject extends TNamedObject
             $add_lower_bound,
             $depth,
         );
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (!$types && !$intersection) {
             return $this;
         }
@@ -201,6 +202,7 @@ final class TGenericObject extends TNamedObject
             $template_result,
             $codebase,
         );
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (!$type_params && !$intersection) {
             return $this;
         }

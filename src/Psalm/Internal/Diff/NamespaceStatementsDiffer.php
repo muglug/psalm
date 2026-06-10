@@ -94,6 +94,9 @@ final class NamespaceStatementsDiffer extends AstDiffer
                     || ($diff_elem->old instanceof PhpParser\Node\Stmt\Trait_
                         && $diff_elem->new instanceof PhpParser\Node\Stmt\Trait_)
                 ) {
+                    /**
+                     * @psalm-fixme ImplicitToStringCast
+                     */
                     $class_keep = ClassStatementsDiffer::diff(
                         ($name ? $name . '\\' : '') . $diff_elem->old->name,
                         $diff_elem->old->stmts,
@@ -117,6 +120,9 @@ final class NamespaceStatementsDiffer extends AstDiffer
                             $add_or_delete[] = 'use:' . (string) $use->alias;
                         } else {
                             $name_parts = $use->name->getParts();
+                            /**
+                             * @psalm-fixme RedundantCondition
+                             */
                             assert(!empty($name_parts));
 
                             $add_or_delete[] = 'use:' . end($name_parts);
@@ -132,6 +138,9 @@ final class NamespaceStatementsDiffer extends AstDiffer
                             $add_or_delete[] = 'use:' . (string) $use->alias;
                         } else {
                             $name_parts = $use->name->getParts();
+                            /**
+                             * @psalm-fixme RedundantCondition
+                             */
                             assert(!empty($name_parts));
 
                             $add_or_delete[] = 'use:' . end($name_parts);

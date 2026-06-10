@@ -60,6 +60,7 @@ final class StringChecker implements AfterExpressionAnalysisInterface
 
             $appearing_method_id = $codebase->getAppearingMethodId($method_id);
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if (!$appearing_method_id) {
                 if (IssueBuffer::accepts(
                     new UndefinedMethod(

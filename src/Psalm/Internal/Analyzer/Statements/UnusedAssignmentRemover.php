@@ -133,16 +133,25 @@ final class UnusedAssignmentRemover
         $str_for_token = "<?php\n" . substr($stmt_content, $var_start_loc, $end_bound - $var_start_loc + 1);
         $token_list = array_slice(token_get_all($str_for_token), 1);   //Ignore "<?php"
 
+        /**
+         * @psalm-fixme PossiblyUndefinedIntArrayOffset
+         */
         $offset_count = strlen($token_list[0][1]);
         $iter = 1;
 
         // Check if second token is just whitespace
+        /**
+         * @psalm-fixme PossiblyUndefinedIntArrayOffset
+         */
         if (is_array($token_list[$iter]) && trim($token_list[$iter][1]) === '') {
             $offset_count += strlen($token_list[1][1]);
             $iter++;
         }
 
         // Add offset for assignment operator
+        /**
+         * @psalm-fixme PossiblyUndefinedIntArrayOffset
+         */
         if (is_string($token_list[$iter])) {
             $offset_count += 1;
         } else {
@@ -151,6 +160,10 @@ final class UnusedAssignmentRemover
         $iter++;
 
         // Remove any whitespace following assignment operator token (e.g "=", "+=")
+        /**
+         * @psalm-fixme PossiblyUndefinedArrayOffset
+         * @psalm-fixme PossiblyUndefinedIntArrayOffset
+         */
         if (is_array($token_list[$iter]) && trim($token_list[$iter][1]) === '') {
             $offset_count += strlen($token_list[$iter][1]);
             $iter++;
@@ -161,6 +174,9 @@ final class UnusedAssignmentRemover
             $offset_count += 1;
             $iter++;
             // Handle any whitespace after "&"
+            /**
+             * @psalm-fixme PossiblyUndefinedIntArrayOffset
+             */
             if (is_array($token_list[$iter]) && trim($token_list[$iter][1]) === '') {
                 $offset_count += strlen($token_list[$iter][1]);
             }

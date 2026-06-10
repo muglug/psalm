@@ -2,6 +2,9 @@
 
 declare(strict_types=1);
 
+/**
+ * @psalm-fixme MoreSpecificReturnType
+ */
 namespace Psalm\Type;
 
 use InvalidArgumentException;
@@ -59,6 +62,7 @@ use function strpos;
 /**
  * @psalm-immutable
  * @psalm-import-type TProperties from Union
+ * @psalm-fixme MoreSpecificReturnType
  */
 trait UnionTrait
 {
@@ -205,9 +209,10 @@ trait UnionTrait
      */
     public function getId(bool $exact = true): string
     {
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($exact && $this->exact_id) {
             return $this->exact_id;
-        } elseif (!$exact && $this->id) {
+        } /** @psalm-fixme RiskyTruthyFalsyComparison */ elseif (!$exact && $this->id) {
             return $this->id;
         }
 
@@ -220,6 +225,7 @@ trait UnionTrait
 
         if (count($types) > 1) {
             foreach ($types as $i => $type) {
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if (strpos($type, ' as ') && !str_contains($type, '(')) {
                     $types[$i] = '(' . $type . ')';
                 }
@@ -337,6 +343,7 @@ trait UnionTrait
                 $analysis_php_version_id,
             );
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if (!$php_type) {
                 return null;
             }
@@ -408,9 +415,13 @@ trait UnionTrait
 
     /**
      * @return TArray|TKeyedArray|TClassStringMap
+     * @psalm-fixme MoreSpecificReturnType
      */
     public function getArray(): Atomic
     {
+        /**
+         * @psalm-fixme PossiblyUndefinedStringArrayOffset
+         */
         return $this->types['array'];
     }
 
@@ -556,6 +567,9 @@ trait UnionTrait
     {
         $object_type_visitor = new CanContainObjectTypeVisitor($codebase);
 
+        /**
+         * @psalm-fixme ImpureMethodCall
+         */
         $object_type_visitor->traverseArray($this->types);
 
         return $object_type_visitor->matches();
@@ -690,6 +704,7 @@ trait UnionTrait
 
     /**
      * @psalm-mutation-free
+     * @psalm-fixme PossiblyUnusedMethod
      */
     public function hasLowercaseString(): bool
     {
@@ -1196,6 +1211,7 @@ trait UnionTrait
 
     /**
      * @psalm-mutation-free
+     * @psalm-fixme PossiblyUnusedMethod
      */
     public function allFloatLiterals(): bool
     {
@@ -1366,6 +1382,9 @@ trait UnionTrait
             $calling_method_id,
         );
 
+        /**
+         * @psalm-fixme ImpureMethodCall
+         */
         $checker->traverseArray($this->types);
 
         /** @psalm-suppress InaccessibleProperty, ImpurePropertyAssignment Does not affect anything else */
@@ -1412,6 +1431,9 @@ trait UnionTrait
     public function replaceClassLike(string $old, string $new): self
     {
         $type = $this;
+        /**
+         * @psalm-fixme ImpureMethodCall
+         */
         (new ClasslikeReplacer(
             $old,
             $new,
@@ -1457,10 +1479,12 @@ trait UnionTrait
             return true;
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($other_type->id && $this->id && $other_type->id !== $this->id) {
             return false;
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($other_type->exact_id && $this->exact_id && $other_type->exact_id !== $this->exact_id) {
             return false;
         }
@@ -1621,6 +1645,9 @@ trait UnionTrait
     public function visit(TypeVisitor $visitor): bool
     {
         foreach ($this->types as $type) {
+            /**
+             * @psalm-fixme ImpureMethodCall
+             */
             if ($visitor->traverse($type) === false) {
                 return false;
             }

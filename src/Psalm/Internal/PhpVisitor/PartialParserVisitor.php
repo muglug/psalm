@@ -59,6 +59,9 @@ final class PartialParserVisitor extends PhpParser\NodeVisitorAbstract
         $attrs = $node->getAttributes();
 
         if ($cs = $node->getComments()) {
+            /**
+             * @psalm-fixme PossiblyUndefinedIntArrayOffset
+             */
             $stmt_start_pos = $cs[0]->getStartFilePos();
         } else {
             $stmt_start_pos = $attrs['startFilePos'];
@@ -179,6 +182,9 @@ final class PartialParserVisitor extends PhpParser\NodeVisitorAbstract
                         );
 
                         foreach ($matches as $match) {
+                            /**
+                             * @psalm-fixme PossiblyUndefinedIntArrayOffset
+                             */
                             $fake_class = substr_replace(
                                 $fake_class,
                                 $match[1][0] . ';' . $match[2][0],
@@ -189,17 +195,24 @@ final class PartialParserVisitor extends PhpParser\NodeVisitorAbstract
                             $extra_characters[] = $match[2][1];
                         }
 
+                        /** @psalm-fixme RiskyTruthyFalsyComparison */
                         $replacement_stmts = $this->parser->parse(
                             $fake_class,
                             $error_handler,
                         ) ?: [];
 
+                        /**
+                         * @psalm-fixme PossiblyUndefinedIntArrayOffset
+                         */
                         if (!$replacement_stmts
                             || !$replacement_stmts[0] instanceof PhpParser\Node\Stmt\ClassLike
                             || count($replacement_stmts[0]->stmts) !== 1
                         ) {
                             $hacky_class_fix = self::balanceBrackets($fake_class);
 
+                            /**
+                             * @psalm-fixme PossiblyUndefinedIntArrayOffset
+                             */
                             if ($replacement_stmts
                                 && $replacement_stmts[0] instanceof PhpParser\Node\Stmt\ClassLike
                                 && count($replacement_stmts[0]->stmts) !== 1
@@ -217,12 +230,16 @@ final class PartialParserVisitor extends PhpParser\NodeVisitorAbstract
                             );
 
                             if ($hacky_class_fix !== $fake_class) {
+                                /** @psalm-fixme RiskyTruthyFalsyComparison */
                                 $replacement_stmts = $this->parser->parse(
                                     $hacky_class_fix,
                                     $error_handler,
                                 ) ?: [];
                             }
 
+                            /**
+                             * @psalm-fixme PossiblyUndefinedIntArrayOffset
+                             */
                             if (!$replacement_stmts
                                 || !$replacement_stmts[0] instanceof PhpParser\Node\Stmt\ClassLike
                                 || count($replacement_stmts[0]->stmts) > 1
@@ -292,7 +309,10 @@ final class PartialParserVisitor extends PhpParser\NodeVisitorAbstract
                 }
 
                 if ($node->stmts) {
-                    /** @var int */
+                    /**
+                     * @var int
+                     * @psalm-fixme PossiblyUndefinedIntArrayOffset
+                     */
                     $stmt_inner_start_pos = $node->stmts[0]->getAttribute('startFilePos');
 
                     /** @var int */

@@ -299,6 +299,9 @@ final class BinaryOpAnalyzer
                                     || $stmt instanceof PhpParser\Node\Expr\BinaryOp\Identical
                                 ) {
                                     if ($atomic_right_type->from_docblock) {
+                                        /**
+                                         * @psalm-fixme ImplicitToStringCast
+                                         */
                                         IssueBuffer::maybeAdd(
                                             new DocblockTypeContradiction(
                                                 $atomic_right_type . ' string length is not ' . $string_length,
@@ -308,6 +311,9 @@ final class BinaryOpAnalyzer
                                             $statements_analyzer->getSuppressedIssues(),
                                         );
                                     } else {
+                                        /**
+                                         * @psalm-fixme ImplicitToStringCast
+                                         */
                                         IssueBuffer::maybeAdd(
                                             new TypeDoesNotContainType(
                                                 $atomic_right_type . ' string length is not ' . $string_length,
@@ -319,6 +325,9 @@ final class BinaryOpAnalyzer
                                     }
                                 } else {
                                     if ($atomic_right_type->from_docblock) {
+                                        /**
+                                         * @psalm-fixme ImplicitToStringCast
+                                         */
                                         IssueBuffer::maybeAdd(
                                             new RedundantConditionGivenDocblockType(
                                                 $atomic_right_type . ' string length is never ' . $string_length,
@@ -328,6 +337,9 @@ final class BinaryOpAnalyzer
                                             $statements_analyzer->getSuppressedIssues(),
                                         );
                                     } else {
+                                        /**
+                                         * @psalm-fixme ImplicitToStringCast
+                                         */
                                         IssueBuffer::maybeAdd(
                                             new RedundantCondition(
                                                 $atomic_right_type . ' string length is never ' . $string_length,

@@ -59,6 +59,9 @@ final class Properties
         // remove leading backslash if it exists
         $property_id = ltrim($property_id, '\\');
 
+        /**
+         * @psalm-fixme PossiblyUndefinedIntArrayOffset
+         */
         [$fq_class_name, $property_name] = explode('::$', $property_id);
         $fq_class_name_lc = strtolower($fq_class_name);
 
@@ -89,6 +92,7 @@ final class Properties
             && !$context->collect_initializations
             && !$context->collect_mutations
         ) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($context->calling_method_id) {
                 $this->file_reference_provider->addMethodReferenceToClass(
                     $context->calling_method_id,
@@ -105,6 +109,7 @@ final class Properties
         if (isset($class_storage->declaring_property_ids[$property_name])) {
             $declaring_property_class = strtolower($class_storage->declaring_property_ids[$property_name]);
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($context && $context->calling_method_id) {
                 $this->file_reference_provider->addMethodReferenceToClassMember(
                     $context->calling_method_id,
@@ -143,6 +148,7 @@ final class Properties
             return true;
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($context && $context->calling_method_id) {
             $this->file_reference_provider->addMethodReferenceToMissingClassMember(
                 $context->calling_method_id,
@@ -163,6 +169,9 @@ final class Properties
         bool $read_mode,
         ?StatementsSource $source = null,
     ): ?string {
+        /**
+         * @psalm-fixme PossiblyUndefinedIntArrayOffset
+         */
         [$fq_class_name, $property_name] = explode('::$', $property_id);
 
         if ($this->property_existence_provider->has($fq_class_name)) {
@@ -194,6 +203,9 @@ final class Properties
         bool $read_mode,
         ?StatementsSource $source = null,
     ): ?string {
+        /**
+         * @psalm-fixme PossiblyUndefinedIntArrayOffset
+         */
         [$fq_class_name, $property_name] = explode('::$', $property_id);
 
         if ($this->property_existence_provider->has($fq_class_name)) {
@@ -224,6 +236,9 @@ final class Properties
         // remove leading backslash if it exists
         $property_id = ltrim($property_id, '\\');
 
+        /**
+         * @psalm-fixme PossiblyUndefinedIntArrayOffset
+         */
         [$fq_class_name, $property_name] = explode('::$', $property_id);
 
         $class_storage = $this->classlike_storage_provider->get($fq_class_name);
@@ -245,6 +260,9 @@ final class Properties
         // remove leading backslash if it exists
         $property_id = ltrim($property_id, '\\');
 
+        /**
+         * @psalm-fixme PossiblyUndefinedIntArrayOffset
+         */
         [$fq_class_name, $property_name] = explode('::$', $property_id);
 
         $class_storage = $this->classlike_storage_provider->get($fq_class_name);
@@ -267,6 +285,9 @@ final class Properties
         // remove leading backslash if it exists
         $property_id = ltrim($property_id, '\\');
 
+        /**
+         * @psalm-fixme PossiblyUndefinedIntArrayOffset
+         */
         [$fq_class_name, $property_name] = explode('::$', $property_id);
 
         if ($this->property_type_provider->has($fq_class_name)) {

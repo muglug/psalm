@@ -514,6 +514,7 @@ final class ArrayAnalyzer
                 $statements_analyzer,
             );
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($var_id) {
                 if (isset($context->vars_in_scope[$var_id])) {
                     $context->removeDescendents(

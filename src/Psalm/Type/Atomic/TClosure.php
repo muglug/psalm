@@ -64,6 +64,7 @@ final class TClosure extends TNamedObject
     ): self {
         $replaced = $this->replaceCallableTemplateTypesWithArgTypes($template_result, $codebase);
         $intersection = $this->replaceIntersectionTemplateTypesWithArgTypes($template_result, $codebase);
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (!$replaced && !$intersection) {
             return $this;
         }
@@ -117,6 +118,7 @@ final class TClosure extends TNamedObject
             $add_lower_bound,
             $depth,
         );
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (!$replaced && !$intersection) {
             return $this;
         }

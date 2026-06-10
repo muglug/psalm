@@ -83,6 +83,9 @@ final class PowReturnTypeProvider implements FunctionReturnTypeProviderInterface
             return Type::getInt(true, 1);
         }
         if ($first_arg_literal !== null && $second_arg_literal !== null) {
+            /**
+             * @psalm-fixme InvalidOperand
+             */
             return Type::getFloat($first_arg_literal ** $second_arg_literal);
         }
         if ($first_arg_is_int && $second_arg_is_int) {

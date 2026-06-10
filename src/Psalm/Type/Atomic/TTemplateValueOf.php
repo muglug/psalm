@@ -16,6 +16,8 @@ use Psalm\Type\Union;
  * Represents the type used when using TValueOf when the type of the array or enum is a template
  *
  * @psalm-immutable
+ * @psalm-fixme ImplementedReturnTypeMismatch
+ * @psalm-fixme MoreSpecificReturnType
  */
 final class TTemplateValueOf extends Atomic
 {
@@ -85,6 +87,9 @@ final class TTemplateValueOf extends Atomic
         TemplateResult $template_result,
         ?Codebase $codebase,
     ): Atomic {
+        /**
+         * @psalm-fixme ImpureMethodCall
+         */
         $as = TemplateInferredTypeReplacer::replace(
             $this->as,
             $template_result,
@@ -92,6 +97,9 @@ final class TTemplateValueOf extends Atomic
         );
         $mixed = $as->getAtomicTypes()['mixed'] ?? null;
         if ($mixed !== null) {
+            /**
+             * @psalm-fixme LessSpecificReturnStatement
+             */
             return $mixed;
         }
         if ($as === $this->as) {

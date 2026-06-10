@@ -25,6 +25,9 @@ final class TKeyOf extends TArrayKey
     #[Override]
     public function getKey(bool $include_extra = true): string
     {
+        /**
+         * @psalm-fixme ImplicitToStringCast
+         */
         return 'key-of<' . $this->type . '>';
     }
 

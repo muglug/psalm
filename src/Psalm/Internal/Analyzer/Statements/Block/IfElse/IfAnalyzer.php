@@ -100,6 +100,7 @@ final class IfAnalyzer
         if ($reconcilable_if_types) {
             $changed_var_ids = [];
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             [$if_context->vars_in_scope, $if_context->references_in_scope] = Reconciler::reconcileKeyedTypes(
                 $reconcilable_if_types,
                 $active_if_types,

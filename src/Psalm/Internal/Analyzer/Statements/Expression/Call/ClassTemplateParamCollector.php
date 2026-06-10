@@ -47,6 +47,7 @@ final class ClassTemplateParamCollector
 
         $candidate_class_storages = [$class_storage];
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($static_class_storage->template_extended_params
             && $method_name
             && !empty($non_trait_class_storage->overridden_method_ids[$method_name])
@@ -68,9 +69,10 @@ final class ClassTemplateParamCollector
 
                 $overridden_template_types = $overridden_class_storage->template_types;
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if (!$template_types) {
                     $template_types = $overridden_template_types;
-                } elseif ($overridden_template_types) {
+                } /** @psalm-fixme RiskyTruthyFalsyComparison */ elseif ($overridden_template_types) {
                     foreach ($overridden_template_types as $template_name => $template_map) {
                         if (isset($template_types[$template_name])) {
                             $template_types[$template_name] = array_merge(
@@ -87,6 +89,7 @@ final class ClassTemplateParamCollector
             }
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (!$template_types) {
             return null;
         }
@@ -95,6 +98,7 @@ final class ClassTemplateParamCollector
         $e = $static_class_storage->template_extended_params;
 
         if ($lhs_type_part instanceof TGenericObject) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($class_storage === $static_class_storage && $class_storage->template_types) {
                 $i = 0;
 
@@ -109,6 +113,7 @@ final class ClassTemplateParamCollector
             }
 
             $template_result = null;
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($class_storage !== $static_class_storage && $static_class_storage->template_types) {
                 $templates = self::collect(
                     $codebase,

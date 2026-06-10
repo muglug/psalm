@@ -65,8 +65,14 @@ final class FileStorageCacheProvider
         $this->cache->saveItem(strtolower($storage->file_path), $storage, hash('xxh128', $file_contents));
     }
 
+    /**
+     * @psalm-fixme InvalidReturnType
+     */
     public function getLatestFromCache(string $file_path, string $file_contents): ?FileStorage
     {
+        /**
+         * @psalm-fixme InvalidReturnStatement
+         */
         return $this->cache->getItem(strtolower($file_path), hash('xxh128', $file_contents));
     }
 }

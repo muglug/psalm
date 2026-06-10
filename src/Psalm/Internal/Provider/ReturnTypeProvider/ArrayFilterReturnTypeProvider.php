@@ -179,6 +179,7 @@ final class ArrayFilterReturnTypeProvider implements FunctionReturnTypeProviderI
             );
 
             $mapping_function_ids = [];
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($callable_extended_var_id) {
                 $possibly_function_ids = $context->vars_in_scope[$callable_extended_var_id] ?? null;
                 // @todo for array callables
@@ -230,6 +231,7 @@ final class ArrayFilterReturnTypeProvider implements FunctionReturnTypeProviderI
                             '$inner_type' => $assertions[$assertion_id],
                         ];
 
+                        /** @psalm-fixme RiskyTruthyFalsyComparison */
                         [$reconciled_types, $_] = Reconciler::reconcileKeyedTypes(
                             $assertions,
                             $assertions,
@@ -310,6 +312,7 @@ final class ArrayFilterReturnTypeProvider implements FunctionReturnTypeProviderI
 
                             $assertions = ['$inner_type' => $assertions['$' . $first_param->var->name]];
 
+                            /** @psalm-fixme RiskyTruthyFalsyComparison */
                             [$reconciled_types, $_] = Reconciler::reconcileKeyedTypes(
                                 $assertions,
                                 $assertions,

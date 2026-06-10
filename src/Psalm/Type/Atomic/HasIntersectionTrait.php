@@ -105,6 +105,9 @@ trait HasIntersectionTrait
             if ($extra_type instanceof TTemplateParam
                 && isset($template_result->lower_bounds[$extra_type->param_name][$extra_type->defining_class])
             ) {
+                /**
+                 * @psalm-fixme ImpureMethodCall
+                 */
                 $template_type = TemplateStandinTypeReplacer::getMostSpecificTypeFromBounds(
                     $template_result->lower_bounds[$extra_type->param_name][$extra_type->defining_class],
                     $codebase,

@@ -157,11 +157,13 @@ final class CommentAnalyzer
                     }
                 }
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if (!$var_type_tokens || !$original_type) {
                     continue;
                 }
 
                 try {
+                    /** @psalm-fixme RiskyTruthyFalsyComparison */
                     $defined_type = TypeParser::parseTokens(
                         $var_type_tokens,
                         null,
@@ -231,6 +233,7 @@ final class CommentAnalyzer
             = isset($parsed_docblock->tags['psalm-allow-private-mutation'])
             || isset($parsed_docblock->tags['psalm-readonly-allow-private-mutation']);
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (!$var_comment->description) {
             $var_comment->description = $parsed_docblock->description;
         }
@@ -504,6 +507,7 @@ final class CommentAnalyzer
                     $statements_analyzer->getSuppressedIssues(),
                 );
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($codebase->alter_code
                     && $var_comment->type_start
                     && $var_comment->type_end
@@ -525,6 +529,7 @@ final class CommentAnalyzer
                     );
                 }
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if (!$var_comment->var_id || $var_comment->var_id === $var_id) {
                     $comment_type = $var_comment_type;
                     continue;

@@ -168,7 +168,11 @@ final class AtomicStaticCallAnalyzer
                 break;
             }
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if (!$fq_class_name) {
+                /**
+                 * @psalm-fixme ImplicitToStringCast
+                 */
                 IssueBuffer::maybeAdd(
                     new UndefinedClass(
                         'Type ' . $lhs_type_part->as . ' cannot be called as a class',
@@ -224,6 +228,7 @@ final class AtomicStaticCallAnalyzer
             }
 
             if (!$context->ignore_variable_method) {
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 $codebase->analyzer->addMixedMemberName(
                     strtolower($fq_class_name) . '::',
                     $context->calling_method_id ?: $statements_analyzer->getFileName(),
@@ -386,6 +391,7 @@ final class AtomicStaticCallAnalyzer
 
         $args = $stmt->isFirstClassCallable() ? [] : $stmt->getArgs();
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (!$naive_method_exists
             && $class_storage->mixin_declaring_fqcln
             && $class_storage->namedMixins
@@ -528,6 +534,9 @@ final class AtomicStaticCallAnalyzer
                         $codebase->methods->getStorage($call_static_method_id)->pure,
                     )]);
                 } else {
+                    /**
+                     * @psalm-fixme ImplicitToStringCast
+                     */
                     if (IssueBuffer::accepts(
                         new UndefinedMethod(
                             'Method ' . $method_id . ' does not exist',
@@ -570,6 +579,7 @@ final class AtomicStaticCallAnalyzer
             || $codebase->config->use_phpdoc_method_without_magic_or_parent;
 
         if ($codebase->methods->getDeclaringMethodId($method_id, $with_pseudo)) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ((!$stmt->class instanceof PhpParser\Node\Name
                     || $stmt->class->getFirst() !== 'parent'
                     || $statements_analyzer->isStatic())
@@ -842,6 +852,7 @@ final class AtomicStaticCallAnalyzer
             );
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($context->self && ! NamespaceAnalyzer::isWithinAny($context->self, $class_storage->internal)) {
             IssueBuffer::maybeAdd(
                 new InternalClass(
@@ -1009,6 +1020,7 @@ final class AtomicStaticCallAnalyzer
             || $lhs_type_part instanceof TObject
         ) {
             if ($stmt->name instanceof PhpParser\Node\Identifier) {
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 $codebase->analyzer->addMixedMemberName(
                     strtolower($stmt->name->name),
                     $context->calling_method_id ?: $statements_analyzer->getFileName(),
@@ -1050,6 +1062,9 @@ final class AtomicStaticCallAnalyzer
             return;
         }
 
+        /**
+         * @psalm-fixme ImplicitToStringCast
+         */
         IssueBuffer::maybeAdd(
             new UndefinedClass(
                 'Type ' . $lhs_type_part . ' cannot be called as a class',

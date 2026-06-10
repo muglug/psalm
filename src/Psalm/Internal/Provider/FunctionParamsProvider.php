@@ -86,6 +86,7 @@ final class FunctionParamsProvider
             );
             $result = $class_handler($event);
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($result) {
                 return $result;
             }

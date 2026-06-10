@@ -65,6 +65,7 @@ final class YieldAnalyzer
                     continue;
                 }
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 $comment_type = TypeExpander::expandUnion(
                     $codebase,
                     $var_comment->type,
@@ -75,6 +76,7 @@ final class YieldAnalyzer
 
                 $type_location = null;
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($var_comment->type_start
                     && $var_comment->type_end
                     && $var_comment->line_number
@@ -87,6 +89,7 @@ final class YieldAnalyzer
                     );
                 }
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if (!$var_comment->var_id) {
                     $var_comment_type = $comment_type;
                     continue;
@@ -166,6 +169,7 @@ final class YieldAnalyzer
             if (!$classlike_storage->yield) {
                 continue;
             }
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             $declaring_classlike_storage = $classlike_storage->declaring_yield_fqcn
                 ? $codebase->classlike_storage_provider->get($classlike_storage->declaring_yield_fqcn)
                 : $classlike_storage;
@@ -192,6 +196,7 @@ final class YieldAnalyzer
                 true,
             );
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($class_template_params) {
                 if (!$expression_atomic_type instanceof TGenericObject) {
                     $type_params = [];
@@ -240,6 +245,9 @@ final class YieldAnalyzer
                         && $atomic_return_type->value === 'Generator'
                     ) {
                         if ($atomic_return_type instanceof TGenericObject) {
+                            /**
+                             * @psalm-fixme PossiblyUndefinedIntArrayOffset
+                             */
                             if (!$atomic_return_type->type_params[2]->isVoid()) {
                                 $statements_analyzer->node_data->setType(
                                     $stmt,

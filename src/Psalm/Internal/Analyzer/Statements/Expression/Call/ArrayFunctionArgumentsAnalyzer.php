@@ -109,9 +109,12 @@ final class ArrayFunctionArgumentsAnalyzer
         if ($closure_arg && $closure_arg_type) {
             $min_closure_param_count = $max_closure_param_count = count($array_arg_types);
 
+            /**
+             * @psalm-fixme ParadoxicalCondition
+             */
             if ($method_id === 'array_filter') {
                 $max_closure_param_count = count($args) > 2 ? 2 : 1;
-            } elseif (in_array($method_id, ArgumentsAnalyzer::ARRAY_FILTERLIKE, true)) {
+            } /** @psalm-fixme ParadoxicalCondition */ elseif (in_array($method_id, ArgumentsAnalyzer::ARRAY_FILTERLIKE, true)) {
                 $max_closure_param_count = 2;
             }
 
@@ -148,6 +151,9 @@ final class ArrayFunctionArgumentsAnalyzer
         Context $context,
         string $method_id,
     ): ?bool {
+        /**
+         * @psalm-fixme PossiblyUndefinedIntArrayOffset
+         */
         $array_arg = $args[0]->value;
         $nb_args = count($args);
 
@@ -342,6 +348,9 @@ final class ArrayFunctionArgumentsAnalyzer
         Context $context,
     ): ?bool {
         $context->inside_call = true;
+        /**
+         * @psalm-fixme PossiblyUndefinedIntArrayOffset
+         */
         $array_arg = $args[0]->value;
 
         if (ExpressionAnalyzer::analyze(
@@ -383,6 +392,9 @@ final class ArrayFunctionArgumentsAnalyzer
             }
         }
 
+        /**
+         * @psalm-fixme PossiblyUndefinedIntArrayOffset
+         */
         $offset_arg = $args[1]->value;
 
         if (ExpressionAnalyzer::analyze(
@@ -627,6 +639,7 @@ final class ArrayFunctionArgumentsAnalyzer
             $statements_analyzer,
         );
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($var_id) {
             $context->removeVarFromConflictingClauses($var_id, null, $statements_analyzer);
 
@@ -772,6 +785,9 @@ final class ArrayFunctionArgumentsAnalyzer
                     $function_id_parts = explode('&', $function_id);
 
                     foreach ($function_id_parts as $function_id_part) {
+                        /**
+                         * @psalm-fixme PossiblyUndefinedIntArrayOffset
+                         */
                         [$callable_fq_class_name, $method_name] = explode('::', $function_id_part);
 
                         switch ($callable_fq_class_name) {
@@ -784,6 +800,7 @@ final class ArrayFunctionArgumentsAnalyzer
                                     $container_class = $statements_analyzer->getParentFQCLN();
                                 }
 
+                                /** @psalm-fixme RiskyTruthyFalsyComparison */
                                 if (!$container_class) {
                                     continue 2;
                                 }
@@ -993,6 +1010,7 @@ final class ArrayFunctionArgumentsAnalyzer
                     ];
                 }
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 $closure_param_type = TemplateStandinTypeReplacer::replace(
                     $closure_param_type,
                     $template_result,

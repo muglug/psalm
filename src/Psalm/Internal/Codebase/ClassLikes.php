@@ -195,6 +195,7 @@ final class ClassLikes
         $this->existing_interfaces_lc[$fq_class_name_lc] = false;
         $this->existing_enums_lc[$fq_class_name_lc] = false;
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($file_path) {
             $this->scanner->setClassLikeFilePath($fq_class_name_lc, $file_path);
         }
@@ -211,6 +212,7 @@ final class ClassLikes
         $this->existing_traits_lc[$fq_class_name_lc] = false;
         $this->existing_enums_lc[$fq_class_name_lc] = false;
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($file_path) {
             $this->scanner->setClassLikeFilePath($fq_class_name_lc, $file_path);
         }
@@ -227,6 +229,7 @@ final class ClassLikes
         $this->existing_interfaces_lc[$fq_class_name_lc] = false;
         $this->existing_enums[$fq_class_name] = false;
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($file_path) {
             $this->scanner->setClassLikeFilePath($fq_class_name_lc, $file_path);
         }
@@ -243,6 +246,7 @@ final class ClassLikes
         $this->existing_classes_lc[$fq_class_name_lc] = false;
         $this->existing_interfaces_lc[$fq_class_name_lc] = false;
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($file_path) {
             $this->scanner->setClassLikeFilePath($fq_class_name_lc, $file_path);
         }
@@ -250,6 +254,7 @@ final class ClassLikes
 
     public function addFullyQualifiedClassLikeName(string $fq_class_name_lc, ?string $file_path = null): void
     {
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($file_path) {
             $this->scanner->setClassLikeFilePath($fq_class_name_lc, $file_path);
         }
@@ -273,6 +278,9 @@ final class ClassLikes
             $stub = substr($stub, 1);
         } else {
             // for any not-fully-qualified class name the bit we care about comes after a dash
+            /**
+             * @psalm-fixme PossiblyUndefinedIntArrayOffset
+             */
             [, $stub] = explode('-', $stub);
         }
 
@@ -316,17 +324,19 @@ final class ClassLikes
         $fq_class_name_lc = strtolower($this->getUnAliasedName($fq_class_name));
 
         if ($code_location) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($calling_method_id) {
                 $this->file_reference_provider->addMethodReferenceToClass(
                     $calling_method_id,
                     $fq_class_name_lc,
                 );
-            } elseif (!$calling_fq_class_name || strtolower($calling_fq_class_name) !== $fq_class_name_lc) {
+            } /** @psalm-fixme RiskyTruthyFalsyComparison */ elseif (!$calling_fq_class_name || strtolower($calling_fq_class_name) !== $fq_class_name_lc) {
                 $this->file_reference_provider->addNonMethodReferenceToClass(
                     $code_location->file_path,
                     $fq_class_name_lc,
                 );
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($calling_fq_class_name) {
                     $class_storage = $this->classlike_storage_provider->get($calling_fq_class_name);
 
@@ -407,6 +417,7 @@ final class ClassLikes
         }
 
         if ($this->collect_references && $code_location) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($calling_method_id) {
                 $this->file_reference_provider->addMethodReferenceToClass(
                     $calling_method_id,
@@ -418,6 +429,7 @@ final class ClassLikes
                     $fq_class_name_lc,
                 );
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($calling_fq_class_name) {
                     $class_storage = $this->classlike_storage_provider->get($calling_fq_class_name);
 
@@ -475,6 +487,7 @@ final class ClassLikes
         }
 
         if ($this->collect_references && $code_location) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($calling_method_id) {
                 $this->file_reference_provider->addMethodReferenceToClass(
                     $calling_method_id,
@@ -486,6 +499,7 @@ final class ClassLikes
                     $fq_class_name_lc,
                 );
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($calling_fq_class_name) {
                     $class_storage = $this->classlike_storage_provider->get($calling_fq_class_name);
 
@@ -980,6 +994,9 @@ final class ClassLikes
                 continue;
             }
 
+            /**
+             * @psalm-fixme PossiblyUndefinedIntArrayOffset
+             */
             [$destination_fq_class_name, $destination_name] = explode('::', $destination);
 
             try {
@@ -1014,6 +1031,7 @@ final class ClassLikes
 
                 $insert_pos = strrpos($selection, "\n", -1);
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if (!$insert_pos) {
                     $insert_pos = strlen($selection) - 1;
                 } else {
@@ -1058,6 +1076,9 @@ final class ClassLikes
             }
 
             [$source_fq_class_name] = explode('::$', $source);
+            /**
+             * @psalm-fixme PossiblyUndefinedIntArrayOffset
+             */
             [$destination_fq_class_name, $destination_name] = explode('::$', $destination);
 
             $source_classlike_storage = $this->classlike_storage_provider->get($source_fq_class_name);
@@ -1112,6 +1133,7 @@ final class ClassLikes
 
                 $insert_pos = strrpos($selection, "\n", -1);
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if (!$insert_pos) {
                     $insert_pos = strlen($selection) - 1;
                 } else {
@@ -1149,7 +1171,13 @@ final class ClassLikes
         $code_migrations = [];
 
         foreach ($codebase->class_constants_to_move as $source => $destination) {
+            /**
+             * @psalm-fixme PossiblyUndefinedIntArrayOffset
+             */
             [$source_fq_class_name, $source_const_name] = explode('::', $source);
+            /**
+             * @psalm-fixme PossiblyUndefinedIntArrayOffset
+             */
             [$destination_fq_class_name, $destination_name] = explode('::', $destination);
 
             $source_classlike_storage = $this->classlike_storage_provider->get($source_fq_class_name);
@@ -1188,6 +1216,7 @@ final class ClassLikes
 
                 $insert_pos = strrpos($selection, "\n", -1);
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if (!$insert_pos) {
                     $insert_pos = strlen($selection) - 1;
                 } else {
@@ -1225,6 +1254,7 @@ final class ClassLikes
         $calling_fq_class_name = $source->getFQCLN();
 
         // if we're inside a moved class static method
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($codebase->methods_to_move
             && $calling_fq_class_name
             && $calling_method_id
@@ -1278,6 +1308,7 @@ final class ClassLikes
 
             $migrated_source_fqcln = $calling_fq_class_name;
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($calling_fq_class_name
                 && isset($codebase->class_transforms[strtolower($calling_fq_class_name)])
             ) {
@@ -1286,6 +1317,7 @@ final class ClassLikes
 
             $source_namespace = $source->getNamespace();
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($migrated_source_fqcln && $calling_fq_class_name !== $migrated_source_fqcln) {
                 $new_source_parts = explode('\\', $migrated_source_fqcln, -1);
                 $source_namespace = implode('\\', $new_source_parts);
@@ -1324,6 +1356,7 @@ final class ClassLikes
         }
 
         // if we're inside a moved class (could be a method, could be a property/class const default)
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($codebase->classes_to_move
             && $calling_fq_class_name
             && isset($codebase->classes_to_move[strtolower($calling_fq_class_name)])
@@ -1360,6 +1393,7 @@ final class ClassLikes
         }
 
         if ($force_change) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($calling_fq_class_name) {
                 $this->airliftClassLikeReference(
                     $fq_class_name,
@@ -1407,6 +1441,7 @@ final class ClassLikes
         $moved_type = false;
 
         // if we're inside a moved class static method
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($codebase->methods_to_move
             && $calling_fq_class_name
             && $calling_method_id
@@ -1434,6 +1469,7 @@ final class ClassLikes
 
             $migrated_source_fqcln = $calling_fq_class_name;
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($calling_fq_class_name
                 && isset($codebase->class_transforms[$fq_class_name_lc])
             ) {
@@ -1442,6 +1478,7 @@ final class ClassLikes
 
             $source_namespace = $source->getNamespace();
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($migrated_source_fqcln && $calling_fq_class_name !== $migrated_source_fqcln) {
                 $new_source_parts = explode('\\', $migrated_source_fqcln, -1);
                 $source_namespace = implode('\\', $new_source_parts);
@@ -1496,6 +1533,7 @@ final class ClassLikes
         }
 
         // if we're inside a moved class (could be a method, could be a property/class const default)
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (!$moved_type
             && $codebase->classes_to_move
             && $calling_fq_class_name
@@ -1989,6 +2027,7 @@ final class ClassLikes
                 && !$classlike_storage->is_interface
             ) {
                 foreach ($method_storage->params as $offset => $param_storage) {
+                    /** @psalm-fixme RiskyTruthyFalsyComparison */
                     if (empty($classlike_storage->overridden_method_ids[$method_name])
                         && $param_storage->location
                         && !$param_storage->promoted_property

@@ -96,6 +96,7 @@ final class IfElseAnalyzer
             }
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         $branch_point = $context->branch_point ?: (int) $stmt->getAttribute('startFilePos');
 
         try {
@@ -228,6 +229,7 @@ final class IfElseAnalyzer
         $changed_var_ids = [];
 
         if ($if_scope->negated_types) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             [$temp_else_context->vars_in_scope, $temp_else_context->references_in_scope] =
                 Reconciler::reconcileKeyedTypes(
                     $if_scope->negated_types,
@@ -279,6 +281,7 @@ final class IfElseAnalyzer
 
         // check the elseifs
         foreach ($stmt->elseifs as $elseif) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if (ElseIfAnalyzer::analyze(
                 $statements_analyzer,
                 $elseif,
@@ -372,11 +375,13 @@ final class IfElseAnalyzer
         ];
 
         // vars can only be defined/redefined if there was an else (defined in every block)
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         $context->assigned_var_ids = array_merge(
             $context->assigned_var_ids,
             $if_scope->assigned_var_ids ?: [],
         );
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($if_scope->new_vars) {
             foreach ($if_scope->new_vars as $var_id => &$type) {
                 if (isset($context->vars_possibly_in_scope[$var_id])
@@ -392,6 +397,7 @@ final class IfElseAnalyzer
             unset($type);
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($if_scope->redefined_vars) {
             foreach ($if_scope->redefined_vars as $var_id => $type) {
                 $context->vars_in_scope[$var_id] = $type;

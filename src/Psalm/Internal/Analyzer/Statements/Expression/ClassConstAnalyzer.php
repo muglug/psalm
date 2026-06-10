@@ -77,6 +77,7 @@ final class ClassConstAnalyzer
             $first_part_lc = strtolower($stmt->class->getFirst());
 
             if ($first_part_lc === 'self' || $first_part_lc === 'static') {
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if (!$context->self) {
                     return !IssueBuffer::accepts(
                         new NonStaticSelfCall(
@@ -229,6 +230,9 @@ final class ClassConstAnalyzer
                 return $ret;
             }
 
+            /**
+             * @psalm-fixme ImplicitToStringCast
+             */
             $const_id = $fq_class_name . '::' . $stmt->name;
 
             if ($codebase->store_node_types
@@ -256,6 +260,7 @@ final class ClassConstAnalyzer
                 }
             }
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($fq_class_name === $context->self
                 || (
                     $statements_analyzer->getSource()->getSource() instanceof TraitAnalyzer &&
@@ -263,7 +268,7 @@ final class ClassConstAnalyzer
                 )
             ) {
                 $class_visibility = ReflectionProperty::IS_PRIVATE;
-            } elseif ($context->self &&
+            } /** @psalm-fixme RiskyTruthyFalsyComparison */ elseif ($context->self &&
                 ($codebase->classlikes->classExtends($context->self, $fq_class_name)
                     || $codebase->classlikes->classExtends($fq_class_name, $context->self))
             ) {
@@ -326,6 +331,7 @@ final class ClassConstAnalyzer
                 return true;
             }
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($context->calling_method_id) {
                 $codebase->file_reference_provider->addMethodReferenceToClassMember(
                     $context->calling_method_id,
@@ -339,6 +345,9 @@ final class ClassConstAnalyzer
             if ($codebase->alter_code && !$moved_class) {
                 foreach ($codebase->class_constant_transforms as $original_pattern => $transformation) {
                     if ($declaring_const_id === $original_pattern) {
+                        /**
+                         * @psalm-fixme PossiblyUndefinedIntArrayOffset
+                         */
                         [$new_fq_class_name, $new_const_name] = explode('::', $transformation);
 
                         $file_manipulations = [];
@@ -367,6 +376,7 @@ final class ClassConstAnalyzer
                 }
             }
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($context->self
                 && !$context->collect_initializations
                 && !$context->collect_mutations
@@ -547,6 +557,9 @@ final class ClassConstAnalyzer
                 return true;
             }
 
+            /**
+             * @psalm-fixme ImplicitToStringCast
+             */
             $const_id = $fq_class_name . '::' . $stmt->name;
 
             if ($codebase->store_node_types
@@ -562,6 +575,7 @@ final class ClassConstAnalyzer
 
             $const_class_storage = $codebase->classlike_storage_provider->get($fq_class_name);
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($fq_class_name === $context->self
                 || (
                     $statements_analyzer->getSource()->getSource() instanceof TraitAnalyzer &&
@@ -569,7 +583,7 @@ final class ClassConstAnalyzer
                 )
             ) {
                 $class_visibility = ReflectionProperty::IS_PRIVATE;
-            } elseif ($context->self &&
+            } /** @psalm-fixme RiskyTruthyFalsyComparison */ elseif ($context->self &&
                 ($codebase->classlikes->classExtends($context->self, $fq_class_name)
                     || $codebase->classlikes->classExtends($fq_class_name, $context->self))
             ) {
@@ -630,6 +644,7 @@ final class ClassConstAnalyzer
                 return true;
             }
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($context->calling_method_id) {
                 $codebase->file_reference_provider->addMethodReferenceToClassMember(
                     $context->calling_method_id,
@@ -643,6 +658,9 @@ final class ClassConstAnalyzer
             if ($codebase->alter_code && !$moved_class) {
                 foreach ($codebase->class_constant_transforms as $original_pattern => $transformation) {
                     if ($declaring_const_id === $original_pattern) {
+                        /**
+                         * @psalm-fixme PossiblyUndefinedIntArrayOffset
+                         */
                         [, $new_const_name] = explode('::', $transformation);
 
                         $file_manipulations = [];
@@ -658,6 +676,7 @@ final class ClassConstAnalyzer
                 }
             }
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($context->self
                 && !$context->collect_initializations
                 && !$context->collect_mutations

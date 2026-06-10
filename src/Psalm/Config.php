@@ -615,6 +615,9 @@ final class Config
     /** @internal */
     protected function __construct()
     {
+        /**
+         * @psalm-fixme PropertyTypeCoercion
+         */
         self::$instance = $this;
         $this->eventDispatcher = new EventDispatcher();
         $this->universal_object_crates = [
@@ -633,6 +636,7 @@ final class Config
     {
         $config_path = self::locateConfigFile($path);
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (!$config_path) {
             throw new ConfigNotFoundException('Config not found for path ' . $path);
         }
@@ -840,6 +844,7 @@ final class Config
         assert($line > 0); // getLineNo() always returns non-zero for nodes loaded from file
 
         $offset = self::lineNumberToByteOffset($file_contents, $line);
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         $attribute_start = strrpos($file_contents, $attribute->name, $offset - strlen($file_contents)) ?: 0;
         $attribute_end = $attribute_start + strlen($attribute->name) - 1;
 
@@ -866,6 +871,7 @@ final class Config
         assert($line > 0);
 
         $offset = self::lineNumberToByteOffset($file_contents, $line);
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         $element_start = strpos($file_contents, $deprecated_element_xml->localName, $offset) ?: 0;
         $element_end = $element_start + strlen($deprecated_element_xml->localName) - 1;
 
@@ -913,6 +919,9 @@ final class Config
             );
             if ($deprecated_elements_xml->length) {
                 $deprecated_element_xml = $deprecated_elements_xml->item(0);
+                /**
+                 * @psalm-fixme PossiblyNullArgument
+                 */
                 self::processDeprecatedElement($deprecated_element_xml, $file_contents, $config, $config_path);
             }
         }
@@ -923,6 +932,7 @@ final class Config
      * @psalm-suppress MixedAssignment
      * @psalm-suppress MixedPropertyFetch
      * @throws ConfigException
+     * @psalm-fixme ComplexMethod
      */
     private static function fromXmlAndPaths(
         string $base_dir,
@@ -1096,6 +1106,7 @@ final class Config
             $config->cache_directory .= DIRECTORY_SEPARATOR . sha1($base_dir);
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (isset($config_xml['serializer'])) {
             $attribute_text = (string) $config_xml['serializer'];
             $config->use_igbinary = $attribute_text === 'igbinary';
@@ -1109,7 +1120,7 @@ final class Config
                 $config->config_warnings[] = '"serializer" set to "igbinary" but ext-igbinary seems to be missing on ' .
                     'the system. Using php\'s build-in serializer.';
             }
-        } elseif ($igbinary_version = phpversion('igbinary')) {
+        } /** @psalm-fixme RiskyTruthyFalsyComparison */ elseif ($igbinary_version = phpversion('igbinary')) {
             $config->use_igbinary = version_compare($igbinary_version, '2.0.5') >= 0;
         }
 
@@ -1169,6 +1180,9 @@ final class Config
             $attribute_text = (int) $config_xml['errorLevel'];
 
             if (!in_array($attribute_text, [1, 2, 3, 4, 5, 6, 7, 8], true)) {
+                /**
+                 * @psalm-fixme ImplicitToStringCast
+                 */
                 throw new ConfigException(
                     'Invalid error level ' . $config_xml['errorLevel'],
                 );
@@ -1283,6 +1297,9 @@ final class Config
                         $child = $config_xml->projectFiles->addChild('file');
                     }
 
+                    /**
+                     * @psalm-fixme PossiblyNullReference
+                     */
                     $child->addAttribute('name', $path);
                 }
 
@@ -1373,7 +1390,11 @@ final class Config
                 }
                 $file_path = realpath($stub_file_name);
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if (!$file_path) {
+                    /**
+                     * @psalm-fixme ImplicitToStringCast
+                     */
                     throw new ConfigException(
                         'Cannot resolve stubfile path '
                             . $config->base_dir
@@ -1426,6 +1447,7 @@ final class Config
         if (isset($config_xml->issueHandlers)) {
             foreach ($config_xml->issueHandlers as $issue_handlers) {
                 $issue_handler_children = $issue_handlers->children();
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($issue_handler_children) {
                     foreach ($issue_handler_children as $key => $issue_handler) {
                         if ($key === 'PluginIssue') {
@@ -1685,6 +1707,7 @@ final class Config
             // plugins from Psalm directory or phar file. If that fails as well, it
             // will fall back to project autoloader. It may seem that the last step
             // will always fail, but it's only true if project uses Composer autoloader
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($this->composer_class_loader
                 && ($pluginclas_class_path = $this->composer_class_loader->findFile($pluginClassName))
             ) {
@@ -1885,6 +1908,7 @@ final class Config
 
         $reporting_level = null;
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($e instanceof ClassIssue) {
             $reporting_level = $this->getReportingLevelForClass($issue_type, $e->fq_classlike_name);
         } elseif ($e instanceof MethodIssue) {
@@ -1895,7 +1919,7 @@ final class Config
             $reporting_level = $this->getReportingLevelForProperty($issue_type, $e->property_id);
         } elseif ($e instanceof ClassConstantIssue) {
             $reporting_level = $this->getReportingLevelForClassConstant($issue_type, $e->const_id);
-        } elseif ($e instanceof ArgumentIssue && $e->function_id) {
+        } /** @psalm-fixme RiskyTruthyFalsyComparison */ elseif ($e instanceof ArgumentIssue && $e->function_id) {
             $reporting_level = $this->getReportingLevelForArgument($issue_type, $e->function_id);
         } elseif ($e instanceof VariableIssue) {
             $reporting_level = $this->getReportingLevelForVariable($issue_type, $e->var_name);
@@ -1911,6 +1935,7 @@ final class Config
 
         $parent_issue_type = self::getParentIssueType($issue_type);
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($parent_issue_type && $reporting_level === self::REPORT_ERROR) {
             $parent_reporting_level = $this->getReportingLevelForFile($parent_issue_type, $e->getFilePath());
 
@@ -1959,6 +1984,7 @@ final class Config
             return 'TaintedInput';
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (preg_match('/^(False|Null)[A-Z]/', $issue_type) && !strpos($issue_type, 'Reference')) {
             return preg_replace('/^(False|Null)/', 'Invalid', $issue_type, 1);
         }
@@ -2392,6 +2418,7 @@ final class Config
                 $phpstorm_meta_path = (string) realpath($phpstorm_meta_path);
                 $phpstorm_meta_files = glob($phpstorm_meta_path . '/*.meta.php', GLOB_NOSORT);
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 foreach ($phpstorm_meta_files ?: [] as $glob) {
                     if (is_file($glob) && realpath(dirname($glob)) === $phpstorm_meta_path) {
                         $stub_files[] = $glob;
@@ -2532,6 +2559,7 @@ final class Config
 
         $this->collectPredefinedFunctions();
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($this->autoloader) {
             // somee classes that we think are missing may not actually be missing
             // as they might be autoloadable once we require the autoloader below
@@ -2598,6 +2626,7 @@ final class Config
                 foreach ($psr4_prefixes[$search] as $dir) {
                     $dir = realpath($dir);
 
+                    /** @psalm-fixme RiskyTruthyFalsyComparison */
                     if ($dir
                         && $depth > $maxDepth
                         && $this->isInProjectDirs($dir . DIRECTORY_SEPARATOR . 'testdummy.php')
@@ -2695,6 +2724,9 @@ final class Config
         $this->stub_files[$stub_file] = $stub_file;
     }
 
+    /**
+     * @psalm-fixme PossiblyUnusedMethod
+     */
     public function hasStubFile(string $stub_file): bool
     {
         return isset($this->stub_files[$stub_file]);
@@ -2745,6 +2777,7 @@ final class Config
                 $composer_json = null;
             }
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if (!$composer_json) {
                 throw new UnexpectedValueException('Invalid composer.json at ' . $composer_json_path);
             }

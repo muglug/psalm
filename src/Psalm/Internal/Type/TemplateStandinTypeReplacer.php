@@ -209,6 +209,7 @@ final class TemplateStandinTypeReplacer
         bool $was_single,
         bool &$had_template,
     ): array {
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($bracket_pos = strpos($key, '<')) {
             $key = substr($key, 0, $bracket_pos);
         }
@@ -273,6 +274,7 @@ final class TemplateStandinTypeReplacer
 
                 $include_first = true;
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if (isset($template_result->lower_bounds[$atomic_type->array_param_name][$atomic_type->defining_class])
                     && !empty($template_result->lower_bounds[$atomic_type->offset_param_name])
                 ) {
@@ -472,6 +474,7 @@ final class TemplateStandinTypeReplacer
         $matching_atomic_types = [];
 
         foreach ($input_type->getAtomicTypes() as $input_key => $atomic_input_type) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($bracket_pos = strpos($input_key, '<')) {
                 $input_key = substr($input_key, 0, $bracket_pos);
             }
@@ -519,6 +522,7 @@ final class TemplateStandinTypeReplacer
                     $classlike_storage =
                         $codebase->classlike_storage_provider->get($atomic_input_type->value);
 
+                    /** @psalm-fixme RiskyTruthyFalsyComparison */
                     if (!empty($classlike_storage->template_extended_params[$base_type->as_type->value])) {
                         $atomic_input_type = new TClassString(
                             $base_type->as_type->value,
@@ -577,6 +581,7 @@ final class TemplateStandinTypeReplacer
                         continue;
                     }
 
+                    /** @psalm-fixme RiskyTruthyFalsyComparison */
                     if (!empty($classlike_storage->template_extended_params[$base_type->value])) {
                         $atomic_input_type = new TGenericObject(
                             $base_type->value,
@@ -667,6 +672,7 @@ final class TemplateStandinTypeReplacer
 
         $param_name_key = $atomic_type->param_name;
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (strpos($key, '&')) {
             $param_name_key = $key;
         }
@@ -1251,9 +1257,13 @@ final class TemplateStandinTypeReplacer
 
             $container_class = $container_type_part->value;
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if (strtolower($input_type_part->value) === strtolower($container_type_part->value)) {
+                /**
+                 * @psalm-fixme ImpureMethodCall
+                 */
                 $input_type_params = $class_storage->getClassTemplateTypes();
-            } elseif (!empty($class_storage->template_extended_params[$container_class])) {
+            } /** @psalm-fixme RiskyTruthyFalsyComparison */ elseif (!empty($class_storage->template_extended_params[$container_class])) {
                 $input_type_params = array_values($class_storage->template_extended_params[$container_class]);
             } else {
                 $input_type_params = array_fill(0, count($class_storage->template_types ?? []), Type::getMixed());
@@ -1278,6 +1288,7 @@ final class TemplateStandinTypeReplacer
 
             $replacement_templates = [];
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($input_template_types
                 && (!$container_type_part instanceof TGenericObject || !$container_type_part->remapped_params)
             ) {

@@ -209,6 +209,7 @@ final class IssueBuffer
 
         $parent_issue_type = Config::getParentIssueType($issue_type);
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($parent_issue_type) {
             $suppressed_issue_position = array_search($parent_issue_type, $suppressed_issues, true);
 
@@ -728,6 +729,7 @@ final class IssueBuffer
         }
 
         foreach ($project_analyzer->generated_report_options as $report_options) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if (!$report_options->output_path) {
                 throw new UnexpectedValueException('Output path should not be null here');
             }
@@ -824,6 +826,9 @@ final class IssueBuffer
                             break;
                         }
 
+                        /**
+                         * @psalm-fixme InvalidOperand
+                         */
                         echo $function_id . ': ' . round(1_000 * $time, 2) . 'ms per node' . "\n";
                     }
 
@@ -1115,6 +1120,7 @@ final class IssueBuffer
     /**
      * @internal
      * @return array<array-key,mixed>
+     * @psalm-fixme PossiblyUnusedMethod
      */
     final public static function getServer(): array
     {

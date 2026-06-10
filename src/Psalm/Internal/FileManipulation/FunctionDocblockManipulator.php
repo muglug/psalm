@@ -152,6 +152,7 @@ final class FunctionDocblockManipulator
             $last_arg_position = (int) $stmt->uses[count($stmt->uses) - 1]->getAttribute('endFilePos') + 1;
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         $end_bracket_position = (int) strpos($file_contents, ')', $last_arg_position ?: $function_start);
 
         $this->return_typehint_area_start = $end_bracket_position + 1;
@@ -295,6 +296,7 @@ final class FunctionDocblockManipulator
         if ($php_type === 'static') {
             $php_type = '';
         }
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($php_type) {
             $this->new_php_param_types[$param_name] = $php_type;
         }
@@ -425,10 +427,13 @@ final class FunctionDocblockManipulator
         }
 
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($this->new_phpdoc_return_type && $this->new_phpdoc_return_type !== $old_phpdoc_return_type) {
             $modified_docblock = true;
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($this->new_phpdoc_return_type !== $this->new_php_return_type || $this->return_type_description) {
                 //only add the type if it's different than signature or if there's a description
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 $parsed_docblock->tags['return'] = [
                     $this->new_phpdoc_return_type
                     . ($this->return_type_description ? (' ' . $this->return_type_description) : ''),
@@ -443,6 +448,7 @@ final class FunctionDocblockManipulator
             $old_psalm_return_type = reset($parsed_docblock->tags['psalm-return']);
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($this->new_psalm_return_type
             && $this->new_phpdoc_return_type !== $this->new_psalm_return_type
             && $this->new_psalm_return_type !== $old_psalm_return_type
@@ -474,7 +480,9 @@ final class FunctionDocblockManipulator
         $file_manipulations = [];
 
         foreach (self::$manipulators[$file_path] as $manipulator) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($manipulator->new_php_return_type) {
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($manipulator->return_typehint_start && $manipulator->return_typehint_end) {
                     $file_manipulations[$manipulator->return_typehint_start] = new FileManipulation(
                         $manipulator->return_typehint_start,
@@ -488,7 +496,7 @@ final class FunctionDocblockManipulator
                         ': ' . $manipulator->new_php_return_type,
                     );
                 }
-            } elseif ($manipulator->new_php_return_type === ''
+            } /** @psalm-fixme RiskyTruthyFalsyComparison */ elseif ($manipulator->new_php_return_type === ''
                 && $manipulator->return_typehint_colon_start
                 && $manipulator->new_phpdoc_return_type
                 && $manipulator->return_typehint_start
@@ -501,6 +509,7 @@ final class FunctionDocblockManipulator
                 );
             }
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if (!$manipulator->new_php_return_type
                 || !$manipulator->return_type_is_php_compatible
                 || $manipulator->docblock_start !== $manipulator->docblock_end

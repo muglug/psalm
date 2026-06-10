@@ -96,6 +96,7 @@ final class IncludeAnalyzer
 
             // attempts to resolve using get_include_path dirs
             $include_path = self::resolveIncludePath($path_to_file, dirname($statements_analyzer->getFilePath()));
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             $path_to_file = $include_path ?: $path_to_file;
 
             if (Path::isRelative($path_to_file)) {
@@ -154,6 +155,7 @@ final class IncludeAnalyzer
             }
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($path_to_file) {
             $path_to_file = self::normalizeFilePath($path_to_file);
 
@@ -259,6 +261,7 @@ final class IncludeAnalyzer
             }
 
             $var_id = ExpressionIdentifier::getExtendedVarId($stmt->expr, null);
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($var_id && isset($context->phantom_files[$var_id])) {
                 return true;
             }
@@ -275,6 +278,7 @@ final class IncludeAnalyzer
         } else {
             $var_id = ExpressionIdentifier::getExtendedVarId($stmt->expr, null);
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if (!$var_id || !isset($context->phantom_files[$var_id])) {
                 $source = $statements_analyzer->getSource();
 
@@ -346,6 +350,7 @@ final class IncludeAnalyzer
             $left_string = self::getPathTo($stmt->left, $type_provider, $statements_analyzer, $file_name, $config);
             $right_string = self::getPathTo($stmt->right, $type_provider, $statements_analyzer, $file_name, $config);
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($left_string && $right_string) {
                 return $left_string . $right_string;
             }
@@ -381,6 +386,7 @@ final class IncludeAnalyzer
                     $config,
                 );
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if (!$evaled_path) {
                     return null;
                 }

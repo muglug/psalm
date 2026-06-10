@@ -46,6 +46,7 @@ use const PATHINFO_EXTENSION;
 
 /**
  * @internal
+ * @psalm-fixme InvalidReturnType
  */
 final class FunctionLikeDocblockParser
 {
@@ -429,6 +430,7 @@ final class FunctionLikeDocblockParser
             // since @since is commonly used with the project version, not the PHP version
             // https://docs.phpdoc.org/3.0/guide/references/phpdoc/tags/since.html
             // https://github.com/vimeo/psalm/issues/10761
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if (preg_match('/^([4578])\.(\d)(\.\d+)?(\s+PHP)?$/i', $since, $since_match)
                 && isset($since_match[1])&& isset($since_match[2])
                 && (!empty($since_match[4]) || pathinfo($code_location->file_name, PATHINFO_EXTENSION) === 'phpstub')) {
@@ -618,8 +620,14 @@ final class FunctionLikeDocblockParser
             throw new IncorrectDocblockException('Misplaced variable');
         }
 
+        /**
+         * @psalm-fixme PossiblyUndefinedIntArrayOffset
+         */
         $line_parts[0] = CommentAnalyzer::sanitizeDocblockType($line_parts[0]);
 
+        /**
+         * @psalm-fixme PossiblyUndefinedIntArrayOffset
+         */
         if ($line_parts[1][0] === '$') {
             $param_name_parts = explode('->', $line_parts[1]);
 
@@ -632,6 +640,9 @@ final class FunctionLikeDocblockParser
             $line_parts[1] = implode('->', $param_name_parts);
         }
 
+        /**
+         * @psalm-fixme InvalidReturnStatement
+         */
         return $line_parts;
     }
 

@@ -121,6 +121,7 @@ final class TypeChecker extends TypeVisitor
             );
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($this->calling_method_id
             && $atomic->text !== null
         ) {
@@ -192,6 +193,7 @@ final class TypeChecker extends TypeVisitor
             return;
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         $expected_type_params = $class_storage->template_types ?: [];
         $expected_param_covariants = $class_storage->template_covariants;
 
@@ -277,6 +279,7 @@ final class TypeChecker extends TypeVisitor
             ? $this->source->getClassName()
             : $atomic->fq_classlike_name;
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (!$fq_classlike_name) {
             return;
         }
@@ -340,6 +343,7 @@ final class TypeChecker extends TypeVisitor
 
             $class_storage = $codebase->classlike_storage_provider->get($atomic->defining_class);
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             $template_offset = $class_storage->template_types
                 ? array_search($atomic->param_name, array_keys($class_storage->template_types), true)
                 : false;

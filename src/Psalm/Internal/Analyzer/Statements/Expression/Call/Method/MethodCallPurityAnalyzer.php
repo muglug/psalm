@@ -142,12 +142,13 @@ final class MethodCallPurityAnalyzer
             $statements_analyzer->getSource()->inferred_impure = true;
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (!$config->remember_property_assignments_after_call
             && !$method_storage->mutation_free
             && !$method_pure_compatible
         ) {
             $context->removeMutableObjectVars();
-        } elseif ($method_storage->this_property_mutations) {
+        } /** @psalm-fixme RiskyTruthyFalsyComparison */ elseif ($method_storage->this_property_mutations) {
             if (!$method_pure_compatible) {
                 $context->removeMutableObjectVars(true);
             }

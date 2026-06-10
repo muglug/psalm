@@ -66,6 +66,9 @@ final class GitInfoCollector
             if (str_starts_with($result, '* ')) {
                 $exploded = explode('* ', $result, 2);
 
+                /**
+                 * @psalm-fixme PossiblyUndefinedArrayOffset
+                 */
                 return $exploded[1];
             }
         }
@@ -131,6 +134,9 @@ final class GitInfoCollector
 
         foreach ($results as $result) {
             if (str_contains($result, "\t")) {
+                /**
+                 * @psalm-fixme PossiblyUndefinedArrayOffset
+                 */
                 [$name, $url] = explode("\t", $result, 2);
 
                 $remote = new RemoteInfo();

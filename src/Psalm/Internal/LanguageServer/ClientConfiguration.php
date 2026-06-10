@@ -8,6 +8,7 @@ use LanguageServerProtocol\MessageType;
 
 /**
  * @internal
+ * @psalm-fixme PossiblyUnusedProperty
  */
 final class ClientConfiguration
 {

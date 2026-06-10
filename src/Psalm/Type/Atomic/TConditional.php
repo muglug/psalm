@@ -128,6 +128,9 @@ final class TConditional extends Atomic
         TemplateResult $template_result,
         ?Codebase $codebase,
     ): self {
+        /**
+         * @psalm-fixme ImpureMethodCall
+         */
         $conditional = TemplateInferredTypeReplacer::replace(
             $this->conditional_type,
             $template_result,

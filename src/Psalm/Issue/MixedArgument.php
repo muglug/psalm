@@ -22,6 +22,7 @@ final class MixedArgument extends ArgumentIssue implements MixedIssue
         ?CodeLocation $origin_location = null,
     ) {
         parent::__construct($message, $code_location);
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         $this->function_id = $function_id ? strtolower($function_id) : null;
         $this->origin_location = $origin_location;
     }

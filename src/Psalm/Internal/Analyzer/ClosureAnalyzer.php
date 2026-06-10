@@ -90,6 +90,7 @@ final class ClosureAnalyzer extends FunctionLikeAnalyzer
         $codebase = $statements_analyzer->getCodebase();
 
         if (!$statements_analyzer->isStatic() && !$closure_analyzer->isStatic()) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($context->collect_mutations &&
                 $context->self &&
                 $codebase->classExtends(
@@ -99,7 +100,7 @@ final class ClosureAnalyzer extends FunctionLikeAnalyzer
             ) {
                 /** @psalm-suppress PossiblyUndefinedStringArrayOffset */
                 $use_context->vars_in_scope['$this'] = $context->vars_in_scope['$this'];
-            } elseif ($context->self) {
+            } /** @psalm-fixme RiskyTruthyFalsyComparison */ elseif ($context->self) {
                 $this_atomic = new TNamedObject($context->self, true);
 
                 $use_context->vars_in_scope['$this'] = new Union([$this_atomic]);
@@ -112,6 +113,7 @@ final class ClosureAnalyzer extends FunctionLikeAnalyzer
             }
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($context->self) {
             $self_class_storage = $codebase->classlike_storage_provider->get($context->self);
 

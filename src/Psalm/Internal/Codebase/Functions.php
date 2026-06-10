@@ -107,6 +107,7 @@ final class Functions
             }
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if (!$root_file_path || !$checked_file_path) {
             if ($this->reflection->hasFunction($function_id)) {
                 return $this->reflection->getFunctionStorage($function_id);
@@ -263,6 +264,7 @@ final class Functions
 
         $namespace = $source->getNamespace();
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         return ($namespace ? $namespace . '\\' : '') . $function_name;
     }
 
@@ -288,6 +290,9 @@ final class Functions
         } else {
             // functions can reference either the current namespace or root-namespaced
             // equivalents. We therefore want to make both candidates.
+            /**
+             * @psalm-fixme PossiblyUndefinedIntArrayOffset
+             */
             [$stub_namespace, $stub] = explode('-', $stub);
         }
 
@@ -356,6 +361,7 @@ final class Functions
                     $function = $this->reflection->getFunctionStorage($function_name);
                 }
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($function->cased_name) {
                     $cased_name_parts = explode('\\', $function->cased_name);
                     $pattern_parts = explode('\\', $pattern);
@@ -454,6 +460,7 @@ final class Functions
             }
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         $function_callable = InternalCallMapHandler::getCallableFromCallMapById(
             $codebase,
             $function_id,

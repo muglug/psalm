@@ -38,6 +38,7 @@ final class PdoStatementSetFetchMode implements MethodParamsProviderInterface
         }
 
         if ($method_name_lowercase === 'setfetchmode') {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if (!$context
                 || !$call_args
                 || ExpressionAnalyzer::analyze(

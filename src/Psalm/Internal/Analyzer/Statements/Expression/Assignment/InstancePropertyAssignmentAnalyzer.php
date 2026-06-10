@@ -109,6 +109,7 @@ final class InstancePropertyAssignmentAnalyzer
         $codebase = $statements_analyzer->getCodebase();
 
         if ($stmt instanceof PropertyItem) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if (!$context->self || !$stmt->default) {
                 return;
             }
@@ -206,6 +207,7 @@ final class InstancePropertyAssignmentAnalyzer
             );
 
             if ($type_match_found && $union_comparison_results->replacement_union_type) {
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($var_id) {
                     $context->vars_in_scope[$var_id] = $union_comparison_results->replacement_union_type;
                 }
@@ -244,6 +246,9 @@ final class InstancePropertyAssignmentAnalyzer
             }
 
             if ($union_comparison_results->to_string_cast) {
+                /**
+                 * @psalm-fixme ImplicitToStringCast
+                 */
                 IssueBuffer::maybeAdd(
                     new ImplicitToStringCast(
                         $var_id . ' expects \'' . $class_property_type . '\', '
@@ -279,6 +284,9 @@ final class InstancePropertyAssignmentAnalyzer
                     && $assignment_type->isNullable()
                     && !$class_property_type->isNullable()
                 ) {
+                    /**
+                     * @psalm-fixme ImplicitToStringCast
+                     */
                     if (IssueBuffer::accepts(
                         new PossiblyNullPropertyAssignmentValue(
                             $var_id . ' with non-nullable declared type \'' . $class_property_type .
@@ -301,6 +309,9 @@ final class InstancePropertyAssignmentAnalyzer
                     && !$class_property_type->hasBool()
                     && !$class_property_type->hasScalar()
                 ) {
+                    /**
+                     * @psalm-fixme ImplicitToStringCast
+                     */
                     if (IssueBuffer::accepts(
                         new PossiblyFalsePropertyAssignmentValue(
                             $var_id . ' with non-falsable declared type \'' . $class_property_type .
@@ -381,7 +392,9 @@ final class InstancePropertyAssignmentAnalyzer
 
         $project_analyzer = $statements_analyzer->getProjectAnalyzer();
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($appearing_property_class && ($property_storage->readonly || $codebase->alter_code)) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             $can_set_readonly_property = $context->self
                 && $context->calling_method_id
                 && ($appearing_property_class === $context->self
@@ -475,6 +488,7 @@ final class InstancePropertyAssignmentAnalyzer
                 $statements_analyzer,
             );
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($var_id) {
                 if ($statements_analyzer->data_flow_graph instanceof TaintFlowGraph
                     && in_array('TaintedInput', $statements_analyzer->getSuppressedIssues())
@@ -495,6 +509,7 @@ final class InstancePropertyAssignmentAnalyzer
 
                 $property_location = new CodeLocation($statements_analyzer->getSource(), $stmt);
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 $property_node = DataFlowNode::getForAssignment(
                     $var_property_id ?: $var_id . '->$property',
                     $property_location,
@@ -514,6 +529,9 @@ final class InstancePropertyAssignmentAnalyzer
                     $statements_analyzer->data_flow_graph->addSource($taint_source);
                 }
 
+                /**
+                 * @psalm-fixme ImplicitToStringCast
+                 */
                 $data_flow_graph->addPath(
                     $property_node,
                     $var_node,
@@ -588,6 +606,7 @@ final class InstancePropertyAssignmentAnalyzer
 
         $property_location = new CodeLocation($statements_analyzer->getSource(), $stmt);
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         $localized_property_node = DataFlowNode::getForAssignment(
             $var_property_id ?: $property_id,
             $property_location,
@@ -642,6 +661,7 @@ final class InstancePropertyAssignmentAnalyzer
             $statements_analyzer,
         );
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($statements_analyzer->data_flow_graph instanceof TaintFlowGraph
             && $declaring_property_class
             && $declaring_property_class !== $class_storage->name
@@ -649,6 +669,9 @@ final class InstancePropertyAssignmentAnalyzer
                 || $stmt instanceof PhpParser\Node\Expr\StaticPropertyFetch)
             && $stmt->name instanceof PhpParser\Node\Identifier
         ) {
+            /**
+             * @psalm-fixme ImplicitToStringCast
+             */
             $declaring_property_node = new DataFlowNode(
                 $declaring_property_class . '::$' . $stmt->name,
                 $declaring_property_class . '::$' . $stmt->name,
@@ -707,6 +730,7 @@ final class InstancePropertyAssignmentAnalyzer
             $statements_analyzer,
         );
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($var_id) {
             $context->assigned_var_ids[$var_id] = (int)$stmt->var->getAttribute('startFilePos');
 
@@ -733,6 +757,7 @@ final class InstancePropertyAssignmentAnalyzer
             }
 
             if ($stmt->name instanceof PhpParser\Node\Identifier) {
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 $codebase->analyzer->addMixedMemberName(
                     '$' . $stmt->name->name,
                     $context->calling_method_id ?: $statements_analyzer->getFileName(),
@@ -773,6 +798,9 @@ final class InstancePropertyAssignmentAnalyzer
         }
 
         if ($lhs_type->isNullable() && !$lhs_type->ignore_nullable_issues) {
+            /**
+             * @psalm-fixme ImplicitToStringCast
+             */
             IssueBuffer::maybeAdd(
                 new PossiblyNullPropertyAssignment(
                     $lhs_var_id . ' with possibly null type \'' . $lhs_type . '\' cannot be assigned to',
@@ -868,6 +896,7 @@ final class InstancePropertyAssignmentAnalyzer
 
         $context_type = $context_type ?: $assignment_value_type;
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($var_id) {
             if ($context->collect_initializations
                 && $lhs_var_id === '$this'
@@ -937,6 +966,7 @@ final class InstancePropertyAssignmentAnalyzer
             )
             )
         ) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($var_id) {
                 if ($lhs_type_part instanceof TNamedObject &&
                     strtolower($lhs_type_part->value) === 'stdclass'
@@ -951,6 +981,7 @@ final class InstancePropertyAssignmentAnalyzer
         }
 
         if (ExpressionAnalyzer::isMock($lhs_type_part->value)) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($var_id) {
                 $context->vars_in_scope[$var_id] = Type::getMixed();
             }
@@ -1066,6 +1097,7 @@ final class InstancePropertyAssignmentAnalyzer
             $has_magic_setter = true;
             $class_storage = $codebase->classlike_storage_provider->get($fq_class_name);
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($var_id) {
                 if (isset($class_storage->pseudo_property_set_types['$' . $prop_name])) {
                     $class_property_type = TypeExpander::expandUnion(
@@ -1145,6 +1177,7 @@ final class InstancePropertyAssignmentAnalyzer
 
         $has_regular_setter = true;
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($stmt->var instanceof PhpParser\Node\Expr\Variable
             && $stmt->var->name === 'this'
             && $context->self
@@ -1295,6 +1328,7 @@ final class InstancePropertyAssignmentAnalyzer
                 );
             }
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($context->self && !NamespaceAnalyzer::isWithinAny($context->self, $property_storage->internal)) {
                 IssueBuffer::maybeAdd(
                     new InternalProperty(
@@ -1339,6 +1373,7 @@ final class InstancePropertyAssignmentAnalyzer
                 }
             }
 
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             if ($property_storage->getter_method) {
                 $getter_id = $lhs_var_id . '->' . $property_storage->getter_method . '()';
 
@@ -1425,6 +1460,7 @@ final class InstancePropertyAssignmentAnalyzer
 
                 $origin_location = count($origin_locations) === 1 ? reset($origin_locations) : null;
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 $message = $var_id
                     ? 'Unable to determine the type that ' . $var_id . ' is being assigned to'
                     : 'Unable to determine the type of this assignment';
@@ -1529,11 +1565,13 @@ final class InstancePropertyAssignmentAnalyzer
             true,
         );
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         $template_result = new TemplateResult(
             $class_template_params ?: [],
             [],
         );
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($class_template_params) {
             $fleshed_out_type = TemplateStandinTypeReplacer::replace(
                 $fleshed_out_type,
@@ -1556,6 +1594,7 @@ final class InstancePropertyAssignmentAnalyzer
         string $prop_name,
         Expr $assignment_value,
     ): void {
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($var_id) {
             $context->removeVarFromConflictingClauses(
                 $var_id,

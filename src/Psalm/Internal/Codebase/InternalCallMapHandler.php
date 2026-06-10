@@ -248,6 +248,9 @@ final class InternalCallMapHandler
         $possible_callables = [];
 
         foreach ($call_map_functions as $call_map_function_args) {
+            /**
+             * @psalm-fixme PossiblyNullArgument
+             */
             $return_type = Type::parseString(array_shift($call_map_function_args));
 
             $function_params = [];

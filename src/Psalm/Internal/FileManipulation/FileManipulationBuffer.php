@@ -145,7 +145,9 @@ final class FileManipulationBuffer
         $var_start = strrpos($comment_text, '@var', $var_type_comment_start - strlen($comment_text));
         $var_end = strpos($comment_text, "\n", $var_type_comment_end);
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($var_start && $var_end) {
+            /** @psalm-fixme RiskyTruthyFalsyComparison */
             $var_start = strrpos($comment_text, "\n", $var_start - strlen($comment_text)) ?: $var_start;
             $comment_text = substr_replace($comment_text, '', $var_start, $var_end - $var_start);
             if (preg_match('@^/\*\*\n(\s*\*\s*\n)*\s*\*?\*/$@', $comment_text)) {

@@ -51,6 +51,9 @@ final class ClassLikeStorageCacheProvider
             $dependencies []= filemtime($dependent_file_path);
         }
 
+        /**
+         * @psalm-fixme InvalidPropertyAssignmentValue
+         */
         $this->cache = new Cache($config, 'classlike_cache', $dependencies, $persistent);
     }
 

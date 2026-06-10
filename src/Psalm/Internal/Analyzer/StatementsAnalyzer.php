@@ -204,6 +204,7 @@ final class StatementsAnalyzer extends SourceAnalyzer
             $this->checkUnreferencedVars($stmts, $context);
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($codebase->alter_code && $root_scope && $this->vars_to_initialize) {
             $file_contents = $codebase->getFileContents($this->getFilePath());
 
@@ -236,6 +237,7 @@ final class StatementsAnalyzer extends SourceAnalyzer
             if ($stmt instanceof PhpParser\Node\Stmt\Function_) {
                 $function_name = strtolower($stmt->name->name);
 
+                /** @psalm-fixme RiskyTruthyFalsyComparison */
                 if ($ns = $this->getNamespace()) {
                     $fq_function_name = strtolower($ns) . '\\' . $function_name;
                 } else {
@@ -306,6 +308,9 @@ final class StatementsAnalyzer extends SourceAnalyzer
                 && $stmt->expr->name->getParts() === ['define']
                 && isset($stmt->expr->getArgs()[1])
             ) {
+                /**
+                 * @psalm-fixme PossiblyUndefinedArrayOffset
+                 */
                 $const_name = ConstFetchAnalyzer::getConstName(
                     $stmt->expr->getArgs()[0]->value,
                     $statements_analyzer->node_data,
@@ -373,6 +378,7 @@ final class StatementsAnalyzer extends SourceAnalyzer
                         -1,
                         PREG_SPLIT_NO_EMPTY,
                     );
+                    /** @psalm-fixme RiskyTruthyFalsyComparison */
                     if ($possible_traced_variable_names) {
                         $traced_variables = [...$traced_variables, ...$possible_traced_variable_names];
                     }
@@ -623,6 +629,7 @@ final class StatementsAnalyzer extends SourceAnalyzer
             return false;
         }
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($new_issues) {
             $statements_analyzer->removeSuppressedIssues($new_issues);
         }
@@ -870,6 +877,9 @@ final class StatementsAnalyzer extends SourceAnalyzer
                 && $average_destination_branches_converging > 1.1
             ) {
                 if ($source instanceof FunctionAnalyzer) {
+                    /**
+                     * @psalm-fixme InvalidOperand
+                     */
                     IssueBuffer::maybeAdd(
                         new ComplexFunction(
                             'This function’s complexity is greater than the project limit'
@@ -879,6 +889,9 @@ final class StatementsAnalyzer extends SourceAnalyzer
                         $this->getSuppressedIssues(),
                     );
                 } elseif ($source instanceof MethodAnalyzer) {
+                    /**
+                     * @psalm-fixme InvalidOperand
+                     */
                     IssueBuffer::maybeAdd(
                         new ComplexMethod(
                             'This method’s complexity is greater than the project limit'
@@ -974,6 +987,7 @@ final class StatementsAnalyzer extends SourceAnalyzer
     {
         $this->all_vars[$var_id] = $location;
 
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($branch_point) {
             $this->var_branch_points[$var_id] = $branch_point;
         }
@@ -1155,6 +1169,7 @@ final class StatementsAnalyzer extends SourceAnalyzer
     #[Override]
     public function getFQCLN(): ?string
     {
+        /** @psalm-fixme RiskyTruthyFalsyComparison */
         if ($this->fake_this_class) {
             return $this->fake_this_class;
         }
